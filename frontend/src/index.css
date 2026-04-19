@@ -1,9 +1,9 @@
 :root {
   /* Color System */
-  --bg-primary: #48494a;
+  --bg-primary: #060b14;
   --bg-secondary: #0c1524;
-  --bg-card: #020202;
-  --bg-glass: rgba(0, 0, 0, 0.7);
+  --bg-card: #0f1e30;
+  --bg-glass: rgba(15, 30, 48, 0.7);
 
   --accent-cyan: #00e5ff;
   --accent-green: #00ff88;
