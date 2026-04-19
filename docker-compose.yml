@@ -1,0 +1,78 @@
+version: "3.9"
+
+services:
+  # MongoDB
+  mongo:
+    image: mongo:7
+    container_name: swasthai-mongo
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: swasthai
+    ports:
+      - "27017:27017"
+    networks:
+      - swasthai-net
+
+  # Python ML Service
+  ml-service:
+    build: ./backend/services/ml-service
+    container_name: swasthai-ml
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    environment:
+      ML_PORT: 5001
+    networks:
+      - swasthai-net
+
+  # Backend API
+  backend:
+    build: ./backend
+    container_name: swasthai-backend
+    restart: unless-stopped
+    depends_on:
+      - mongo
+      - ml-service
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      MONGODB_URI: mongodb://mongo:27017/swasthai
+      JWT_SECRET: ${JWT_SECRET:-supersecretjwtkey_changeme}
+      JWT_EXPIRE: 7d
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
+      TWILIO_PHONE_NUMBER: ${TWILIO_PHONE_NUMBER}
+      AQI_API_KEY: ${AQI_API_KEY}
+      OPENWEATHER_API_KEY: ${OPENWEATHER_API_KEY}
+      ML_SERVICE_URL: http://ml-service:5001
+      FRONTEND_URL: http://localhost:3000
+    ports:
+      - "5000:5000"
+    volumes:
+      - uploads:/app/uploads
+    networks:
+      - swasthai-net
+
+  # Frontend
+  frontend:
+    build: ./frontend
+    container_name: swasthai-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+    networks:
+      - swasthai-net
+
+networks:
+  swasthai-net:
+    driver: bridge
+
+volumes:
+  mongo_data:
+  uploads:
