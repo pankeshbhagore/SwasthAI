@@ -8,6 +8,8 @@ import { Activity, TrendingUp, AlertTriangle, CheckCircle, Calendar } from "luci
 import api from "../../utils/api";
 import HealthScoreRing from "../UI/HealthScoreRing";
 import { formatDate, getSeverityColor } from "../../utils/helpers";
+import { useLanguage } from "../../context/LanguageContext";
+import { uiTranslations } from "../../utils/translations";
 
 const StatCard = ({ label, value, icon: Icon, color, subtitle }) => (
   <motion.div
@@ -51,6 +53,8 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const HealthDashboard = () => {
+  const { language } = useLanguage();
+  const t = uiTranslations[language] || uiTranslations.en;
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -58,7 +62,7 @@ const HealthDashboard = () => {
     const fetchDashboard = async () => {
       try {
         const res = await api.get("/users/dashboard");
-        setData(res.data.data);
+        setData(res.data);
       } catch {
         // Demo data
         setData({
@@ -104,25 +108,25 @@ const HealthDashboard = () => {
           <HealthScoreRing score={data.healthScore} size={140} />
         </div>
         <StatCard
-          label="Total Consultations"
+          label={t.totalConsultations}
           value={data.totalConsultations}
           icon={Calendar}
           color="var(--accent-cyan)"
-          subtitle="All time"
+          subtitle={t.allTime}
         />
         <StatCard
-          label="Emergencies Detected"
+          label={t.emergenciesDetected}
           value={data.severityCounts?.EMERGENCY || 0}
           icon={AlertTriangle}
           color="var(--accent-red)"
-          subtitle="Requires attention"
+          subtitle={t.requiresAttention}
         />
         <StatCard
-          label="Mild Cases"
+          label={t.mildCases}
           value={data.severityCounts?.MILD || 0}
           icon={CheckCircle}
           color="var(--accent-green)"
-          subtitle="Recovered well"
+          subtitle={t.recoveredWell}
         />
       </div>
 
@@ -130,7 +134,7 @@ const HealthDashboard = () => {
       <div className="glass-card" style={{ padding: 24 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
           <TrendingUp size={18} color="var(--accent-cyan)" />
-          <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15 }}>Health Score Trend</h3>
+          <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15 }}>{t.healthScoreTrend}</h3>
         </div>
         <ResponsiveContainer width="100%" height={180}>
           <AreaChart data={data.trends}>
@@ -148,7 +152,7 @@ const HealthDashboard = () => {
             <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: "#7a9bb8" }} axisLine={false} tickLine={false} />
             <Tooltip content={<CustomTooltip />} />
             <Area
-              type="monotone" dataKey="score" name="Health Score"
+              type="monotone" dataKey="score" name={t.healthScore}
               stroke="#00e5ff" strokeWidth={2}
               fill="url(#scoreGrad)"
             />
@@ -162,7 +166,7 @@ const HealthDashboard = () => {
         <div className="glass-card" style={{ padding: 24 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
             <Activity size={18} color="var(--accent-amber)" />
-            <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15 }}>Severity Breakdown</h3>
+            <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15 }}>{t.severityBreakdown}</h3>
           </div>
           {pieData.length > 0 ? (
             <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
@@ -192,7 +196,7 @@ const HealthDashboard = () => {
         <div className="glass-card" style={{ padding: 24 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
             <Activity size={18} color="var(--accent-purple)" />
-            <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15 }}>Frequent Symptoms</h3>
+            <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15 }}>{t.frequentSymptoms}</h3>
           </div>
           {data.topSymptoms?.length > 0 ? (
             <ResponsiveContainer width="100%" height={120}>

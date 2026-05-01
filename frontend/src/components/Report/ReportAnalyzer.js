@@ -2,10 +2,14 @@ import React, { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDropzone } from "react-dropzone";
 import { FileText, Upload, AlertTriangle, CheckCircle, Pill, FlaskConical, Loader } from "lucide-react";
+import { useLanguage } from "../../context/LanguageContext";
+import { uiTranslations } from "../../utils/translations";
 import api from "../../utils/api";
 import toast from "react-hot-toast";
 
 const ReportAnalyzer = () => {
+  const { language } = useLanguage();
+  const t = uiTranslations[language] || uiTranslations.en;
   const [reportText, setReportText] = useState("");
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -47,7 +51,7 @@ const ReportAnalyzer = () => {
       } else {
         res = await api.post("/reports/analyze-text", { text: reportText });
       }
-      setResult(res.data.data.analysis);
+      setResult(res.data.analysis);
       toast.success("Report analyzed successfully!");
     } catch (error) {
       toast.error(error.message || "Analysis failed. Please try again.");
@@ -62,12 +66,12 @@ const ReportAnalyzer = () => {
       <div className="glass-card" style={{ padding: 24 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
           <FileText size={20} color="var(--accent-cyan)" />
-          <h3 style={{ fontFamily: "var(--font-display)", fontSize: 16 }}>Medical Report Analyzer</h3>
+          <h3 style={{ fontFamily: "var(--font-display)", fontSize: 16 }}>{t.medicalReportAnalyzer}</h3>
         </div>
 
         {/* Tab Switch */}
         <div style={{ display: "flex", gap: 0, marginBottom: 20, background: "rgba(255,255,255,0.03)", borderRadius: "var(--radius-sm)", padding: 4 }}>
-          {[{ key: "text", label: "Paste Text" }, { key: "upload", label: "Upload File" }].map(({ key, label }) => (
+          {[{ key: "text", label: t.pasteText }, { key: "upload", label: t.uploadFile }].map(({ key, label }) => (
             <button
               key={key}
               onClick={() => setTab(key)}
@@ -89,7 +93,7 @@ const ReportAnalyzer = () => {
             className="input"
             value={reportText}
             onChange={(e) => setReportText(e.target.value)}
-            placeholder="Paste your prescription, lab report, or any medical document here..."
+            placeholder={t.pastePlaceholder}
             rows={8}
             style={{ resize: "vertical", lineHeight: 1.6 }}
           />
@@ -113,7 +117,7 @@ const ReportAnalyzer = () => {
             ) : (
               <>
                 <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 6 }}>
-                  {isDragActive ? "Drop your file here" : "Drag & drop your medical report"}
+                  {isDragActive ? "Drop your file here" : t.dragDropReport}
                 </div>
                 <div style={{ fontSize: 12, color: "var(--text-muted)" }}>PDF, JPG, PNG, or TXT — max 10MB</div>
               </>
@@ -128,9 +132,9 @@ const ReportAnalyzer = () => {
           style={{ width: "100%", marginTop: 16, padding: 13, fontSize: 15 }}
         >
           {loading ? (
-            <><div className="spinner" style={{ width: 18, height: 18 }} />Analyzing Report...</>
+            <><div className="spinner" style={{ width: 18, height: 18 }} />{t.analyzingReport}</>
           ) : (
-            <><FileText size={18} />Analyze Report with AI</>
+            <><FileText size={18} />{t.analyzeWithAI}</>
           )}
         </button>
       </div>
@@ -147,7 +151,7 @@ const ReportAnalyzer = () => {
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
                 <FileText size={16} color="var(--accent-cyan)" />
                 <h4 style={{ fontFamily: "var(--font-display)", fontSize: 14 }}>
-                  Report Summary — <span style={{ color: "var(--accent-purple)", textTransform: "capitalize" }}>{result.report_type}</span>
+                  {t.reportSummary} — <span style={{ color: "var(--accent-purple)", textTransform: "capitalize" }}>{result.report_type}</span>
                 </h4>
               </div>
               <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.7, marginBottom: 14 }}>
@@ -156,7 +160,7 @@ const ReportAnalyzer = () => {
 
               {result.key_findings?.length > 0 && (
                 <div>
-                  <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>Key Findings</div>
+                  <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>{t.keyFindings}</div>
                   <ul style={{ paddingLeft: 18 }}>
                     {result.key_findings.map((f, i) => (
                       <li key={i} style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 5 }}>{f}</li>
@@ -171,7 +175,7 @@ const ReportAnalyzer = () => {
               <div className="glass-card" style={{ padding: 20 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
                   <Pill size={16} color="var(--accent-green)" />
-                  <h4 style={{ fontFamily: "var(--font-display)", fontSize: 14 }}>Medications Explained</h4>
+                  <h4 style={{ fontFamily: "var(--font-display)", fontSize: 14 }}>{t.medicationsExplained}</h4>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {result.medications.map((med, i) => (
@@ -182,7 +186,7 @@ const ReportAnalyzer = () => {
                     }}>
                       <div style={{ fontWeight: 700, fontSize: 14, color: "var(--accent-green)", marginBottom: 4 }}>{med.name}</div>
                       <div style={{ fontSize: 13, color: "var(--text-secondary)" }}>
-                        <strong>Purpose:</strong> {med.purpose}
+                        <strong>{t.purpose}:</strong> {med.purpose}
                       </div>
                       {med.notes && (
                         <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 3 }}>📝 {med.notes}</div>
@@ -198,7 +202,7 @@ const ReportAnalyzer = () => {
               <div className="glass-card" style={{ padding: 20 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
                   <FlaskConical size={16} color="var(--accent-amber)" />
-                  <h4 style={{ fontFamily: "var(--font-display)", fontSize: 14 }}>Abnormal Lab Values</h4>
+                  <h4 style={{ fontFamily: "var(--font-display)", fontSize: 14 }}>{t.abnormalValues}</h4>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   {result.abnormal_values.map((val, i) => (
@@ -210,7 +214,7 @@ const ReportAnalyzer = () => {
                     }}>
                       <span style={{ fontSize: 13, fontWeight: 600 }}>{val.test}</span>
                       <span style={{ fontSize: 13, color: "var(--accent-amber)", fontWeight: 700 }}>{val.value}</span>
-                      <span style={{ fontSize: 11, color: "var(--text-muted)" }}>Normal: {val.normal_range}</span>
+                      <span style={{ fontSize: 11, color: "var(--text-muted)" }}>{t.normal}: {val.normal_range}</span>
                       <span style={{ fontSize: 11, color: "var(--text-secondary)" }}>{val.interpretation}</span>
                     </div>
                   ))}
@@ -222,7 +226,7 @@ const ReportAnalyzer = () => {
             <div className="glass-card" style={{ padding: 20 }}>
               {result.follow_up && (
                 <div style={{ marginBottom: 14 }}>
-                  <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.08em" }}>Follow-up Advice</div>
+                  <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.08em" }}>{t.followUpAdvice}</div>
                   <p style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.6 }}>{result.follow_up}</p>
                 </div>
               )}
@@ -230,7 +234,7 @@ const ReportAnalyzer = () => {
               {result.questions_to_ask_doctor?.length > 0 && (
                 <div>
                   <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                    Questions to Ask Your Doctor
+                    {t.questionsToAsk}
                   </div>
                   <ol style={{ paddingLeft: 18 }}>
                     {result.questions_to_ask_doctor.map((q, i) => (
@@ -246,7 +250,7 @@ const ReportAnalyzer = () => {
                   background: "rgba(255,61,113,0.07)", border: "1px solid rgba(255,61,113,0.2)",
                   borderRadius: "var(--radius-sm)",
                 }}>
-                  <div style={{ fontSize: 12, color: "var(--accent-red)", fontWeight: 700, marginBottom: 6 }}>⚠️ Red Flags — Seek Immediate Care If:</div>
+                  <div style={{ fontSize: 12, color: "var(--accent-red)", fontWeight: 700, marginBottom: 6 }}>{t.redFlags}</div>
                   <ul style={{ paddingLeft: 16 }}>
                     {result.red_flags.map((f, i) => (
                       <li key={i} style={{ fontSize: 12, color: "rgba(255,61,113,0.8)", marginBottom: 3 }}>{f}</li>

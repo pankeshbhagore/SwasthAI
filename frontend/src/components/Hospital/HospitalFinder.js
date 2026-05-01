@@ -87,6 +87,7 @@ const HospitalFinder = () => {
   const [hospitals, setHospitals] = useState([]);
   const [loading, setLoading] = useState(false);
   const [severity, setSeverity] = useState("MILD");
+  const [locationName, setLocationName] = useState(null);
   const { location, loading: locLoading, error: locError, getLocation } = useGeolocation();
 
   useEffect(() => {
@@ -100,8 +101,10 @@ const HospitalFinder = () => {
       const res = await api.get("/maps/hospitals", {
         params: { lat: location.lat, lng: location.lng, severity },
       });
-      setHospitals(res.data.data.hospitals || []);
-      if (res.data.data.demo) {
+      const data = res.data.data;
+      setHospitals(data?.hospitals || []);
+      if (data?.locationName) setLocationName(data.locationName);
+      if (data?.demo) {
         toast("📍 Showing demo hospitals. Add Google Maps API key for real results.", { icon: "ℹ️" });
       }
     } catch {
@@ -157,8 +160,8 @@ const HospitalFinder = () => {
         )}
 
         {location && (
-          <div style={{ marginTop: 8, fontSize: 11, color: "var(--text-muted)" }}>
-            📍 Location detected: {location.lat.toFixed(5)}, {location.lng.toFixed(5)}
+          <div style={{ marginTop: 8, fontSize: 12, color: "var(--text-muted)", display: "flex", alignItems: "center", gap: 5 }}>
+            📍 Location detected: <strong style={{ color: "var(--text-primary)" }}>{locationName || `${location.lat.toFixed(5)}, ${location.lng.toFixed(5)}`}</strong>
           </div>
         )}
       </div>

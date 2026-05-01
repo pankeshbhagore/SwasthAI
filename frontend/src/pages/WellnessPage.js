@@ -13,8 +13,11 @@ const VaccinationSchedule = () => {
 
   useEffect(() => {
     api.get("/advanced/vaccinations/schedule", { params: { age: user?.age } })
-      .then(res => setSchedule(res.data.data.schedule || []))
-      .catch(() => {});
+      .then(res => {
+        const scheduleData = res.data?.data?.schedule || res.data?.schedule || [];
+        setSchedule(Array.isArray(scheduleData) ? scheduleData : []);
+      })
+      .catch(() => setSchedule([]));
   }, [user]);
 
   const priorityColor = { HIGH: "var(--accent-red)", MEDIUM: "var(--accent-amber)", LOW: "var(--accent-green)" };

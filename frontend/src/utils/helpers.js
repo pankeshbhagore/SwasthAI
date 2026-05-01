@@ -65,11 +65,21 @@ export const getHealthScoreColor = (score) => {
   return "#ff3d71";
 };
 
-export const getHealthScoreLabel = (score) => {
-  if (score >= 80) return "Excellent";
-  if (score >= 60) return "Good";
-  if (score >= 40) return "Fair";
-  return "Needs Attention";
+export const getHealthScoreLabel = (score, lang = "en") => {
+  const labels = {
+    en: { excellent: "Excellent", good: "Good", fair: "Fair", bad: "Needs Attention" },
+    hi: { excellent: "उत्कृष्ट", good: "अच्छा", fair: "सामान्य", bad: "ध्यान दें" },
+    es: { excellent: "Excelente", good: "Bueno", fair: "Regular", bad: "Necesita Atención" },
+    fr: { excellent: "Excellent", good: "Bon", fair: "Passable", bad: "Attention requise" },
+    ar: { excellent: "ممتاز", good: "جيد", fair: "مقبول", bad: "بحاجة للاهتمام" },
+  };
+
+  const t = labels[lang] || labels.en;
+
+  if (score >= 80) return t.excellent;
+  if (score >= 60) return t.good;
+  if (score >= 40) return t.fair;
+  return t.bad;
 };
 
 // Capitalize

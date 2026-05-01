@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Stethoscope, Plus, X, Mic, MicOff, MapPin, Loader, ChevronDown } from "lucide-react";
 import api from "../../utils/api";
 import { useAuth } from "../../context/AuthContext";
+import { useLanguage } from "../../context/LanguageContext";
+import { uiTranslations } from "../../utils/translations";
 import { normalizeSymptoms } from "../../utils/helpers";
 import useVoice from "../../hooks/useVoice";
 import useGeolocation from "../../hooks/useGeolocation";
@@ -18,13 +20,20 @@ const COMMON_SYMPTOMS = [
 
 const SymptomAnalyzer = () => {
   const { user } = useAuth();
+  const { language: globalLang } = useLanguage();
+  const t = uiTranslations[globalLang] || uiTranslations.en;
   const [symptoms, setSymptoms] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [age, setAge] = useState(user?.age || "");
-  const [language, setLanguage] = useState("en");
+  const [localLanguage, setLocalLanguage] = useState(globalLang);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
+
+  // Sync local language when global changes
+  useEffect(() => {
+    setLocalLanguage(globalLang);
+  }, [globalLang]);
 
   const { isListening, toggleListening } = useVoice((text) => {
     const parsed = normalizeSymptoms(text);
@@ -65,7 +74,7 @@ const SymptomAnalyzer = () => {
         age: age || user?.age,
         medicalHistory: user?.medicalHistory?.chronicConditions || [],
         location: location || null,
-        language,
+        language: localLanguage,
       });
 
       setResult(res.data.data);
@@ -88,7 +97,7 @@ const SymptomAnalyzer = () => {
       <div className="glass-card" style={{ padding: 24 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
           <Stethoscope size={20} color="var(--accent-cyan)" />
-          <h3 style={{ fontFamily: "var(--font-display)", fontSize: 16 }}>Add Your Symptoms</h3>
+          <h3 style={{ fontFamily: "var(--font-display)", fontSize: 16 }}>{t.addSymptoms}</h3>
         </div>
 
         {/* Text input */}
@@ -98,7 +107,7 @@ const SymptomAnalyzer = () => {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && addInputSymptom()}
-            placeholder="Type a symptom and press Enter..."
+            placeholder={t.typeSymptom}
           />
           <button onClick={addInputSymptom} className="btn btn-ghost" style={{ flexShrink: 0, padding: "10px 14px" }}>
             <Plus size={18} />
@@ -121,14 +130,14 @@ const SymptomAnalyzer = () => {
             display: "flex", alignItems: "center", gap: 6,
           }}>
             <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--accent-red)", display: "inline-block", animation: "pulse-red 1s infinite" }} />
-            Listening... speak your symptoms now
+            {t.listening}
           </div>
         )}
 
         {/* Quick symptoms */}
         <div style={{ marginBottom: 16 }}>
           <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-            Quick Select
+            {t.quickSelect}
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             {COMMON_SYMPTOMS.map((sym) => (
@@ -155,7 +164,7 @@ const SymptomAnalyzer = () => {
         {symptoms.length > 0 && (
           <div style={{ marginBottom: 16 }}>
             <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-              Selected Symptoms ({symptoms.length})
+              {t.selectedSymptoms} ({symptoms.length})
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               <AnimatePresence>
@@ -196,7 +205,7 @@ const SymptomAnalyzer = () => {
           }}
         >
           <ChevronDown size={14} style={{ transform: showAdvanced ? "rotate(180deg)" : "none", transition: "transform var(--transition)" }} />
-          Advanced Options
+          {t.advancedOptions}
         </button>
 
         <AnimatePresence>
@@ -218,18 +227,19 @@ const SymptomAnalyzer = () => {
                   />
                 </div>
                 <div>
-                  <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Language</label>
+                  <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Analysis Language</label>
                   <select
                     className="input"
-                    value={language}
-                    onChange={(e) => setLanguage(e.target.value)}
+                    value={localLanguage}
+                    onChange={(e) => setLocalLanguage(e.target.value)}
                     style={{ padding: "8px 12px", cursor: "pointer" }}
                   >
                     <option value="en">English</option>
-                    <option value="hi">Hindi</option>
+                    <option value="hi">Hindi (हिन्दी)</option>
+                    <option value="mr">Marathi (मराठी)</option>
+                    <option value="ta">Tamil (தமிழ்)</option>
+                    <option value="te">Telugu (తెలుగు)</option>
                     <option value="hinglish">Hinglish</option>
-                    <option value="ta">Tamil</option>
-                    <option value="te">Telugu</option>
                   </select>
                 </div>
               </div>
@@ -257,12 +267,12 @@ const SymptomAnalyzer = () => {
           {loading ? (
             <>
               <div className="spinner" style={{ width: 18, height: 18 }} />
-              Analyzing with Multi-Agent AI...
+              {t.analyzingAI}
             </>
           ) : (
             <>
               <Stethoscope size={18} />
-              Analyze Symptoms
+              {t.analyzeSymptoms}
             </>
           )}
         </button>
@@ -283,13 +293,13 @@ const SymptomAnalyzer = () => {
             {result.recommendations && (
               <div className="glass-card" style={{ padding: 20 }}>
                 <h4 style={{ fontFamily: "var(--font-display)", marginBottom: 16, color: "var(--accent-cyan)" }}>
-                  💊 Recommendations
+                  💊 {t.recommendations}
                 </h4>
 
                 {result.recommendations.immediate_actions?.length > 0 && (
                   <div style={{ marginBottom: 14 }}>
                     <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                      Immediate Actions
+                      {t.immediateActions}
                     </div>
                     <ul style={{ paddingLeft: 18 }}>
                       {result.recommendations.immediate_actions.map((a, i) => (
@@ -302,7 +312,7 @@ const SymptomAnalyzer = () => {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   {result.recommendations.foods_to_eat?.length > 0 && (
                     <div>
-                      <div style={{ fontSize: 12, color: "var(--accent-green)", marginBottom: 6, fontWeight: 600 }}>✅ Eat</div>
+                      <div style={{ fontSize: 12, color: "var(--accent-green)", marginBottom: 6, fontWeight: 600 }}>✅ {t.eat}</div>
                       <ul style={{ paddingLeft: 16, fontSize: 12, color: "var(--text-secondary)" }}>
                         {result.recommendations.foods_to_eat.map((f, i) => <li key={i} style={{ marginBottom: 3 }}>{f}</li>)}
                       </ul>
@@ -310,7 +320,7 @@ const SymptomAnalyzer = () => {
                   )}
                   {result.recommendations.foods_to_avoid?.length > 0 && (
                     <div>
-                      <div style={{ fontSize: 12, color: "var(--accent-red)", marginBottom: 6, fontWeight: 600 }}>❌ Avoid</div>
+                      <div style={{ fontSize: 12, color: "var(--accent-red)", marginBottom: 6, fontWeight: 600 }}>❌ {t.avoid}</div>
                       <ul style={{ paddingLeft: 16, fontSize: 12, color: "var(--text-secondary)" }}>
                         {result.recommendations.foods_to_avoid.map((f, i) => <li key={i} style={{ marginBottom: 3 }}>{f}</li>)}
                       </ul>
@@ -324,7 +334,7 @@ const SymptomAnalyzer = () => {
                     background: "rgba(0,229,255,0.06)", border: "1px solid rgba(0,229,255,0.15)",
                     borderRadius: "var(--radius-sm)", fontSize: 13, color: "var(--text-secondary)",
                   }}>
-                    🕐 <strong>Follow-up:</strong> {result.recommendations.follow_up_timeline}
+                    🕐 <strong>{t.followUp}:</strong> {result.recommendations.follow_up_timeline}
                   </div>
                 )}
               </div>

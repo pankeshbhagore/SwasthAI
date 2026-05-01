@@ -4,6 +4,8 @@ import { Activity, Plus, TrendingUp, AlertTriangle, Heart, Droplets, Thermometer
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import api from "../../utils/api";
 import { useAuth } from "../../context/AuthContext";
+import { useLanguage } from "../../context/LanguageContext";
+import { uiTranslations } from "../../utils/translations";
 import toast from "react-hot-toast";
 
 const VITALS_FIELDS = [
@@ -38,6 +40,8 @@ const AlertBanner = ({ alerts }) => {
 
 const VitalsTracker = () => {
   const { user } = useAuth();
+  const { language } = useLanguage();
+  const t = uiTranslations[language] || uiTranslations.en;
   const [vitals, setVitals] = useState([]);
   const [form, setForm] = useState({});
   const [loading, setLoading] = useState(false);
@@ -51,7 +55,8 @@ const VitalsTracker = () => {
     setLoading(true);
     try {
       const res = await api.get("/advanced/vitals");
-      setVitals(res.data.data.vitals || []);
+      const vitalsData = res.data?.data?.vitals || res.data?.vitals || [];
+      setVitals(Array.isArray(vitalsData) ? vitalsData : []);
     } catch {
       setVitals([]);
     } finally { setLoading(false); }
@@ -71,7 +76,8 @@ const VitalsTracker = () => {
         notes: form.notes,
       };
       const res = await api.post("/advanced/vitals", payload);
-      if (res.data.data.mlRisk) setLatestRisk(res.data.data.mlRisk);
+      const mlRisk = res.data?.data?.mlRisk || res.data?.mlRisk;
+      if (mlRisk) setLatestRisk(mlRisk);
       toast.success("Vitals saved!");
       setForm({});
       fetchVitals();
@@ -91,20 +97,34 @@ const VitalsTracker = () => {
 
   const chartField = VITALS_FIELDS.find(f => f.key === activeChart);
 
+  // Map labels dynamically from translation
+  const getFieldLabel = (key) => {
+    const labels = {
+      systolic: t.systolicBP,
+      diastolic: t.diastolicBP,
+      heartRate: t.heartRate,
+      bloodSugar: t.bloodSugar,
+      temperature: t.temperature,
+      oxygenSat: t.spo2,
+      weight: t.weight
+    };
+    return labels[key] || key;
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       {/* Log Form */}
       <div className="glass-card" style={{ padding: 24 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
           <Activity size={20} color="var(--accent-cyan)" />
-          <h3 style={{ fontFamily: "var(--font-display)", fontSize: 16 }}>Log Vitals</h3>
-          <span style={{ marginLeft: "auto", fontSize: 11, color: "var(--accent-green)", background: "rgba(0,255,136,0.1)", padding: "2px 8px", borderRadius: "100px", border: "1px solid rgba(0,255,136,0.2)" }}>ML RISK ANALYSIS</span>
+          <h3 style={{ fontFamily: "var(--font-display)", fontSize: 16 }}>{t.logVitals}</h3>
+          <span style={{ marginLeft: "auto", fontSize: 11, color: "var(--accent-green)", background: "rgba(0,255,136,0.1)", padding: "2px 8px", borderRadius: "100px", border: "1px solid rgba(0,255,136,0.2)" }}>{t.mlRiskAnalysis}</span>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))", gap: 12, marginBottom: 14 }}>
-          {VITALS_FIELDS.map(({ key, label, unit, placeholder, color, normal }) => (
+          {VITALS_FIELDS.map(({ key, unit, placeholder, color, normal }) => (
             <div key={key}>
               <label style={{ fontSize: 11, color: "var(--text-muted)", display: "block", marginBottom: 5 }}>
-                {label} <span style={{ color: "var(--text-muted)", fontWeight: 400 }}>({unit})</span>
+                {getFieldLabel(key)} <span style={{ color: "var(--text-muted)", fontWeight: 400 }}>({unit})</span>
               </label>
               <input
                 className="input"
@@ -114,13 +134,13 @@ const VitalsTracker = () => {
                 placeholder={placeholder}
                 style={{ padding: "8px 12px", borderColor: form[key] ? `${color}40` : undefined }}
               />
-              <div style={{ fontSize: 10, color: "var(--text-muted)", marginTop: 3 }}>Normal: {normal}</div>
+              <div style={{ fontSize: 10, color: "var(--text-muted)", marginTop: 3 }}>{t.normal}: {normal}</div>
             </div>
           ))}
         </div>
-        <input className="input" value={form.notes || ""} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} placeholder="Notes (optional)" style={{ marginBottom: 12 }} />
+        <input className="input" value={form.notes || ""} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} placeholder={t.notes + " (optional)"} style={{ marginBottom: 12 }} />
         <button onClick={handleSave} disabled={saving} className="btn btn-primary" style={{ width: "100%", padding: 12 }}>
-          {saving ? <><div className="spinner" style={{ width: 16, height: 16 }} />Analyzing...</> : <><Plus size={16} />Save & Analyze</>}
+          {saving ? <><div className="spinner" style={{ width: 16, height: 16 }} />Analyzing...</> : <><Plus size={16} />{t.saveAndAnalyze}</>}
         </button>
         {latestRisk && <AlertBanner alerts={latestRisk.alerts} />}
       </div>
@@ -131,13 +151,13 @@ const VitalsTracker = () => {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 8 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <TrendingUp size={18} color="var(--accent-cyan)" />
-              <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15 }}>Vitals Trend</h3>
+              <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15 }}>{t.vitalsTrend}</h3>
             </div>
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
               {VITALS_FIELDS.slice(0, 5).map(f => (
                 <button key={f.key} onClick={() => setActiveChart(f.key)}
                   style={{ padding: "4px 10px", fontSize: 11, borderRadius: "var(--radius-sm)", border: `1px solid ${activeChart === f.key ? f.color : "var(--border)"}`, background: activeChart === f.key ? `${f.color}15` : "transparent", color: activeChart === f.key ? f.color : "var(--text-muted)", cursor: "pointer" }}>
-                  {f.label.split(" ")[0]}
+                  {getFieldLabel(f.key).split(" ")[0]}
                 </button>
               ))}
             </div>

@@ -1,9 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 :root {
-  /* Color System */
+  --font-display: "Syne", sans-serif;
+  --font-body: "Rajdhani", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DARK THEME
+   ═══════════════════════════════════════════════════════════ */
+.dark-theme {
   --bg-primary: #060b14;
   --bg-secondary: #0c1524;
   --bg-card: #0f1e30;
   --bg-glass: rgba(15, 30, 48, 0.7);
+  --bg-input: rgba(15, 30, 48, 0.6);
 
   --accent-cyan: #00e5ff;
   --accent-green: #00ff88;
@@ -22,17 +41,55 @@
   --shadow-glow-green: 0 0 30px rgba(0, 255, 136, 0.15);
   --shadow-glow-red: 0 0 30px rgba(255, 61, 113, 0.2);
 
-  --font-display: "Syne", sans-serif;
-  --font-body: "Space Grotesk", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --bg-gradient-1: rgba(0, 229, 255, 0.05);
+  --bg-gradient-2: rgba(0, 255, 136, 0.04);
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
-  --radius-xl: 28px;
+  --scrollbar-track: #0c1524;
+  --scrollbar-thumb: rgba(0, 229, 255, 0.2);
+  --scrollbar-thumb-hover: rgba(0, 229, 255, 0.4);
 
-  --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --toast-bg: #0f1e30;
+  --toast-color: #e8f4fd;
+  --toast-border: rgba(0, 229, 255, 0.2);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LIGHT THEME (Default)
+   ═══════════════════════════════════════════════════════════ */
+.light-theme {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.8);
+  --bg-input: rgba(241, 245, 249, 0.8);
+
+  --accent-cyan: #0284c7;
+  --accent-green: #059669;
+  --accent-amber: #d97706;
+  --accent-red: #dc2626;
+  --accent-purple: #7c3aed;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+
+  --border: rgba(2, 132, 199, 0.15);
+  --border-hover: rgba(2, 132, 199, 0.4);
+
+  --shadow-glow-cyan: 0 4px 20px rgba(2, 132, 199, 0.1);
+  --shadow-glow-green: 0 4px 20px rgba(5, 150, 105, 0.1);
+  --shadow-glow-red: 0 4px 20px rgba(220, 38, 38, 0.1);
+
+  --bg-gradient-1: rgba(2, 132, 199, 0.04);
+  --bg-gradient-2: rgba(5, 150, 105, 0.03);
+
+  --scrollbar-track: #f1f5f9;
+  --scrollbar-thumb: rgba(2, 132, 199, 0.2);
+  --scrollbar-thumb-hover: rgba(2, 132, 199, 0.4);
+
+  --toast-bg: #ffffff;
+  --toast-color: #0f172a;
+  --toast-border: rgba(2, 132, 199, 0.15);
 }
 
 /* Severity Colors */
@@ -62,15 +119,16 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   background-image:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 229, 255, 0.05) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 30% at 90% 80%, rgba(0, 255, 136, 0.04) 0%, transparent 50%);
+    radial-gradient(ellipse 80% 50% at 50% -20%, var(--bg-gradient-1) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 90% 80%, var(--bg-gradient-2) 0%, transparent 50%);
+  transition: background-color var(--transition-slow), color var(--transition-slow);
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-secondary); }
-::-webkit-scrollbar-thumb { background: rgba(0, 229, 255, 0.2); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(0, 229, 255, 0.4); }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
 
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
@@ -88,7 +146,7 @@ a:hover { opacity: 0.8; }
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  transition: border-color var(--transition), box-shadow var(--transition);
+  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
 }
 .glass-card:hover {
   border-color: var(--border-hover);
@@ -118,7 +176,7 @@ a:hover { opacity: 0.8; }
   color: var(--bg-primary);
 }
 .btn-primary:hover:not(:disabled) {
-  background: #33eaff;
+  filter: brightness(1.15);
   box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
   transform: translateY(-1px);
 }
@@ -128,7 +186,7 @@ a:hover { opacity: 0.8; }
   color: white;
 }
 .btn-danger:hover:not(:disabled) {
-  background: #ff5585;
+  filter: brightness(1.15);
   box-shadow: 0 0 20px rgba(255, 61, 113, 0.4);
   transform: translateY(-1px);
 }
@@ -141,13 +199,13 @@ a:hover { opacity: 0.8; }
 .btn-ghost:hover:not(:disabled) {
   border-color: var(--border-hover);
   color: var(--text-primary);
-  background: rgba(0, 229, 255, 0.05);
+  background: var(--bg-input);
 }
 
 /* Input */
 .input {
   width: 100%;
-  background: rgba(15, 30, 48, 0.6);
+  background: var(--bg-input);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 12px 16px;
@@ -162,6 +220,21 @@ a:hover { opacity: 0.8; }
   box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.1);
 }
 .input::placeholder { color: var(--text-muted); }
+
+/* Select */
+select.input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237a9bb8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+/* Textarea */
+textarea.input {
+  resize: vertical;
+  min-height: 80px;
+}
 
 /* Severity Badge */
 .severity-badge {
@@ -246,3 +319,17 @@ a:hover { opacity: 0.8; }
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   LIGHT THEME SPECIFIC OVERRIDES
+   ═══════════════════════════════════════════════════════════ */
+.light-theme .glass-card {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+}
+.light-theme .glass-card:hover {
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.1), 0 1px 3px rgba(0,0,0,0.06);
+}
+.light-theme .badge-emergency { background: rgba(220, 38, 38, 0.08); }
+.light-theme .badge-moderate  { background: rgba(217, 119, 6, 0.08); }
+.light-theme .badge-mild      { background: rgba(5, 150, 105, 0.08); }
+.light-theme .badge-normal    { background: rgba(2, 132, 199, 0.08); }

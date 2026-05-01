@@ -3,12 +3,19 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Wind, Thermometer, X } from "lucide-react";
 import { getAQIColor } from "../../utils/helpers";
 import useAQI from "../../hooks/useAQI";
+import useGeolocation from "../../hooks/useGeolocation";
 import { useAuth } from "../../context/AuthContext";
 
 const AQIBanner = () => {
   const { user } = useAuth();
+  const { location, getLocation } = useGeolocation();
+  
+  React.useEffect(() => {
+    getLocation();
+  }, [getLocation]);
+
   const city = user?.address?.city || "delhi";
-  const { aqi, weather } = useAQI(city);
+  const { aqi, weather } = useAQI(city, location?.lat, location?.lng);
   const [dismissed, setDismissed] = React.useState(false);
 
   if (!aqi || dismissed) return null;

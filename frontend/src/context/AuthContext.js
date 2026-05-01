@@ -8,10 +8,13 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem("swasthai_token") || null);
 
-  // Load user on mount
+  // Load user on mount or token change
   useEffect(() => {
-    if (token) {
+    if (token && !user) {
       loadUser();
+    } else if (!token) {
+      setLoading(false);
+      setUser(null);
     } else {
       setLoading(false);
     }
@@ -19,10 +22,20 @@ export const AuthProvider = ({ children }) => {
 
   const loadUser = async () => {
     try {
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const currentToken = token || localStorage.getItem("swasthai_token");
+      if (!currentToken) {
+        setLoading(false);
+        return;
+      }
+      api.defaults.headers.common["Authorization"] = `Bearer ${currentToken}`;
       const res = await api.get("/users/profile");
-      setUser(res.data.data.user);
-    } catch {
+      if (res.data.success) {
+        setUser(res.data.user);
+      } else {
+        throw new Error("Failed to load profile");
+      }
+    } catch (error) {
+      console.error("Auth Error:", error);
       logout();
     } finally {
       setLoading(false);
@@ -31,7 +44,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const res = await api.post("/users/login", { email, password });
-    const { token: newToken, user: newUser } = res.data.data;
+    const { token: newToken, user: newUser } = res.data;
     localStorage.setItem("swasthai_token", newToken);
     api.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
     setToken(newToken);
@@ -41,7 +54,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (data) => {
     const res = await api.post("/users/register", data);
-    const { token: newToken, user: newUser } = res.data.data;
+    const { token: newToken, user: newUser } = res.data;
     localStorage.setItem("swasthai_token", newToken);
     api.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
     setToken(newToken);

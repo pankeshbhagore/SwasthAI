@@ -29,7 +29,13 @@ const HealthGoals = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get("/advanced/goals").then(res => setGoals(res.data.data || [])).catch(() => setGoals([])).finally(() => setLoading(false));
+    api.get("/advanced/goals")
+      .then(res => {
+        const goalsData = res.data?.data || res.data || [];
+        setGoals(Array.isArray(goalsData) ? goalsData : []);
+      })
+      .catch(() => setGoals([]))
+      .finally(() => setLoading(false));
   }, []);
 
   const completed = goals.filter(g => g.completed).length;

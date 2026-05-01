@@ -16,9 +16,9 @@ const HealthHistoryTable = () => {
     setLoading(true);
     try {
       const res = await api.get("/users/history", { params: { page: p, limit: 8 } });
-      setHistory(res.data.data.history);
-      setTotal(res.data.data.total);
-      setTotalPages(res.data.data.pages);
+      setHistory(res.data.history);
+      setTotal(res.data.total);
+      setTotalPages(res.data.pages);
     } catch {
       // demo data
       setHistory([]);

@@ -2,6 +2,8 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { ThemeProvider, useTheme } from "./context/ThemeContext";
+import { LanguageProvider } from "./context/LanguageContext";
 
 import Layout from "./components/Layout/Layout";
 import OfflineBanner from "./components/UI/OfflineBanner";
@@ -73,25 +75,54 @@ function AppRoutes() {
   );
 }
 
+/** Theme-aware Toaster wrapper */
+const ThemedToaster = () => {
+  const { isDarkMode } = useTheme();
+  return (
+    <Toaster
+      position="top-right"
+      toastOptions={{
+        style: {
+          background: isDarkMode ? "#0f1e30" : "#ffffff",
+          color: isDarkMode ? "#e8f4fd" : "#0f172a",
+          border: isDarkMode
+            ? "1px solid rgba(0,229,255,0.2)"
+            : "1px solid rgba(2,132,199,0.15)",
+          fontFamily: "'Rajdhani', sans-serif",
+          fontSize: "14px",
+          boxShadow: isDarkMode
+            ? "0 4px 20px rgba(0,0,0,0.4)"
+            : "0 4px 20px rgba(0,0,0,0.08)",
+        },
+        success: {
+          iconTheme: {
+            primary: isDarkMode ? "#00ff88" : "#059669",
+            secondary: isDarkMode ? "#0f1e30" : "#ffffff",
+          },
+        },
+        error: {
+          iconTheme: {
+            primary: isDarkMode ? "#ff3d71" : "#dc2626",
+            secondary: isDarkMode ? "#0f1e30" : "#ffffff",
+          },
+        },
+      }}
+    />
+  );
+};
+
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <OfflineBanner />
-        <AppRoutes />
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            style: {
-              background: "#0f1e30", color: "#e8f4fd",
-              border: "1px solid rgba(0,229,255,0.2)",
-              fontFamily: "'Space Grotesk', sans-serif", fontSize: "14px",
-            },
-            success: { iconTheme: { primary: "#00ff88", secondary: "#0f1e30" } },
-            error: { iconTheme: { primary: "#ff3d71", secondary: "#0f1e30" } },
-          }}
-        />
-      </AuthProvider>
+      <ThemeProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <OfflineBanner />
+            <AppRoutes />
+            <ThemedToaster />
+          </AuthProvider>
+        </LanguageProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

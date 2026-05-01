@@ -1,16 +1,21 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Zap, Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
+import { uiTranslations } from "../utils/translations";
 import toast from "react-hot-toast";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { language, setLanguage, languages } = useLanguage();
+  const t = uiTranslations[language] || uiTranslations.en;
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,6 +48,39 @@ const LoginPage = () => {
         pointerEvents: "none",
       }} />
 
+      {/* Top Controls */}
+      <div style={{ position: "fixed", top: 20, right: 20, display: "flex", gap: 10, zIndex: 1000 }}>
+        <div style={{ position: "relative" }}>
+          <button 
+            onClick={() => setLangOpen(!langOpen)}
+            className="btn btn-ghost"
+            style={{ padding: "8px 12px", fontSize: 12, border: "1px solid var(--border)", background: "var(--bg-card)" }}
+          >
+            {languages.find(l => l.code === language)?.flag} {languages.find(l => l.code === language)?.name}
+          </button>
+          <AnimatePresence>
+            {langOpen && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
+                style={{ 
+                  position: "absolute", top: "100%", right: 0, marginTop: 8,
+                  background: "var(--bg-secondary)", border: "1px solid var(--border)",
+                  borderRadius: "var(--radius-md)", boxShadow: "0 10px 25px rgba(0,0,0,0.3)",
+                  minWidth: 140, overflow: "hidden"
+                }}
+              >
+                {languages.map((l) => (
+                  <button key={l.code} onClick={() => { setLanguage(l.code); setLangOpen(false); }}
+                    style={{ width: "100%", padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", background: language === l.code ? "rgba(0,229,255,0.08)" : "transparent", border: "none", color: "var(--text-primary)", cursor: "pointer", fontSize: 12 }}>
+                    <span>{l.name}</span><span>{l.flag}</span>
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
         style={{ width: "100%", maxWidth: 420 }}
@@ -60,7 +98,7 @@ const LoginPage = () => {
             </div>
             <span style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 800 }}>SwasthAI</span>
           </Link>
-          <p style={{ color: "var(--text-muted)", fontSize: 13, marginTop: 8 }}>Sign in to your health copilot</p>
+          <p style={{ color: "var(--text-muted)", fontSize: 13, marginTop: 8 }}>{t.signIntoCopilot}</p>
         </div>
 
         {/* Card */}
@@ -68,7 +106,7 @@ const LoginPage = () => {
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
             {/* Email */}
             <div>
-              <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Email Address</label>
+              <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>{t.email}</label>
               <div style={{ position: "relative" }}>
                 <Mail size={16} color="var(--text-muted)" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
                 <input
@@ -82,7 +120,7 @@ const LoginPage = () => {
 
             {/* Password */}
             <div>
-              <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Password</label>
+              <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>{t.password}</label>
               <div style={{ position: "relative" }}>
                 <Lock size={16} color="var(--text-muted)" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
                 <input
@@ -99,19 +137,19 @@ const LoginPage = () => {
             </div>
 
             <button type="submit" className="btn btn-primary" disabled={loading} style={{ padding: "13px", fontSize: 15 }}>
-              {loading ? <div className="spinner" style={{ width: 18, height: 18 }} /> : <>Sign In <ArrowRight size={16} /></>}
+              {loading ? <div className="spinner" style={{ width: 18, height: 18 }} /> : <>{t.signIn} <ArrowRight size={16} /></>}
             </button>
           </form>
 
           <div style={{ textAlign: "center", marginTop: 20, fontSize: 13, color: "var(--text-muted)" }}>
-            Don't have an account?{" "}
-            <Link to="/register" style={{ color: "var(--accent-cyan)", fontWeight: 600 }}>Create one</Link>
+            {t.dontHaveAccount}{" "}
+            <Link to="/register" style={{ color: "var(--accent-cyan)", fontWeight: 600 }}>{t.createOne}</Link>
           </div>
         </div>
 
         <div style={{ textAlign: "center", marginTop: 20, fontSize: 12, color: "var(--text-muted)" }}>
           <Link to="/emergency" style={{ color: "var(--accent-red)", fontWeight: 600 }}>
-            🚨 Go directly to Emergency SOS
+            🚨 {t.emergencySosShort}
           </Link>
         </div>
       </motion.div>

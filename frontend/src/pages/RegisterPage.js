@@ -1,15 +1,20 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Zap, Mail, Lock, User, Phone, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Zap, Mail, Lock, User, Phone, ArrowRight, Languages } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
+import { uiTranslations } from "../utils/translations";
 import toast from "react-hot-toast";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
+  const { language, setLanguage, languages } = useLanguage();
+  const t = uiTranslations[language] || uiTranslations.en;
   const [form, setForm] = useState({ name: "", email: "", password: "", phone: "", age: "", gender: "" });
   const [loading, setLoading] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
 
   const set = (key) => (e) => setForm((p) => ({ ...p, [key]: e.target.value }));
 
@@ -36,7 +41,40 @@ const RegisterPage = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, position: "relative" }}>
+      {/* Top Controls */}
+      <div style={{ position: "fixed", top: 20, right: 20, display: "flex", gap: 10, zIndex: 1000 }}>
+        <div style={{ position: "relative" }}>
+          <button 
+            onClick={() => setLangOpen(!langOpen)}
+            className="btn btn-ghost"
+            style={{ padding: "8px 12px", fontSize: 12, border: "1px solid var(--border)", background: "var(--bg-card)" }}
+          >
+            {languages.find(l => l.code === language)?.flag} {languages.find(l => l.code === language)?.name}
+          </button>
+          <AnimatePresence>
+            {langOpen && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
+                style={{ 
+                  position: "absolute", top: "100%", right: 0, marginTop: 8,
+                  background: "var(--bg-secondary)", border: "1px solid var(--border)",
+                  borderRadius: "var(--radius-md)", boxShadow: "0 10px 25px rgba(0,0,0,0.3)",
+                  minWidth: 140, overflow: "hidden"
+                }}
+              >
+                {languages.map((l) => (
+                  <button key={l.code} onClick={() => { setLanguage(l.code); setLangOpen(false); }}
+                    style={{ width: "100%", padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", background: language === l.code ? "rgba(0,229,255,0.08)" : "transparent", border: "none", color: "var(--text-primary)", cursor: "pointer", fontSize: 12 }}>
+                    <span>{l.name}</span><span>{l.flag}</span>
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
       <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} style={{ width: "100%", maxWidth: 460 }}>
         <div style={{ textAlign: "center", marginBottom: 32 }}>
           <Link to="/" style={{ display: "inline-flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
@@ -50,7 +88,7 @@ const RegisterPage = () => {
             </div>
             <span style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 800 }}>SwasthAI</span>
           </Link>
-          <p style={{ color: "var(--text-muted)", fontSize: 13, marginTop: 8 }}>Create your health profile</p>
+          <p style={{ color: "var(--text-muted)", fontSize: 13, marginTop: 8 }}>{t.joinCopilot}</p>
         </div>
 
         <div className="glass-card" style={{ padding: 32 }}>
@@ -64,7 +102,7 @@ const RegisterPage = () => {
             </div>
 
             <div>
-              <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Email Address *</label>
+              <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>{t.email} *</label>
               <div style={{ position: "relative" }}>
                 <Mail size={16} color="var(--text-muted)" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
                 <input className="input" type="email" value={form.email} onChange={set("email")} placeholder="your@email.com" style={{ paddingLeft: 38 }} />
@@ -72,7 +110,7 @@ const RegisterPage = () => {
             </div>
 
             <div>
-              <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Password *</label>
+              <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>{t.password} *</label>
               <div style={{ position: "relative" }}>
                 <Lock size={16} color="var(--text-muted)" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
                 <input className="input" type="password" value={form.password} onChange={set("password")} placeholder="Min 6 characters" style={{ paddingLeft: 38 }} />
@@ -105,13 +143,13 @@ const RegisterPage = () => {
             </div>
 
             <button type="submit" className="btn btn-primary" disabled={loading} style={{ padding: "13px", fontSize: 15, marginTop: 4 }}>
-              {loading ? <div className="spinner" style={{ width: 18, height: 18 }} /> : <>Create Account <ArrowRight size={16} /></>}
+              {loading ? <div className="spinner" style={{ width: 18, height: 18 }} /> : <>{t.signUp} <ArrowRight size={16} /></>}
             </button>
           </form>
 
           <div style={{ textAlign: "center", marginTop: 18, fontSize: 13, color: "var(--text-muted)" }}>
-            Already have an account?{" "}
-            <Link to="/login" style={{ color: "var(--accent-cyan)", fontWeight: 600 }}>Sign In</Link>
+            {t.alreadyHaveAccount}{" "}
+            <Link to="/login" style={{ color: "var(--accent-cyan)", fontWeight: 600 }}>{t.signIn}</Link>
           </div>
         </div>
       </motion.div>

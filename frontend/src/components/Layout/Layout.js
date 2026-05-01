@@ -4,53 +4,62 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard, MessageSquare, Stethoscope, MapPin,
   FileText, User, LogOut, Menu, X, AlertCircle, Zap,
-  Activity, Pill, Brain, Apple, Sparkles, Cpu, History
+  Activity, Pill, Brain, Apple, Sparkles, Cpu, History,
+  Sun, Moon, Languages, Globe
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
+import { useLanguage } from "../../context/LanguageContext";
+import { uiTranslations } from "../../utils/translations";
 import { getHealthScoreColor, getHealthScoreLabel } from "../../utils/helpers";
 import toast from "react-hot-toast";
 
-const NAV_SECTIONS = [
+const getNavSections = (t) => [
   {
-    label: "Core",
+    label: t.core,
     items: [
-      { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-      { to: "/chat", icon: MessageSquare, label: "AI Health Chat" },
-      { to: "/analyze", icon: Stethoscope, label: "Symptom Analyzer" },
+      { to: "/dashboard", icon: LayoutDashboard, label: t.dashboard },
+      { to: "/chat", icon: MessageSquare, label: t.aiChat },
+      { to: "/analyze", icon: Stethoscope, label: t.symptomAnalyzer },
     ],
   },
   {
-    label: "Health Tracking",
+    label: t.healthTracking,
     items: [
-      { to: "/vitals", icon: Activity, label: "Vitals Tracker" },
-      { to: "/medications", icon: Pill, label: "Medications" },
-      { to: "/nutrition", icon: Apple, label: "Nutrition & Diet" },
-      { to: "/mental-health", icon: Brain, label: "Mental Health" },
-      { to: "/history", icon: History, label: "Patient History" },
+      { to: "/vitals", icon: Activity, label: t.vitalsTracker },
+      { to: "/medications", icon: Pill, label: t.medications },
+      { to: "/nutrition", icon: Apple, label: t.nutrition },
+      { to: "/mental-health", icon: Brain, label: t.mentalHealth },
+      { to: "/history", icon: History, label: t.history },
     ],
   },
   {
-    label: "Tools",
+    label: t.tools,
     items: [
-      { to: "/hospitals", icon: MapPin, label: "Find Hospitals" },
-      { to: "/report", icon: FileText, label: "Report Analyzer" },
-      { to: "/ml-demo", icon: Cpu, label: "ML Predictor" },
-      { to: "/wellness", icon: Sparkles, label: "Wellness Hub" },
+      { to: "/hospitals", icon: MapPin, label: t.findHospitals },
+      { to: "/report", icon: FileText, label: t.reportAnalyzer },
+      { to: "/ml-demo", icon: Cpu, label: t.mlPredictor },
+      { to: "/wellness", icon: Sparkles, label: t.wellnessHub },
     ],
   },
   {
-    label: "Account",
+    label: t.account,
     items: [
-      { to: "/profile", icon: User, label: "Profile" },
+      { to: "/profile", icon: User, label: t.profile },
     ],
   },
 ];
 
 const Layout = () => {
   const { user, logout } = useAuth();
+  const { isDarkMode, toggleTheme } = useTheme();
+  const { language, setLanguage, languages } = useLanguage();
+  const t = uiTranslations[language] || uiTranslations.en;
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
   const score = user?.healthScore || 75;
+  const navSections = getNavSections(t);
 
   const handleLogout = () => {
     logout();
@@ -77,13 +86,13 @@ const Layout = () => {
 
       {user && (
         <div className="glass-card" style={{ padding: "12px 14px", marginBottom: 18 }}>
-          <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 5 }}>Health Score</div>
+          <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 5 }}>{t.healthScore}</div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{ width: 40, height: 40, borderRadius: "50%", border: `2px solid ${getHealthScoreColor(score)}`, display: "flex", alignItems: "center", justifyContent: "center", background: `${getHealthScoreColor(score)}12`, flexShrink: 0 }}>
               <span style={{ fontSize: 13, fontWeight: 800, color: getHealthScoreColor(score) }}>{score}</span>
             </div>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: getHealthScoreColor(score) }}>{getHealthScoreLabel(score)}</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: getHealthScoreColor(score) }}>{getHealthScoreLabel(score, language)}</div>
               <div style={{ fontSize: 11, color: "var(--text-muted)" }}>{user.name?.split(" ")[0]} 👋</div>
             </div>
           </div>
@@ -91,7 +100,7 @@ const Layout = () => {
       )}
 
       <nav style={{ flex: 1 }}>
-        {NAV_SECTIONS.map(({ label, items }) => (
+        {navSections.map(({ label, items }) => (
           <div key={label} style={{ marginBottom: 6 }}>
             <div style={{ fontSize: 9, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, padding: "4px 10px 5px", marginTop: 8 }}>{label}</div>
             {items.map(({ to, icon: Icon, label: navLabel }) => (
@@ -114,11 +123,66 @@ const Layout = () => {
 
       <div style={{ marginTop: 8 }}>
         <button onClick={() => { navigate("/emergency"); mobile && setMobileOpen(false); }} className="btn btn-danger" style={{ width: "100%", marginBottom: 8, justifyContent: "center", padding: "9px", fontSize: 13 }}>
-          <AlertCircle size={15} /> Emergency SOS
+          <AlertCircle size={15} /> {t.emergencySos}
         </button>
-        <button onClick={handleLogout} className="btn btn-ghost" style={{ width: "100%", justifyContent: "center", padding: "9px", fontSize: 13 }}>
-          <LogOut size={15} /> Logout
-        </button>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button onClick={handleLogout} className="btn btn-ghost" style={{ flex: 1, justifyContent: "center", padding: "9px", fontSize: 13 }}>
+            <LogOut size={15} /> {t.logout}
+          </button>
+          <button 
+            onClick={toggleTheme}
+            className="btn btn-ghost"
+            style={{ width: 40, height: 40, padding: 0, borderRadius: "var(--radius-md)", flexShrink: 0 }}
+            title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          >
+            {isDarkMode ? <Sun size={16} color="var(--accent-amber)" /> : <Moon size={16} color="var(--accent-purple)" />}
+          </button>
+        </div>
+
+        {/* Language Selector */}
+        <div style={{ marginTop: 12, position: "relative" }}>
+          <button 
+            onClick={() => setLangOpen(!langOpen)}
+            className="btn btn-ghost"
+            style={{ width: "100%", justifyContent: "space-between", padding: "8px 12px", fontSize: 12, border: "1px solid var(--border)" }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <Languages size={14} />
+              <span>{languages.find(l => l.code === language)?.name}</span>
+            </div>
+            <span>{languages.find(l => l.code === language)?.flag}</span>
+          </button>
+          
+          <AnimatePresence>
+            {langOpen && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
+                style={{ 
+                  position: "absolute", bottom: "100%", left: 0, right: 0, marginBottom: 8,
+                  background: "var(--bg-secondary)", border: "1px solid var(--border)",
+                  borderRadius: "var(--radius-md)", boxShadow: "0 10px 25px rgba(0,0,0,0.3)",
+                  zIndex: 1000, overflow: "hidden"
+                }}
+              >
+                {languages.map((l) => (
+                  <button 
+                    key={l.code}
+                    onClick={() => { setLanguage(l.code); setLangOpen(false); }}
+                    style={{ 
+                      width: "100%", padding: "10px 14px", display: "flex", alignItems: "center", justifyContent: "space-between",
+                      background: language === l.code ? "rgba(0,229,255,0.08)" : "transparent",
+                      border: "none", color: "var(--text-primary)", cursor: "pointer", fontSize: 12,
+                      transition: "background 0.2s"
+                    }}
+                  >
+                    <span>{l.name}</span>
+                    <span>{l.flag}</span>
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </aside>
   );

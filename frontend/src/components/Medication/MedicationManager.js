@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Pill, Plus, Check, X, Clock, AlertTriangle, Bell } from "lucide-react";
 import api from "../../utils/api";
+import { useLanguage } from "../../context/LanguageContext";
+import { uiTranslations } from "../../utils/translations";
 import toast from "react-hot-toast";
 
 const FREQUENCIES = [
@@ -69,6 +71,8 @@ const MedCard = ({ med, onTake, onDelete }) => {
 };
 
 const MedicationManager = () => {
+  const { language } = useLanguage();
+  const t = uiTranslations[language] || uiTranslations.en;
   const [meds, setMeds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -81,7 +85,11 @@ const MedicationManager = () => {
   const fetchMeds = async () => {
     try {
       const res = await api.get("/advanced/medications");
-      setMeds(res.data.data || []);
+      const medsData = res.data?.data || res.data || [];
+      setMeds(Array.isArray(medsData) ? medsData : []);
+      if (Array.isArray(medsData) && medsData.length >= 2) {
+        checkInteractions(medsData);
+      }
     } catch { setMeds([]); } finally { setLoading(false); }
   };
 
@@ -128,11 +136,11 @@ const MedicationManager = () => {
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <h2 style={{ fontFamily: "var(--font-display)", fontSize: 18, fontWeight: 800 }}>Medications</h2>
+          <h2 style={{ fontFamily: "var(--font-display)", fontSize: 18, fontWeight: 800 }}>{t.medications}</h2>
           <p style={{ fontSize: 13, color: "var(--text-muted)" }}>{meds.length} active · with adherence tracking</p>
         </div>
         <button onClick={() => setShowForm(!showForm)} className="btn btn-primary" style={{ padding: "8px 16px" }}>
-          <Plus size={16} /> Add Medication
+          <Plus size={16} /> {t.addMedication}
         </button>
       </div>
 
@@ -156,16 +164,16 @@ const MedicationManager = () => {
         {showForm && (
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} style={{ overflow: "hidden" }}>
             <div className="glass-card" style={{ padding: 20 }}>
-              <h4 style={{ fontFamily: "var(--font-display)", fontSize: 14, marginBottom: 16 }}>Add New Medication</h4>
+              <h4 style={{ fontFamily: "var(--font-display)", fontSize: 14, marginBottom: 16 }}>{t.addMedication}</h4>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
-                {[["name", "Medication Name *", "text", "e.g. Metformin"], ["dosage", "Dosage *", "text", "e.g. 500mg"], ["purpose", "Purpose", "text", "e.g. For diabetes"]].map(([k, l, t, p]) => (
+                {[["name", t.medicationName + " *", "text", "e.g. Metformin"], ["dosage", t.dosage + " *", "text", "e.g. 500mg"], ["purpose", t.purpose, "text", "e.g. For diabetes"]].map(([k, l, t, p]) => (
                   <div key={k} style={k === "purpose" ? { gridColumn: "span 2" } : {}}>
                     <label style={{ fontSize: 11, color: "var(--text-muted)", display: "block", marginBottom: 5 }}>{l}</label>
                     <input className="input" type={t} value={form[k] || ""} onChange={e => setForm(p2 => ({ ...p2, [k]: e.target.value }))} placeholder={p} style={{ padding: "8px 12px" }} />
                   </div>
                 ))}
                 <div>
-                  <label style={{ fontSize: 11, color: "var(--text-muted)", display: "block", marginBottom: 5 }}>Frequency</label>
+                  <label style={{ fontSize: 11, color: "var(--text-muted)", display: "block", marginBottom: 5 }}>{t.frequency}</label>
                   <select className="input" value={form.frequency} onChange={e => setForm(p => ({ ...p, frequency: e.target.value }))} style={{ padding: "8px 12px" }}>
                     {FREQUENCIES.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
                   </select>
@@ -179,7 +187,7 @@ const MedicationManager = () => {
               </div>
               <div style={{ display: "flex", gap: 10 }}>
                 <button onClick={handleSave} disabled={saving} className="btn btn-primary" style={{ flex: 1, padding: "10px" }}>
-                  {saving ? <><div className="spinner" style={{ width: 14, height: 14 }} />Saving...</> : <><Pill size={14} />Add Medication</>}
+                  {saving ? <><div className="spinner" style={{ width: 14, height: 14 }} />Saving...</> : <><Pill size={14} />{t.addMedication}</>}
                 </button>
                 <button onClick={() => setShowForm(false)} className="btn btn-ghost" style={{ padding: "10px 16px" }}>Cancel</button>
               </div>
@@ -193,7 +201,7 @@ const MedicationManager = () => {
         <div style={{ textAlign: "center", padding: 32 }}><div className="spinner" style={{ width: 24, height: 24, margin: "0 auto" }} /></div>
       ) : meds.length === 0 ? (
         <div style={{ textAlign: "center", padding: 40, color: "var(--text-muted)", fontSize: 14 }}>
-          No medications added yet. Track your medications for better health management.
+          {t.noMedications}
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
