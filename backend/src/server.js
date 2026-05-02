@@ -103,9 +103,18 @@ app.use("/api/chat", chatRoutes);
 io.on("connection", (socket) => {
   console.log(`🔌 Client connected: ${socket.id}`);
 
-  socket.on("join-room", (userId) => {
+  socket.on("join-room", async (userId) => {
     socket.join(userId);
+    socket.userId = userId; // Store for disconnect
     console.log(`User ${userId} joined their room`);
+    
+    // Update online status
+    const User = require("./models/User");
+    try {
+      await User.findByIdAndUpdate(userId, { isOnline: true, lastSeen: new Date() });
+    } catch (err) {
+      console.error("Failed to update status on join");
+    }
   });
 
   socket.on("emergency-trigger", async (data) => {
@@ -119,9 +128,9 @@ io.on("connection", (socket) => {
   });
 
   // Call Signaling
-  socket.on("call-user", ({ to, from, signalData, type }) => {
+  socket.on("call-user", ({ to, from, signalData, type, fromName }) => {
     console.log(`📞 Call initiated from ${from} to ${to} (${type})`);
-    io.to(to).emit("incoming-call", { from, signalData, type });
+    io.to(to).emit("incoming-call", { from, signalData, type, fromName });
   });
 
   socket.on("answer-call", ({ to, signal }) => {
@@ -134,8 +143,16 @@ io.on("connection", (socket) => {
     io.to(to).emit("call-ended");
   });
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", async () => {
     console.log(`🔌 Client disconnected: ${socket.id}`);
+    if (socket.userId) {
+      const User = require("./models/User");
+      try {
+        await User.findByIdAndUpdate(socket.userId, { isOnline: false, lastSeen: new Date() });
+      } catch (err) {
+        console.error("Failed to update status on disconnect");
+      }
+    }
   });
 });
 

@@ -1,12 +1,17 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import { AnimatePresence } from "framer-motion";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { LanguageProvider } from "./context/LanguageContext";
 
 import Layout from "./components/Layout/Layout";
 import OfflineBanner from "./components/UI/OfflineBanner";
+import JarvisVoiceAssistant from "./components/UI/JarvisVoiceAssistant";
+import CallNotification from "./components/Communication/CallNotification";
+import ChatInterface from "./components/Communication/ChatInterface";
+import { io } from "socket.io-client";
 
 // Pages
 import HomePage from "./pages/HomePage";
@@ -46,38 +51,79 @@ const GuestRoute = ({ children }) => {
 };
 
 function AppRoutes() {
+  const { user } = useAuth();
+  const [incomingCall, setIncomingCall] = React.useState(null);
+  const [activeCall, setActiveCall] = React.useState(null);
+  const socketRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (user) {
+      const socket = io(process.env.REACT_APP_API_URL || "http://localhost:5000");
+      socketRef.current = socket;
+      socket.emit("join-room", user._id);
+      
+      socket.on("incoming-call", (data) => {
+        setIncomingCall(data);
+      });
+
+      return () => socket.disconnect();
+    }
+  }, [user]);
+
   return (
-    <Routes>
-      {/* Public */}
-      <Route path="/" element={<HomePage />} />
-      <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
-      <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
-      <Route path="/emergency" element={<EmergencyPage />} />
+    <>
+      <AnimatePresence>
+        {incomingCall && (
+          <CallNotification 
+            call={incomingCall} 
+            onAccept={() => {
+              setActiveCall({ user: { _id: incomingCall.from, name: incomingCall.fromName }, type: incomingCall.type });
+              setIncomingCall(null);
+            }}
+            onReject={() => setIncomingCall(null)}
+          />
+        )}
+      </AnimatePresence>
 
-      {/* Protected inside Layout */}
-      <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-        <Route path="dashboard" element={<DashboardPage />} />
-        <Route path="chat" element={<ChatPage />} />
-        <Route path="analyze" element={<AnalyzePage />} />
-        <Route path="vitals" element={<VitalsPage />} />
-        <Route path="medications" element={<MedicationPage />} />
-        <Route path="mental-health" element={<MentalHealthPage />} />
-        <Route path="nutrition" element={<NutritionPage />} />
-        <Route path="hospitals" element={<HospitalsPage />} />
-        <Route path="report" element={<ReportPage />} />
-        <Route path="ml-demo" element={<MLDemoPage />} />
-        <Route path="wellness" element={<WellnessPage />} />
-        <Route path="history" element={<HistoryPage />} />
-        <Route path="profile" element={<ProfilePage />} />
-        <Route path="family-doctor" element={<FamilyDoctorPage />} />
-      </Route>
+      <AnimatePresence>
+        {activeCall && (
+          <ChatInterface 
+            otherUser={activeCall.user} 
+            type={activeCall.type} 
+            onClose={() => setActiveCall(null)} 
+          />
+        )}
+      </AnimatePresence>
 
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
+        <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
+        <Route path="/emergency" element={<EmergencyPage />} />
+
+        <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+          <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="chat" element={<ChatPage />} />
+          <Route path="analyze" element={<AnalyzePage />} />
+          <Route path="vitals" element={<VitalsPage />} />
+          <Route path="medications" element={<MedicationPage />} />
+          <Route path="mental-health" element={<MentalHealthPage />} />
+          <Route path="nutrition" element={<NutritionPage />} />
+          <Route path="hospitals" element={<HospitalsPage />} />
+          <Route path="report" element={<ReportPage />} />
+          <Route path="ml-demo" element={<MLDemoPage />} />
+          <Route path="wellness" element={<WellnessPage />} />
+          <Route path="history" element={<HistoryPage />} />
+          <Route path="profile" element={<ProfilePage />} />
+          <Route path="family-doctor" element={<FamilyDoctorPage />} />
+        </Route>
+
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </>
   );
 }
 
-/** Theme-aware Toaster wrapper */
 const ThemedToaster = () => {
   const { isDarkMode } = useTheme();
   return (
@@ -87,26 +133,10 @@ const ThemedToaster = () => {
         style: {
           background: isDarkMode ? "#0f1e30" : "#ffffff",
           color: isDarkMode ? "#e8f4fd" : "#0f172a",
-          border: isDarkMode
-            ? "1px solid rgba(0,229,255,0.2)"
-            : "1px solid rgba(2,132,199,0.15)",
+          border: isDarkMode ? "1px solid rgba(0,229,255,0.2)" : "1px solid rgba(2,132,199,0.15)",
           fontFamily: "'Rajdhani', sans-serif",
           fontSize: "14px",
-          boxShadow: isDarkMode
-            ? "0 4px 20px rgba(0,0,0,0.4)"
-            : "0 4px 20px rgba(0,0,0,0.08)",
-        },
-        success: {
-          iconTheme: {
-            primary: isDarkMode ? "#00ff88" : "#059669",
-            secondary: isDarkMode ? "#0f1e30" : "#ffffff",
-          },
-        },
-        error: {
-          iconTheme: {
-            primary: isDarkMode ? "#ff3d71" : "#dc2626",
-            secondary: isDarkMode ? "#0f1e30" : "#ffffff",
-          },
+          boxShadow: isDarkMode ? "0 4px 20px rgba(0,0,0,0.4)" : "0 4px 20px rgba(0,0,0,0.08)",
         },
       }}
     />
@@ -120,6 +150,7 @@ function App() {
         <LanguageProvider>
           <AuthProvider>
             <OfflineBanner />
+            <JarvisVoiceAssistant />
             <AppRoutes />
             <ThemedToaster />
           </AuthProvider>

@@ -15,7 +15,7 @@ const StatCard = ({ icon: Icon, label, value, subValue, color }) => (
       <span style={{ fontSize: 11, color: "var(--text-secondary)", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em" }}>{label}</span>
     </div>
     <div style={{ fontSize: 32, fontWeight: 800, color: "var(--text-primary)", marginBottom: 4 }}>{value}</div>
-    <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 500 }}>{subValue}</div>
+    <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 700 }}>{subValue}</div>
   </div>
 );
 
@@ -46,7 +46,7 @@ const ActionCard = ({ icon: Icon, title, description, color, onClick, primary = 
       <Icon size={24} color={color} />
     </div>
     <h4 style={{ fontSize: 18, fontWeight: 800, marginBottom: 8, letterSpacing: "-0.01em" }}>{title}</h4>
-    <p style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.6, fontWeight: 500 }}>{description}</p>
+    <p style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.6, fontWeight: 700 }}>{description}</p>
     <div style={{ position: "absolute", bottom: 24, right: 24, opacity: 0.5 }}>
       <ChevronRight size={20} color={color} />
     </div>
@@ -100,9 +100,9 @@ const MentalDashboard = ({ setView, stats = {}, onRefresh }) => {
           <span style={{ fontWeight: 800, letterSpacing: "0.2em", fontSize: 13 }}>SERENE WELLNESS</span>
         </motion.div>
         <h1 className="wellness-header-gradient" style={{ fontFamily: "var(--font-display)", fontSize: 56, fontWeight: 800, marginBottom: 16, letterSpacing: "-0.03em" }}>
-          How are you <span style={{ fontStyle: "italic", fontWeight: 400 }}>feeling</span> right now?
+          How are you <span style={{ fontStyle: "italic", fontWeight: 600 }}>feeling</span> right now?
         </h1>
-        <p style={{ color: "var(--text-secondary)", fontSize: 16, lineHeight: 1.7, fontWeight: 500 }}>
+        <p style={{ color: "var(--text-secondary)", fontSize: 16, lineHeight: 1.7, fontWeight: 700 }}>
           There's no wrong answer. Start with whatever feels easiest — a quick check-in, a journal entry, or just a moment to talk.
         </p>
       </div>
@@ -110,8 +110,8 @@ const MentalDashboard = ({ setView, stats = {}, onRefresh }) => {
       {/* 1-Second Check-in */}
       <div className="glass-card" style={{ padding: 32, background: "rgba(255,255,255,0.02)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28 }}>
-          <h3 style={{ fontSize: 18, fontWeight: 700 }}>A 1-second check-in</h3>
-          <button onClick={() => setView("checkin")} style={{ background: "none", border: "none", color: "var(--wellness-cyan)", fontSize: 13, cursor: "pointer", fontWeight: 700 }}>
+          <h3 style={{ fontSize: 18, fontWeight: 800 }}>A 1-second check-in</h3>
+          <button onClick={() => setView("checkin")} style={{ background: "none", border: "none", color: "var(--wellness-cyan)", fontSize: 13, cursor: "pointer", fontWeight: 800 }}>
             Detailed check-in →
           </button>
         </div>

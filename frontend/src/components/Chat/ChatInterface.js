@@ -113,11 +113,12 @@ const Message = ({ msg, language }) => {
             background: isUser ? "rgba(0,255,136,0.08)" : "var(--bg-card)",
             border: `1px solid ${isUser ? "rgba(0,255,136,0.15)" : "var(--border)"}`,
             borderRadius: isUser ? "12px 0 12px 12px" : "0 12px 12px 12px",
-            padding: "10px 14px",
-            fontSize: 14,
+            padding: "12px 18px",
+            fontSize: 16,
+            fontWeight: 800,
             color: isUser ? "var(--text-primary)" : "var(--text-secondary)",
             lineHeight: 1.6,
-            ...(color && { borderColor: `${color}30`, boxShadow: `0 0 12px ${color}10` }),
+            ...(color && { borderColor: `${color}40`, boxShadow: `0 0 16px ${color}15`, border: "2px solid" }),
           }}
         />
 
@@ -246,10 +247,10 @@ const ChatInterface = () => {
             <Bot size={18} color="var(--accent-cyan)" />
           </div>
           <div>
-            <div style={{ fontWeight: 700, fontSize: 14 }}>MediMind Assistant</div>
-            <div style={{ fontSize: 11, color: "var(--accent-green)", display: "flex", alignItems: "center", gap: 4 }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--accent-green)", display: "inline-block" }} />
-              Multi-Agent System Active
+            <div style={{ fontWeight: 900, fontSize: 18 }}>MediMind Assistant</div>
+            <div style={{ fontSize: 13, color: "var(--accent-green)", display: "flex", alignItems: "center", gap: 6, fontWeight: 800 }}>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--accent-green)", display: "inline-block" }} />
+              System Active
             </div>
           </div>
         </div>
@@ -309,9 +310,10 @@ const ChatInterface = () => {
               key={i}
               onClick={() => sendMessage(s)}
               style={{
-                background: "rgba(0,229,255,0.06)", border: "1px solid rgba(0,229,255,0.15)",
-                borderRadius: "var(--radius-sm)", padding: "6px 12px",
-                fontSize: 12, color: "var(--text-secondary)", cursor: "pointer",
+                background: "rgba(0,229,255,0.08)", border: "2px solid rgba(0,229,255,0.2)",
+                borderRadius: "var(--radius-md)", padding: "10px 16px",
+                fontSize: 14, color: "var(--text-secondary)", cursor: "pointer",
+                fontWeight: 800,
                 transition: "all var(--transition)",
               }}
               onMouseEnter={e => { e.target.style.borderColor = "rgba(0,229,255,0.4)"; e.target.style.color = "var(--accent-cyan)"; }}
@@ -326,15 +328,15 @@ const ChatInterface = () => {
       {/* Emergency Banner */}
       <div style={{
         margin: "0 16px 8px",
-        background: "rgba(255,61,113,0.06)",
-        border: "1px solid rgba(255,61,113,0.15)",
-        borderRadius: "var(--radius-sm)",
-        padding: "7px 12px",
-        display: "flex", alignItems: "center", gap: 8,
-        fontSize: 12, color: "rgba(255,61,113,0.8)",
+        background: "rgba(255,61,113,0.1)",
+        border: "2px solid rgba(255,61,113,0.3)",
+        borderRadius: "var(--radius-md)",
+        padding: "10px 16px",
+        display: "flex", alignItems: "center", gap: 10,
+        fontSize: 14, color: "var(--accent-red)", fontWeight: 800,
       }}>
-        <AlertCircle size={13} />
-        For medical emergencies call <a href="tel:108" style={{ fontWeight: 700, color: "var(--accent-red)" }}>108</a> (India) immediately.
+        <AlertCircle size={16} />
+        For medical emergencies call <a href="tel:108" style={{ fontWeight: 900, color: "var(--accent-red)", textDecoration: "underline" }}>108</a> immediately.
       </div>
 
       {/* Input */}
@@ -357,13 +359,14 @@ const ChatInterface = () => {
               background: "rgba(15,30,48,0.6)",
               border: `1px solid ${isListening ? "var(--accent-red)" : "var(--border)"}`,
               borderRadius: "var(--radius-md)",
-              padding: "11px 14px",
+              padding: "14px 18px",
               color: "var(--text-primary)",
               fontFamily: "var(--font-body)",
-              fontSize: 14,
+              fontSize: 16,
+              fontWeight: 800,
               outline: "none",
               resize: "none",
-              maxHeight: 120,
+              maxHeight: 150,
               lineHeight: 1.5,
               transition: "border-color var(--transition)",
             }}

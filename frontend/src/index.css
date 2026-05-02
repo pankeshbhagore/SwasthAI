@@ -5,13 +5,17 @@
   --font-body: "Rajdhani", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
-  --radius-xl: 28px;
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 32px;
+  --radius-xl: 40px;
 
   --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html {
+  font-size: 20px; /* Maximum accessibility bump */
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -30,9 +34,9 @@
   --accent-red: #ff3d71;
   --accent-purple: #a78bfa;
 
-  --text-primary: #e8f4fd;
-  --text-secondary: #7a9bb8;
-  --text-muted: #3d5a72;
+  --text-primary: #ffffff; /* Brighter for dark mode accessibility */
+  --text-secondary: #a3c1da;
+  --text-muted: #6b8fb1;
 
   --border: rgba(0, 229, 255, 0.1);
   --border-hover: rgba(0, 229, 255, 0.3);
@@ -69,12 +73,12 @@
   --accent-red: #dc2626;
   --accent-purple: #7c3aed;
 
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --text-primary: #000000; /* Max contrast for rural sunlight visibility */
+  --text-secondary: #334155;
+  --text-muted: #64748b;
 
-  --border: rgba(2, 132, 199, 0.15);
-  --border-hover: rgba(2, 132, 199, 0.4);
+  --border: rgba(0, 0, 0, 0.2); /* Stronger borders */
+  --border-hover: rgba(2, 132, 199, 0.6);
 
   --shadow-glow-cyan: 0 4px 20px rgba(2, 132, 199, 0.1);
   --shadow-glow-green: 0 4px 20px rgba(5, 150, 105, 0.1);
@@ -194,6 +198,7 @@ html {
 
 body {
   font-family: var(--font-body);
+  font-weight: 600; /* Bold by default */
   background: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
@@ -213,6 +218,7 @@ body {
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
+  font-weight: 800; /* Extra Bold */
   line-height: 1.2;
 }
 
@@ -239,11 +245,11 @@ a:hover { opacity: 0.8; }
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 20px;
+  padding: 14px 28px; /* Larger tap targets for older users */
   border-radius: var(--radius-md);
   font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 16px; /* Larger font */
+  font-weight: 800; /* Extra bold for accessibility */
   cursor: pointer;
   border: none;
   transition: all var(--transition);
@@ -288,10 +294,10 @@ a:hover { opacity: 0.8; }
   background: var(--bg-input);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 12px 16px;
+  padding: 16px 20px; /* Larger inputs */
   color: var(--text-primary);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 16px;
   transition: border-color var(--transition), box-shadow var(--transition);
   outline: none;
 }

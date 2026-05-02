@@ -66,11 +66,11 @@ const FloatingEmergencyButton = () => {
             }}
           >
             <div style={{ marginBottom: 16, borderBottom: "1px solid var(--border)", paddingBottom: 12 }}>
-              <div style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 15, color: "var(--accent-red)", marginBottom: 4 }}>
-                🚨 Emergency
+              <div style={{ fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 20, color: "var(--accent-red)", marginBottom: 6 }}>
+                🚨 EMERGENCY SOS
               </div>
-              <div style={{ fontSize: 11, color: "var(--text-muted)" }}>
-                Select an option or quick-dial
+              <div style={{ fontSize: 13, color: "var(--text-muted)", fontWeight: 800 }}>
+                Tap a number to call now:
               </div>
             </div>
 
@@ -85,9 +85,9 @@ const FloatingEmergencyButton = () => {
                     borderRadius: "var(--radius-sm)", textDecoration: "none",
                   }}
                 >
-                  <span style={{ fontSize: 16, marginBottom: 2 }}>{emoji}</span>
-                  <span style={{ fontWeight: 800, fontSize: 14, color: "var(--accent-red)" }}>{number}</span>
-                  <span style={{ fontSize: 9, color: "var(--text-muted)" }}>{label}</span>
+                   <span style={{ fontSize: 22, marginBottom: 4 }}>{emoji}</span>
+                   <span style={{ fontWeight: 900, fontSize: 18, color: "var(--accent-red)" }}>{number}</span>
+                   <span style={{ fontSize: 11, color: "var(--text-muted)", fontWeight: 800 }}>{label}</span>
                 </a>
               ))}
             </div>
@@ -101,8 +101,8 @@ const FloatingEmergencyButton = () => {
                 style={{ width: "100%", marginBottom: 8, padding: "10px" }}
               >
                 {sending
-                  ? <><div className="spinner" style={{ width: 14, height: 14 }} />Alerting...</>
-                  : <><AlertCircle size={15} />Alert My Emergency Contact</>
+                  ? <><div className="spinner" style={{ width: 16, height: 16 }} />Alerting...</>
+                  : <><AlertCircle size={18} />Alert Emergency Contact</>
                 }
               </button>
             )}
@@ -110,9 +110,9 @@ const FloatingEmergencyButton = () => {
             <button
               onClick={() => { navigate("/hospitals"); setOpen(false); }}
               className="btn btn-ghost"
-              style={{ width: "100%", padding: "9px", fontSize: 13 }}
+              style={{ width: "100%", padding: "12px", fontSize: 15, fontWeight: 800 }}
             >
-              <MapPin size={14} /> Find Nearest Hospital
+              <MapPin size={16} /> Find Nearest Hospital
             </button>
           </motion.div>
         )}

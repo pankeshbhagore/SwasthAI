@@ -130,8 +130,8 @@ const Layout = () => {
           <Zap size={17} color="#060b14" strokeWidth={2.5} />
         </div>
         <div>
-          <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17 }}>MediMind</div>
-          <div style={{ fontSize: 9, color: "var(--text-muted)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Healthcare Agent</div>
+          <div style={{ fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 22 }}>MediMind</div>
+          <div style={{ fontSize: 11, color: "var(--text-secondary)", fontWeight: 900, letterSpacing: "0.15em", textTransform: "uppercase" }}>Healthcare Agent</div>
         </div>
       </div>
 
@@ -139,12 +139,12 @@ const Layout = () => {
         <div className="glass-card" style={{ padding: "12px 14px", marginBottom: 18 }}>
           <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 5 }}>{t.healthScore}</div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 40, height: 40, borderRadius: "50%", border: `2px solid ${getHealthScoreColor(score)}`, display: "flex", alignItems: "center", justifyContent: "center", background: `${getHealthScoreColor(score)}12`, flexShrink: 0 }}>
-              <span style={{ fontSize: 13, fontWeight: 800, color: getHealthScoreColor(score) }}>{score}</span>
+            <div style={{ width: 48, height: 48, borderRadius: "50%", border: `3px solid ${getHealthScoreColor(score)}`, display: "flex", alignItems: "center", justifyContent: "center", background: `${getHealthScoreColor(score)}12`, flexShrink: 0 }}>
+              <span style={{ fontSize: 16, fontWeight: 900, color: getHealthScoreColor(score) }}>{score}</span>
             </div>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: getHealthScoreColor(score) }}>{getHealthScoreLabel(score, language)}</div>
-              <div style={{ fontSize: 11, color: "var(--text-muted)" }}>{user.name?.split(" ")[0]} 👋</div>
+              <div style={{ fontSize: 15, fontWeight: 900, color: getHealthScoreColor(score) }}>{getHealthScoreLabel(score, language)}</div>
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 800 }}>{user.name?.split(" ")[0]} 👋</div>
             </div>
           </div>
         </div>
@@ -152,17 +152,17 @@ const Layout = () => {
 
       <nav style={{ flex: 1 }}>
         {navSections.map(({ label, items }) => (
-          <div key={label} style={{ marginBottom: 6 }}>
-            <div style={{ fontSize: 9, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700, padding: "4px 10px 5px", marginTop: 8 }}>{label}</div>
+          <div key={label} style={{ marginBottom: 10 }}>
+            <div style={{ fontSize: 11, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.15em", fontWeight: 900, padding: "4px 10px 8px", marginTop: 12 }}>{label}</div>
             {items.map(({ to, icon: Icon, label: navLabel }) => (
               <NavLink key={to} to={to} onClick={() => mobile && setMobileOpen(false)}
                 style={({ isActive }) => ({
                   display: "flex", alignItems: "center", gap: 10,
-                  padding: "8px 10px", borderRadius: "var(--radius-md)", marginBottom: 2,
+                  padding: "10px 14px", borderRadius: "var(--radius-md)", marginBottom: 4,
                   color: isActive ? "var(--accent-cyan)" : "var(--text-secondary)",
                   background: isActive ? "rgba(0,229,255,0.08)" : "transparent",
-                  border: isActive ? "1px solid rgba(0,229,255,0.15)" : "1px solid transparent",
-                  fontSize: 13, fontWeight: isActive ? 600 : 400,
+                  border: isActive ? "2px solid rgba(0,229,255,0.2)" : "2px solid transparent",
+                  fontSize: 16, fontWeight: isActive ? 900 : 700,
                   transition: "all var(--transition)", textDecoration: "none",
                 })}>
                 <Icon size={15} />{navLabel}

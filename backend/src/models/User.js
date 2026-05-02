@@ -77,6 +77,8 @@ const userSchema = new mongoose.Schema(
     },
     isActive: { type: Boolean, default: true },
     lastLogin: Date,
+    lastSeen: { type: Date, default: Date.now },
+    isOnline: { type: Boolean, default: false },
     profilePicture: String,
     // Doctor Specific
     doctorInfo: {

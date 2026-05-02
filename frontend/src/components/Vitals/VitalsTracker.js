@@ -126,16 +126,16 @@ const VitalsTracker = () => {
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       {/* Log Form */}
       <div className="glass-card" style={{ padding: 24 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
-          <Zap size={20} color="var(--accent-cyan)" />
-          <h3 style={{ fontFamily: "var(--font-display)", fontSize: 16 }}>{t.logVitals}</h3>
-          <span style={{ marginLeft: "auto", fontSize: 11, color: "var(--accent-green)", background: "rgba(0,255,136,0.1)", padding: "2px 8px", borderRadius: "100px", border: "1px solid rgba(0,255,136,0.2)" }}>{t.mlRiskAnalysis}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
+          <Zap size={22} color="var(--accent-cyan)" />
+          <h3 style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 900 }}>{t.logVitals}</h3>
+          <span style={{ marginLeft: "auto", fontSize: 13, color: "var(--accent-green)", background: "rgba(0,255,136,0.1)", padding: "4px 12px", borderRadius: "100px", border: "2px solid rgba(0,255,136,0.3)", fontWeight: 900 }}>{t.mlRiskAnalysis}</span>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(170px, 1fr))", gap: 12, marginBottom: 14 }}>
           {VITALS_FIELDS.map(({ key, unit, placeholder, color, normal }) => (
             <div key={key}>
-              <label style={{ fontSize: 11, color: "var(--text-muted)", display: "block", marginBottom: 5 }}>
-                {getFieldLabel(key)} <span style={{ color: "var(--text-muted)", fontWeight: 400 }}>({unit})</span>
+              <label style={{ fontSize: 14, color: "var(--text-muted)", display: "block", marginBottom: 8, fontWeight: 800 }}>
+                {getFieldLabel(key)} <span style={{ color: "var(--text-muted)", fontWeight: 900 }}>({unit})</span>
               </label>
               <input
                 className="input"
@@ -143,9 +143,9 @@ const VitalsTracker = () => {
                 value={form[key] || ""}
                 onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))}
                 placeholder={placeholder}
-                style={{ padding: "8px 12px", borderColor: form[key] ? `${color}40` : undefined }}
+                style={{ padding: "12px 16px", borderColor: form[key] ? `${color}60` : undefined, fontWeight: 800 }}
               />
-              <div style={{ fontSize: 10, color: "var(--text-muted)", marginTop: 3 }}>{t.normal}: {normal}</div>
+              <div style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 6, fontWeight: 700 }}>{t.normal}: {normal}</div>
             </div>
           ))}
         </div>
@@ -173,10 +173,10 @@ const VitalsTracker = () => {
               ))}
             </div>
           </div>
-          <ResponsiveContainer width="100%" height={180}>
+          <ResponsiveContainer width="100%" height={220}>
             <LineChart data={chartData}>
-              <XAxis dataKey="i" tick={{ fontSize: 10, fill: "#7a9bb8" }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 10, fill: "#7a9bb8" }} axisLine={false} tickLine={false} domain={["auto", "auto"]} />
+              <XAxis dataKey="i" tick={{ fontSize: 14, fill: "#7a9bb8", fontWeight: 700 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 14, fill: "#7a9bb8", fontWeight: 700 }} axisLine={false} tickLine={false} domain={["auto", "auto"]} />
               <Tooltip contentStyle={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }} />
               <Line type="monotone" dataKey={activeChart} stroke={chartField?.color || "var(--accent-cyan)"} strokeWidth={2} dot={{ r: 3, fill: chartField?.color }} connectNulls />
             </LineChart>
@@ -191,15 +191,15 @@ const VitalsTracker = () => {
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {vitals.slice(0, 5).map((v, i) => (
               <motion.div key={v._id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.05 }}
-                style={{ display: "flex", flexWrap: "wrap", gap: 12, padding: "10px 14px", background: "rgba(255,255,255,0.02)", border: "1px solid var(--border)", borderRadius: "var(--radius-sm)", alignItems: "center" }}>
-                <span style={{ fontSize: 11, color: "var(--text-muted)", minWidth: 70 }}>{new Date(v.createdAt).toLocaleDateString("en-IN")}</span>
-                {v.bloodPressure?.systolic && <span style={{ fontSize: 12, color: "#ff3d71" }}>BP: {v.bloodPressure.systolic}/{v.bloodPressure.diastolic}</span>}
-                {v.heartRate && <span style={{ fontSize: 12, color: "#00e5ff" }}>HR: {v.heartRate}</span>}
-                {v.bloodSugar?.value && <span style={{ fontSize: 12, color: "#a78bfa" }}>BS: {v.bloodSugar.value}</span>}
-                {v.temperature && <span style={{ fontSize: 12, color: "#ffb300" }}>Temp: {v.temperature}°F</span>}
-                {v.oxygenSaturation && <span style={{ fontSize: 12, color: "#00ff88" }}>SpO2: {v.oxygenSaturation}%</span>}
+                style={{ display: "flex", flexWrap: "wrap", gap: 16, padding: "14px 18px", background: "rgba(255,255,255,0.02)", border: "2px solid var(--border)", borderRadius: "var(--radius-sm)", alignItems: "center" }}>
+                <span style={{ fontSize: 14, color: "var(--text-muted)", minWidth: 90, fontWeight: 800 }}>{new Date(v.createdAt).toLocaleDateString("en-IN")}</span>
+                {v.bloodPressure?.systolic && <span style={{ fontSize: 15, color: "#ff3d71", fontWeight: 800 }}>BP: {v.bloodPressure.systolic}/{v.bloodPressure.diastolic}</span>}
+                {v.heartRate && <span style={{ fontSize: 15, color: "#00e5ff", fontWeight: 800 }}>HR: {v.heartRate}</span>}
+                {v.bloodSugar?.value && <span style={{ fontSize: 15, color: "#a78bfa", fontWeight: 800 }}>BS: {v.bloodSugar.value}</span>}
+                {v.temperature && <span style={{ fontSize: 15, color: "#ffb300", fontWeight: 800 }}>Temp: {v.temperature}°F</span>}
+                {v.oxygenSaturation && <span style={{ fontSize: 15, color: "#00ff88", fontWeight: 800 }}>SpO2: {v.oxygenSaturation}%</span>}
                 {v.mlRisk?.risk_level && (
-                  <span style={{ marginLeft: "auto", fontSize: 11, padding: "2px 8px", borderRadius: "100px", background: v.mlRisk.risk_level === "high" ? "rgba(255,61,113,0.15)" : v.mlRisk.risk_level === "medium" ? "rgba(255,179,0,0.15)" : "rgba(0,255,136,0.1)", color: v.mlRisk.risk_level === "high" ? "var(--accent-red)" : v.mlRisk.risk_level === "medium" ? "var(--accent-amber)" : "var(--accent-green)", fontWeight: 700 }}>
+                  <span style={{ marginLeft: "auto", fontSize: 13, padding: "4px 12px", borderRadius: "100px", background: v.mlRisk.risk_level === "high" ? "rgba(255,61,113,0.15)" : v.mlRisk.risk_level === "medium" ? "rgba(255,179,0,0.15)" : "rgba(0,255,136,0.1)", color: v.mlRisk.risk_level === "high" ? "var(--accent-red)" : v.mlRisk.risk_level === "medium" ? "var(--accent-amber)" : "var(--accent-green)", fontWeight: 900, border: "2px solid" }}>
                     {v.mlRisk.risk_level.toUpperCase()} RISK
                   </span>
                 )}

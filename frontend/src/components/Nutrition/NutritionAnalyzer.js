@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Apple, Calculator, BookOpen, Send, Loader } from "lucide-react";
 import api from "../../utils/api";
@@ -47,14 +47,29 @@ const NutritionAnalyzer = () => {
 
   const GOAL_OPTIONS = ["Weight loss", "Muscle gain", "Manage diabetes", "Lower cholesterol", "Better energy", "Heart health"];
 
-  const analyzeMeal = async () => {
-    if (!meal.trim()) { toast.error("Describe your meal first"); return; }
+  const analyzeMeal = async (overrideMeal) => {
+    const mealToAnalyze = typeof overrideMeal === "string" ? overrideMeal : meal;
+    if (!mealToAnalyze.trim()) { toast.error("Describe your meal first"); return; }
     setLoading(true); setResult(null);
     try {
-      const res = await api.post("/advanced/nutrition/analyze", { meal });
+      const res = await api.post("/advanced/nutrition/analyze", { meal: mealToAnalyze });
       setResult(res.data.data);
     } catch { toast.error("Analysis failed"); } finally { setLoading(false); }
   };
+
+  // Jarvis Agentic Control
+  useEffect(() => {
+    const handleJarvis = (e) => {
+      const { type, data } = e.detail;
+      if (type === "ANALYZE_MEAL") {
+        setActiveTab("analyze");
+        setMeal(data);
+        setTimeout(() => analyzeMeal(data), 500);
+      }
+    };
+    window.addEventListener("JARVIS_ACTION", handleJarvis);
+    return () => window.removeEventListener("JARVIS_ACTION", handleJarvis);
+  }, []);
 
   const calculateBMI = async () => {
     if (!bmiForm.weight || !bmiForm.height) { toast.error("Weight and height required"); return; }

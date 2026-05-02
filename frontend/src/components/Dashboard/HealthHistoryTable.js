@@ -80,12 +80,12 @@ const HealthHistoryTable = () => {
                 <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
                   <span style={{ fontSize: 18, flexShrink: 0 }}>{getSeverityEmoji(entry.severity)}</span>
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 2, color: "var(--text-primary)" }}>
+                    <div style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, color: "var(--text-primary)" }}>
                       {entry.conditions?.length > 0 
                         ? entry.conditions.join(", ") 
                         : (entry.symptoms?.length > 0 ? entry.symptoms[0] : "Health Check")}
                     </div>
-                    <div style={{ fontSize: 11, color: "var(--text-muted)" }}>
+                    <div style={{ fontSize: 14, color: "var(--text-muted)", fontWeight: 700 }}>
                       {formatDate(entry.createdAt)} at {formatTime(entry.createdAt)}
                     </div>
                   </div>

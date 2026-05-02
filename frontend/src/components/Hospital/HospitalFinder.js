@@ -20,31 +20,31 @@ const HospitalCard = ({ hospital, index }) => {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-            <h4 style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <h4 style={{ fontSize: 18, fontWeight: 900, color: "var(--text-primary)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {hospital.name}
             </h4>
             {isEmergency && (
-              <span style={{
-                background: "rgba(255,61,113,0.12)", border: "1px solid rgba(255,61,113,0.3)",
-                borderRadius: 4, padding: "1px 6px", fontSize: 10, color: "var(--accent-red)",
-                fontWeight: 700, flexShrink: 0,
+               <span style={{
+                background: "rgba(255,61,113,0.15)", border: "2px solid rgba(255,61,113,0.4)",
+                borderRadius: 6, padding: "2px 8px", fontSize: 12, color: "var(--accent-red)",
+                fontWeight: 900, flexShrink: 0,
               }}>ER</span>
             )}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, color: "var(--text-muted)" }}>
-            <MapPin size={11} />
+          <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 14, color: "var(--text-muted)", fontWeight: 700 }}>
+            <MapPin size={13} />
             <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{hospital.address}</span>
           </div>
         </div>
         <div style={{ textAlign: "right", flexShrink: 0, marginLeft: 12 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--accent-cyan)" }}>
+          <div style={{ fontSize: 16, fontWeight: 900, color: "var(--accent-cyan)" }}>
             {hospital.distanceKm} km
           </div>
           <div style={{
-            fontSize: 11, color: isOpen ? "var(--accent-green)" : "var(--accent-red)",
-            display: "flex", alignItems: "center", gap: 3, justifyContent: "flex-end", marginTop: 2,
+            fontSize: 13, color: isOpen ? "var(--accent-green)" : "var(--accent-red)",
+            display: "flex", alignItems: "center", gap: 5, justifyContent: "flex-end", marginTop: 4, fontWeight: 800,
           }}>
-            <Clock size={10} />
+            <Clock size={12} />
             {isOpen === undefined ? "—" : isOpen ? "Open" : "Closed"}
           </div>
         </div>
@@ -129,12 +129,12 @@ const HospitalFinder = () => {
               key={s}
               onClick={() => setSeverity(s)}
               style={{
-                padding: "7px 16px",
-                borderRadius: "var(--radius-sm)",
-                border: `1px solid ${severity === s ? "rgba(0,229,255,0.4)" : "var(--border)"}`,
+                padding: "10px 20px",
+                borderRadius: "var(--radius-md)",
+                border: `2px solid ${severity === s ? "rgba(0,229,255,0.4)" : "var(--border)"}`,
                 background: severity === s ? "rgba(0,229,255,0.1)" : "transparent",
-                color: severity === s ? "var(--accent-cyan)" : "var(--text-muted)",
-                fontSize: 12, fontWeight: severity === s ? 700 : 400,
+                color: severity === s ? "var(--accent-cyan)" : "var(--text-secondary)",
+                fontSize: 14, fontWeight: 900,
                 cursor: "pointer", transition: "all var(--transition)",
               }}
             >
@@ -206,9 +206,9 @@ const HospitalFinder = () => {
             onMouseEnter={e => e.currentTarget.style.background = "rgba(255,61,113,0.15)"}
             onMouseLeave={e => e.currentTarget.style.background = "rgba(255,61,113,0.08)"}
           >
-            <span style={{ fontSize: 20, marginBottom: 4 }}>{emoji}</span>
-            <span style={{ fontSize: 16, fontWeight: 800, color: "var(--accent-red)" }}>{number}</span>
-            <span style={{ fontSize: 10, color: "var(--text-muted)" }}>{label}</span>
+            <span style={{ fontSize: 24, marginBottom: 6 }}>{emoji}</span>
+            <span style={{ fontSize: 20, fontWeight: 900, color: "var(--accent-red)" }}>{number}</span>
+            <span style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 800 }}>{label}</span>
           </a>
         ))}
       </div>

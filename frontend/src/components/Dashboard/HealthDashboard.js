@@ -20,9 +20,9 @@ const StatCard = ({ label, value, icon: Icon, color, subtitle }) => (
   >
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
       <div>
-        <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</div>
-        <div style={{ fontFamily: "var(--font-display)", fontSize: 28, fontWeight: 800, color }}>{value}</div>
-        {subtitle && <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 4 }}>{subtitle}</div>}
+        <div style={{ fontSize: 14, color: "var(--text-muted)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 800 }}>{label}</div>
+        <div style={{ fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 800, color }}>{value}</div>
+        {subtitle && <div style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 6, fontWeight: 700 }}>{subtitle}</div>}
       </div>
       <div style={{
         width: 40, height: 40, borderRadius: "var(--radius-md)",
@@ -133,8 +133,8 @@ const HealthDashboard = () => {
       {/* Health Score Trend */}
       <div className="glass-card" style={{ padding: 24 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
-          <TrendingUp size={18} color="var(--accent-cyan)" />
-          <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15 }}>{t.healthScoreTrend}</h3>
+          <TrendingUp size={22} color="var(--accent-cyan)" />
+          <h3 style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 900 }}>{t.healthScoreTrend}</h3>
         </div>
         <ResponsiveContainer width="100%" height={180}>
           <AreaChart data={data.trends}>
@@ -147,9 +147,9 @@ const HealthDashboard = () => {
             <XAxis
               dataKey="date"
               tickFormatter={(d) => new Date(d).toLocaleDateString("en-IN", { month: "short", day: "numeric" })}
-              tick={{ fontSize: 10, fill: "#7a9bb8" }} axisLine={false} tickLine={false}
+              tick={{ fontSize: 14, fill: "#7a9bb8", fontWeight: 700 }} axisLine={false} tickLine={false}
             />
-            <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: "#7a9bb8" }} axisLine={false} tickLine={false} />
+            <YAxis domain={[0, 100]} tick={{ fontSize: 14, fill: "#7a9bb8", fontWeight: 700 }} axisLine={false} tickLine={false} />
             <Tooltip content={<CustomTooltip />} />
             <Area
               type="monotone" dataKey="score" name={t.healthScore}
@@ -165,9 +165,9 @@ const HealthDashboard = () => {
         {/* Severity Breakdown */}
         <div className="glass-card" style={{ padding: 24 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
-            <Zap size={18} color="var(--accent-amber)" />
-            <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15 }}>{t.severityBreakdown}</h3>
-          </div>
+            <Zap size={22} color="var(--accent-amber)" />
+            <h3 style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 900 }}>{t.severityBreakdown}</h3>
+        </div>
           {pieData.length > 0 ? (
             <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
               <PieChart width={120} height={120}>
@@ -177,10 +177,10 @@ const HealthDashboard = () => {
               </PieChart>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {pieData.map(({ name, value, color }) => (
-                  <div key={name} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12 }}>
-                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: color, display: "inline-block", flexShrink: 0 }} />
+                  <div key={name} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, fontWeight: 800 }}>
+                    <span style={{ width: 10, height: 10, borderRadius: "50%", background: color, display: "inline-block", flexShrink: 0 }} />
                     <span style={{ color: "var(--text-muted)" }}>{name}</span>
-                    <span style={{ color, fontWeight: 700 }}>{value}</span>
+                    <span style={{ color, fontWeight: 900 }}>{value}</span>
                   </div>
                 ))}
               </div>
@@ -201,10 +201,10 @@ const HealthDashboard = () => {
           {data.topConditions?.length > 0 ? (
             <ResponsiveContainer width="100%" height={120}>
               <BarChart data={data.topConditions} layout="vertical">
-                <XAxis type="number" tick={{ fontSize: 10, fill: "#7a9bb8" }} axisLine={false} tickLine={false} />
-                <YAxis type="category" dataKey="condition" tick={{ fontSize: 11, fill: "#7a9bb8" }} axisLine={false} tickLine={false} width={80} />
+                <XAxis type="number" tick={{ fontSize: 14, fill: "#7a9bb8", fontWeight: 700 }} axisLine={false} tickLine={false} />
+                <YAxis type="category" dataKey="condition" tick={{ fontSize: 15, fill: "#7a9bb8", fontWeight: 800 }} axisLine={false} tickLine={false} width={100} />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="count" name="Times" fill="var(--accent-purple)" radius={[0, 4, 4, 0]} barSize={14} />
+                <Bar dataKey="count" name="Times" fill="var(--accent-purple)" radius={[0, 4, 4, 0]} barSize={20} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
