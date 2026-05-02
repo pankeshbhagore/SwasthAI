@@ -171,7 +171,7 @@ const HomePage = () => {
           Ready to experience AI healthcare?
         </h2>
         <p style={{ color: "var(--text-muted)", marginBottom: 28 }}>
-          Join thousands getting smarter health guidance with Kaaya
+          Join thousands getting smarter health guidance with MediMind
         </p>
         <button onClick={() => navigate("/register")} className="btn btn-primary" style={{ padding: "14px 32px", fontSize: 16 }}>
           Get Started — It's Free <ArrowRight size={18} />
@@ -180,9 +180,9 @@ const HomePage = () => {
 
       {/* Footer */}
       <footer style={{ padding: "24px 48px", borderTop: "1px solid var(--border)", textAlign: "center", color: "var(--text-muted)", fontSize: 12 }}>
-        <p>Kaaya — Intelligent Public Health Copilot </p>
+        <p>MediMind — Intelligent Public Health Copilot </p>
         <p style={{ marginTop: 6 }}>
-          ⚠️ Kaaya provides health information only. Always consult a qualified doctor for medical diagnosis and treatment.
+          ⚠️ MediMind provides health information only. Always consult a qualified doctor for medical diagnosis and treatment.
         </p>
       </footer>
     </div>

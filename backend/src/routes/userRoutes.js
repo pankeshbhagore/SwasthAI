@@ -7,6 +7,7 @@ const {
   updateUserProfile,
   getUserHistory,
   getUserDashboard,
+  deleteHistoryEntry,
 } = require("../controllers/userController");
 const { protect } = require("../middleware/auth");
 const { validateRegister, validateLogin, validateProfileUpdate } = require("../middleware/validator");
@@ -17,6 +18,7 @@ router.post("/login", validateLogin, loginUser);
 router.get("/profile", protect, getUserProfile);
 router.put("/profile", protect, validateProfileUpdate, updateUserProfile);
 router.get("/history", protect, getUserHistory);
+router.delete("/history/:id", protect, deleteHistoryEntry);
 router.get("/dashboard", protect, getUserDashboard);
 
 module.exports = router;

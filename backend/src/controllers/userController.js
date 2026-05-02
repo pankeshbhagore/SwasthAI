@@ -161,7 +161,7 @@ exports.getUserHistory = async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 10;
     const user = await User.findById(req.user._id);
 
-    const history = user.healthHistory.reverse();
+    const history = [...user.healthHistory].reverse();
     const total = history.length;
     const paginated = history.slice((page - 1) * limit, page * limit);
 
@@ -217,14 +217,46 @@ exports.getUserDashboard = async (req, res, next) => {
       .slice(0, 5)
       .map(([condition, count]) => ({ condition, count }));
 
+    const currentScore = calculateHealthScore(history);
+    
+    // Sync the score to the user model if it has changed
+    if (user.healthScore !== currentScore) {
+      user.healthScore = currentScore;
+      await user.save();
+    }
+
     return sendResponse(res, 200, true, "Dashboard data retrieved", {
-      healthScore: calculateHealthScore(history),
+      healthScore: currentScore,
       totalConsultations: history.length,
       severityCounts,
       topSymptoms,
       topConditions,
-      recentActivity: history.slice(-7).reverse(),
+      recentActivity: [...history].slice(-7).reverse(),
       trends: last30.slice(-30),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+/**
+ * @desc    Delete health history entry
+ * @route   DELETE /api/users/history/:id
+ * @access  Private
+ */
+exports.deleteHistoryEntry = async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { $pull: { healthHistory: { _id: req.params.id } } },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    return sendResponse(res, 200, true, "History entry removed", {
+      healthScore: calculateHealthScore(user.healthHistory),
     });
   } catch (error) {
     next(error);

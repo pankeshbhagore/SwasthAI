@@ -22,16 +22,18 @@ const sendResponse = (res, statusCode, success, message, data = {}) => {
 const calculateHealthScore = (history) => {
   if (!history || history.length === 0) return 75;
   
-  const recent = history.slice(-10);
+  // Create a copy before slicing to avoid mutation issues
+  const recent = [...history].slice(-10);
   let score = 100;
   
   recent.forEach((entry) => {
-    if (entry.severity === "EMERGENCY") score -= 20;
-    else if (entry.severity === "MODERATE") score -= 8;
+    if (entry.severity === "EMERGENCY") score -= 15;
+    else if (entry.severity === "MODERATE") score -= 7;
     else if (entry.severity === "MILD") score -= 2;
   });
   
-  return Math.max(0, Math.min(100, score));
+  // Baseline score of 25 for any active user who has at least some data
+  return Math.max(25, Math.min(100, score));
 };
 
 // Get severity color
