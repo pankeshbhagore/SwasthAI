@@ -1,5 +1,5 @@
 /**
- * SwasthAI Chatbot Workflow Engine
+ * MediMind Chatbot Workflow Engine
  * Built with GitHub Copilot — Challenge 3: Healthcare Assistant Agent
  *
  * Implements multi-turn conversation flows for:
@@ -34,7 +34,7 @@ const STATES = {
 // ── Language-aware response templates ─────────────────────────────
 const RESPONSES = {
   en: {
-    greeting: "Hello! I'm SwasthAI, your health assistant. How are you feeling today? Please describe your symptoms.",
+    greeting: "Hello! I'm MediMind, your health assistant. How are you feeling today? Please describe your symptoms.",
     askAge: "To give you better guidance, may I know your age?",
     askHistory: "Do you have any chronic conditions like diabetes, hypertension, or asthma?",
     analyzing: "Analyzing your symptoms... This will take a moment.",
@@ -43,7 +43,7 @@ const RESPONSES = {
     followUp: "How long have you been experiencing these symptoms?",
   },
   hi: {
-    greeting: "नमस्ते! मैं SwasthAI हूं, आपका स्वास्थ्य सहायक। आज आप कैसा महसूस कर रहे हैं?",
+    greeting: "नमस्ते! मैं MediMind हूं, आपका स्वास्थ्य सहायक। आज आप कैसा महसूस कर रहे हैं?",
     askAge: "बेहतर मार्गदर्शन के लिए, क्या आप अपनी उम्र बता सकते हैं?",
     askHistory: "क्या आपको कोई पुरानी बीमारी है जैसे मधुमेह, उच्च रक्तचाप?",
     analyzing: "आपके लक्षणों का विश्लेषण हो रहा है...",
@@ -52,7 +52,7 @@ const RESPONSES = {
     followUp: "ये लक्षण कितने समय से हैं?",
   },
   ta: {
-    greeting: "வணக்கம்! நான் SwasthAI, உங்கள் சுகாதார உதவியாளர். இன்று நீங்கள் எப்படி உணர்கிறீர்கள்?",
+    greeting: "வணக்கம்! நான் MediMind, உங்கள் சுகாதார உதவியாளர். இன்று நீங்கள் எப்படி உணர்கிறீர்கள்?",
     askAge: "சிறந்த வழிகாட்டுதலுக்கு, உங்கள் வயது என்ன?",
     emergency: "🚨 அவசரநிலை! உடனே 108 அழைக்கவும்!",
     noSymptoms: "புரியவில்லை. உங்கள் அறிகுறிகளை விவரிக்கவும்.",
@@ -61,7 +61,7 @@ const RESPONSES = {
     followUp: "இந்த அறிகுறிகள் எத்தனை நாட்களாக உள்ளன?",
   },
   te: {
-    greeting: "నమస్కారం! నేను SwasthAI, మీ ఆరోగ్య సహాయకుడు. ఈరోజు మీరు ఎలా అనుభవిస్తున్నారు?",
+    greeting: "నమస్కారం! నేను MediMind, మీ ఆరోగ్య సహాయకుడు. ఈరోజు మీరు ఎలా అనుభవిస్తున్నారు?",
     askAge: "మెరుగైన మార్గదర్శకత్వం కోసం, మీ వయసు చెప్పగలరా?",
     emergency: "🚨 అత్యవసరం! వెంటనే 108 కి కాల్ చేయండి!",
     noSymptoms: "అర్థం కాలేదు. మీ లక్షణాలను వివరించండి.",

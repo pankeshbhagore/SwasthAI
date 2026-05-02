@@ -27,6 +27,7 @@ import NutritionPage from "./pages/NutritionPage";
 import MLDemoPage from "./pages/MLDemoPage";
 import WellnessPage from "./pages/WellnessPage";
 import HistoryPage from "./pages/HistoryPage";
+import FamilyDoctorPage from "./pages/FamilyDoctorPage";
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -68,6 +69,7 @@ function AppRoutes() {
         <Route path="wellness" element={<WellnessPage />} />
         <Route path="history" element={<HistoryPage />} />
         <Route path="profile" element={<ProfilePage />} />
+        <Route path="family-doctor" element={<FamilyDoctorPage />} />
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />

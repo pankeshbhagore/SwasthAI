@@ -1,5 +1,5 @@
 /**
- * SwasthAI Triage Engine
+ * MediMind Triage Engine
  * Hybrid: Rule-based scoring + ML-ready output
  */
 

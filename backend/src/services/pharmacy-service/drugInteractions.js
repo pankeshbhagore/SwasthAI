@@ -1,5 +1,5 @@
 /**
- * SwasthAI Drug Interaction Checker
+ * MediMind Drug Interaction Checker
  * Rule-based database of known drug interactions
  * In production: integrate with RxNorm / OpenFDA API
  */
@@ -10,6 +10,8 @@ const INTERACTION_DB = {
     severity: "MAJOR",
     description: "Increased bleeding risk. Both thin blood, combination is dangerous.",
     recommendation: "Avoid combination. Consult doctor immediately.",
+    "emergency_alert_hi": "यह MediMind से एक आपातकालीन अलर्ट है। ${patientName} को तत्काल चिकित्सा सहायता की आवश्यकता है।",
+    "emergency_alert_en": "This is an emergency alert from MediMind. ${patientName} needs immediate medical help. Please call 108 now."
   },
   "warfarin:ibuprofen": {
     severity: "MAJOR",
@@ -131,7 +133,7 @@ const checkAllInteractions = (medications) => {
 };
 
 /**
- * Get drug info (basic)
+ * MediMind Triage Engine
  */
 const getDrugInfo = (drugName) => {
   const drug = normalizeDrug(drugName);

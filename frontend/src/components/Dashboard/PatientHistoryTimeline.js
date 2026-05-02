@@ -51,9 +51,10 @@ const TimelineEntry = ({ entry, index }) => {
               <span className={`severity-badge ${getSeverityBadgeClass(entry.severity)}`} style={{ fontSize: 10 }}>
                 {entry.severity}
               </span>
-              <span style={{ fontSize: 12, fontWeight: 600 }}>
-                {entry.symptoms?.slice(0, 3).join(", ") || "Health Check"}
-                {entry.symptoms?.length > 3 && ` +${entry.symptoms.length - 3} more`}
+              <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>
+                {entry.conditions?.length > 0 
+                  ? entry.conditions.join(", ") 
+                  : (entry.symptoms?.length > 0 ? entry.symptoms[0] : "Health Consultation")}
               </span>
             </div>
             <div style={{ fontSize: 11, color: "var(--text-muted)", display: "flex", alignItems: "center", gap: 4 }}>
@@ -62,9 +63,10 @@ const TimelineEntry = ({ entry, index }) => {
             </div>
           </div>
 
-          {entry.conditions?.length > 0 && (
-            <div style={{ fontSize: 11, color: "var(--text-muted)" }}>
-              Possible: {entry.conditions.slice(0, 2).join(", ")}
+          {entry.conditions?.length > 0 && entry.symptoms?.length > 0 && (
+            <div style={{ fontSize: 11, color: "var(--text-muted)", fontStyle: "italic", marginTop: 2 }}>
+              Symptoms: {entry.symptoms.slice(0, 2).join(", ")}
+              {entry.symptoms.length > 2 && "..."}
             </div>
           )}
 
@@ -109,8 +111,8 @@ const PatientHistoryTimeline = () => {
         api.get("/users/history", { params: { limit: 90 } }),
         api.get("/users/dashboard"),
       ]);
-      if (histRes.status === "fulfilled") setHistory(histRes.value.data.data.history || []);
-      if (dashRes.status === "fulfilled") setStats(dashRes.value.data.data);
+      if (histRes.status === "fulfilled") setHistory(histRes.value.data.history || []);
+      if (dashRes.status === "fulfilled") setStats(dashRes.value.data);
     } catch {
       setHistory([]);
     } finally {
@@ -125,7 +127,7 @@ const PatientHistoryTimeline = () => {
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", `swasthai_health_report_${Date.now()}.pdf`);
+      link.setAttribute("download", `medimind_health_report_${Date.now()}.pdf`);
       document.body.appendChild(link);
       link.click();
       link.remove();

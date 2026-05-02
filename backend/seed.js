@@ -1,5 +1,5 @@
 /**
- * SwasthAI Demo Data Seeder
+ * MediMind Demo Data Seeder
  * Populates database with realistic sample users for hackathon demo
  * Run: node seed.js
  */
@@ -56,7 +56,7 @@ const DEMO_USERS = [
   },
   {
     name: "Admin User",
-    email: "admin@swasthai.com",
+    email: "admin@medimind.com",
     password: "admin123",
     age: 30,
     gender: "other",
@@ -68,7 +68,7 @@ const DEMO_USERS = [
 
 const seed = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/swasthai");
+    await mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/medimind");
     console.log("✅ Connected to MongoDB");
 
     // Clear existing demo users
@@ -86,7 +86,7 @@ const seed = async () => {
     console.log("\n📋 Demo Login Credentials:");
     console.log("  User:  rahul@demo.com / demo123");
     console.log("  User:  priya@demo.com / demo123");
-    console.log("  Admin: admin@swasthai.com / admin123");
+    console.log("  Admin: admin@medimind.com / admin123");
 
   } catch (error) {
     console.error("❌ Seed error:", error);

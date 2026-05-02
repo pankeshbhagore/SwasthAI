@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Pill, Plus, Check, X, Clock, AlertTriangle, Bell } from "lucide-react";
+import { Pill, Plus, Check, X, Clock, AlertTriangle, Bell, Mic, Volume2 } from "lucide-react";
 import api from "../../utils/api";
 import { useLanguage } from "../../context/LanguageContext";
 import { uiTranslations } from "../../utils/translations";
@@ -79,8 +79,50 @@ const MedicationManager = () => {
   const [form, setForm] = useState({ name: "", dosage: "", frequency: "twice_daily", form: "tablet", purpose: "", startDate: new Date().toISOString().split("T")[0], times: ["08:00", "20:00"] });
   const [saving, setSaving] = useState(false);
   const [interactions, setInteractions] = useState(null);
+  
+  // AI Recommendation State
+  const [showAiRecs, setShowAiRecs] = useState(false);
+  const [aiSymptoms, setAiSymptoms] = useState("");
+  const [aiRecData, setAiRecData] = useState(null);
+  const [loadingAi, setLoadingAi] = useState(false);
+  const [isListening, setIsListening] = useState(false);
 
   useEffect(() => { fetchMeds(); }, []);
+
+  const startListening = () => {
+    if (!("webkitSpeechRecognition" in window) && !("SpeechRecognition" in window)) {
+      toast.error("Speech recognition is not supported in this browser.");
+      return;
+    }
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = language === "en" ? "en-US" : language;
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => setIsListening(true);
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setAiSymptoms((prev) => prev ? prev + " " + transcript : transcript);
+    };
+    recognition.onerror = () => {
+      setIsListening(false);
+    };
+    recognition.onend = () => setIsListening(false);
+    
+    recognition.start();
+  };
+
+  const handleSpeak = (text) => {
+    if (!("speechSynthesis" in window)) {
+      toast.error("Text-to-speech not supported in this browser.");
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = language === "en" ? "en-US" : language;
+    window.speechSynthesis.speak(utterance);
+  };
 
   const fetchMeds = async () => {
     try {
@@ -131,6 +173,29 @@ const MedicationManager = () => {
     } catch {}
   };
 
+  const handleTestAlert = async () => {
+    try {
+      toast.loading("Sending test alert...", { id: "test-alert" });
+      const res = await api.post("/advanced/medications/test-alert", { medName: "Demo Medication", dosage: "1 tablet" });
+      toast.success(res.data.message, { id: "test-alert" });
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to send alert", { id: "test-alert" });
+    }
+  };
+
+  const handleGetRecommendations = async () => {
+    if (!aiSymptoms) { toast.error("Please enter your symptoms"); return; }
+    setLoadingAi(true);
+    try {
+      const res = await api.post("/advanced/medications/recommend", { symptoms: aiSymptoms });
+      setAiRecData(res.data.data);
+    } catch {
+      toast.error("Failed to get recommendations");
+    } finally {
+      setLoadingAi(false);
+    }
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       {/* Header */}
@@ -139,10 +204,79 @@ const MedicationManager = () => {
           <h2 style={{ fontFamily: "var(--font-display)", fontSize: 18, fontWeight: 800 }}>{t.medications}</h2>
           <p style={{ fontSize: 13, color: "var(--text-muted)" }}>{meds.length} active · with adherence tracking</p>
         </div>
-        <button onClick={() => setShowForm(!showForm)} className="btn btn-primary" style={{ padding: "8px 16px" }}>
-          <Plus size={16} /> {t.addMedication}
-        </button>
+        <div style={{ display: "flex", gap: 10 }}>
+          <button onClick={handleTestAlert} className="btn btn-ghost" style={{ padding: "8px 16px", borderColor: "var(--accent-amber)", color: "var(--accent-amber)" }}>
+            <Bell size={16} /> Test SMS Alert
+          </button>
+          <button onClick={() => setShowAiRecs(!showAiRecs)} className="btn btn-ghost" style={{ padding: "8px 16px" }}>
+            🤖 AI Recommend OTC
+          </button>
+          <button onClick={() => setShowForm(!showForm)} className="btn btn-primary" style={{ padding: "8px 16px" }}>
+            <Plus size={16} /> {t.addMedication}
+          </button>
+        </div>
       </div>
+
+      {/* AI Recommendation Panel */}
+      <AnimatePresence>
+        {showAiRecs && (
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} style={{ overflow: "hidden" }}>
+            <div className="glass-card" style={{ padding: 20, border: "1px solid var(--accent-cyan)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+                <span style={{ fontSize: 20 }}>🤖</span>
+                <h4 style={{ fontFamily: "var(--font-display)", fontSize: 15, color: "var(--accent-cyan)" }}>AI Medication Recommendations</h4>
+              </div>
+              
+              <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>
+                <div style={{ position: "relative", flex: 1 }}>
+                  <input 
+                    className="input" 
+                    value={aiSymptoms} 
+                    onChange={e => setAiSymptoms(e.target.value)} 
+                    placeholder="E.g., Mild headache and runny nose" 
+                    style={{ width: "100%", padding: "10px 40px 10px 14px" }} 
+                  />
+                  <button 
+                    onClick={startListening} 
+                    style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: isListening ? "var(--accent-red)" : "var(--accent-cyan)", cursor: "pointer" }}
+                    title="Speak symptoms"
+                  >
+                    <Mic size={18} />
+                  </button>
+                </div>
+                <button onClick={handleGetRecommendations} disabled={loadingAi} className="btn btn-primary" style={{ padding: "10px 20px" }}>
+                  {loadingAi ? <div className="spinner" style={{ width: 14, height: 14 }} /> : "Ask AI"}
+                </button>
+              </div>
+
+              {aiRecData && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                  <div style={{ display: "grid", gap: 12, marginBottom: 16 }}>
+                    {aiRecData.recommendations?.map((rec, i) => (
+                      <div key={i} style={{ padding: 12, background: "rgba(0,229,255,0.05)", borderRadius: "var(--radius-sm)", border: "1px solid rgba(0,229,255,0.15)", position: "relative" }}>
+                        <div style={{ fontWeight: 700, color: "var(--accent-cyan)", marginBottom: 4 }}>{rec.name}</div>
+                        <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 4 }}><strong>Dosage:</strong> {rec.dosage}</div>
+                        <div style={{ fontSize: 12, color: "var(--text-secondary)", paddingRight: 30 }}>{rec.reason}</div>
+                        
+                        <button 
+                          onClick={() => handleSpeak(`${rec.name}. Dosage: ${rec.dosage}. Reason: ${rec.reason}`)}
+                          style={{ position: "absolute", right: 10, top: 10, background: "rgba(0,229,255,0.1)", border: "none", borderRadius: "50%", width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--accent-cyan)", cursor: "pointer" }}
+                          title="Read aloud"
+                        >
+                          <Volume2 size={14} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ fontSize: 11, color: "var(--accent-amber)", background: "rgba(255,179,0,0.1)", padding: 10, borderRadius: 6, border: "1px solid rgba(255,179,0,0.2)" }}>
+                    <strong>⚠️ DISCLAIMER:</strong> {aiRecData.disclaimer}
+                  </div>
+                </motion.div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Drug Interaction Warning */}
       {interactions?.hasCritical && (

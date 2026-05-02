@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Mic, MicOff, Bot, User, AlertCircle, Globe } from "lucide-react";
+import { Send, Mic, MicOff, Bot, User, AlertCircle, Globe, Volume2 } from "lucide-react";
 import api from "../../utils/api";
 import { useAuth } from "../../context/AuthContext";
 import { getSeverityColor, timeAgo } from "../../utils/helpers";
@@ -45,9 +45,44 @@ const TypingIndicator = () => (
   </div>
 );
 
-const Message = ({ msg }) => {
+const Message = ({ msg, language }) => {
   const isUser = msg.role === "user";
   const color = msg.severity ? getSeverityColor(msg.severity) : null;
+
+  const formatText = (text) => {
+    if (!text) return "";
+    return text
+      .replace(/### (.*?)\n/g, "<h3 style='font-size: 15px; margin: 10px 0 6px; font-weight: 700; font-family: var(--font-display)'>$1</h3>")
+      .replace(/\*\*(.*?)\*\*/g, "<strong style='color: var(--text-primary)'>$1</strong>")
+      .replace(/\n\n/g, "<br /><br />")
+      .replace(/\n/g, "<br />")
+      .replace(/- (.*?)(<br \/>|$)/g, "<li style='margin-left: 16px'>$1</li>");
+  };
+
+  const handleSpeak = () => {
+    if (!("speechSynthesis" in window)) {
+      toast.error("Text-to-speech not supported in this browser.");
+      return;
+    }
+    window.speechSynthesis.cancel();
+    
+    // Strip markdown formatting before reading
+    const textToRead = msg.content
+      .replace(/\*\*(.*?)\*\*/g, "$1")
+      .replace(/### (.*?)\n/g, "$1. ")
+      .replace(/- /g, "")
+      .replace(/\n/g, " ");
+
+    const utterance = new SpeechSynthesisUtterance(textToRead);
+    // basic language mapping
+    if (language === "hi" || language === "hinglish") utterance.lang = "hi-IN";
+    else if (language === "ta") utterance.lang = "ta-IN";
+    else if (language === "mr") utterance.lang = "mr-IN";
+    else if (language === "te") utterance.lang = "te-IN";
+    else utterance.lang = "en-US";
+    
+    window.speechSynthesis.speak(utterance);
+  };
 
   return (
     <motion.div
@@ -71,20 +106,33 @@ const Message = ({ msg }) => {
         {isUser ? <User size={14} color="var(--accent-green)" /> : <Bot size={14} color="var(--accent-cyan)" />}
       </div>
 
-      <div style={{ maxWidth: "75%", display: "flex", flexDirection: "column", gap: 6 }}>
-        {/* Bubble */}
-        <div style={{
-          background: isUser ? "rgba(0,255,136,0.08)" : "var(--bg-card)",
-          border: `1px solid ${isUser ? "rgba(0,255,136,0.15)" : "var(--border)"}`,
-          borderRadius: isUser ? "12px 0 12px 12px" : "0 12px 12px 12px",
-          padding: "10px 14px",
-          fontSize: 14,
-          color: "var(--text-primary)",
-          lineHeight: 1.6,
-          ...(color && { borderColor: `${color}30`, boxShadow: `0 0 12px ${color}10` }),
-        }}>
-          {msg.content}
-        </div>
+      <div style={{ maxWidth: "75%", display: "flex", flexDirection: "column", gap: 6, position: "relative" }}>
+        <div 
+          dangerouslySetInnerHTML={{ __html: isUser ? msg.content : formatText(msg.content) }}
+          style={{
+            background: isUser ? "rgba(0,255,136,0.08)" : "var(--bg-card)",
+            border: `1px solid ${isUser ? "rgba(0,255,136,0.15)" : "var(--border)"}`,
+            borderRadius: isUser ? "12px 0 12px 12px" : "0 12px 12px 12px",
+            padding: "10px 14px",
+            fontSize: 14,
+            color: isUser ? "var(--text-primary)" : "var(--text-secondary)",
+            lineHeight: 1.6,
+            ...(color && { borderColor: `${color}30`, boxShadow: `0 0 12px ${color}10` }),
+          }}
+        />
+
+        {!isUser && (
+          <button 
+            onClick={handleSpeak}
+            style={{ 
+              position: "absolute", right: -30, top: 5, background: "none", border: "none", 
+              color: "var(--text-muted)", cursor: "pointer", padding: 4 
+            }}
+            title="Read aloud"
+          >
+            <Volume2 size={15} />
+          </button>
+        )}
 
         {/* Severity result if available */}
         {msg.triageResult && (
@@ -104,7 +152,7 @@ const ChatInterface = () => {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: `नमस्ते! 👋 I'm SwasthAI, your intelligent health copilot.\n\nDescribe your symptoms and I'll analyze them using our multi-agent AI system. I can detect severity, predict risks, and guide you to the right care.\n\nHow are you feeling today?`,
+      content: `नमस्ते! 👋 I'm MediMind, your intelligent health copilot.\n\nDescribe your symptoms and I'll analyze them using our multi-agent AI system. I can detect severity, predict risks, and guide you to the right care.\n\nHow are you feeling today?`,
       timestamp: new Date().toISOString(),
     },
   ]);
@@ -198,7 +246,7 @@ const ChatInterface = () => {
             <Bot size={18} color="var(--accent-cyan)" />
           </div>
           <div>
-            <div style={{ fontWeight: 700, fontSize: 14 }}>SwasthAI Assistant</div>
+            <div style={{ fontWeight: 700, fontSize: 14 }}>MediMind Assistant</div>
             <div style={{ fontSize: 11, color: "var(--accent-green)", display: "flex", alignItems: "center", gap: 4 }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--accent-green)", display: "inline-block" }} />
               Multi-Agent System Active
@@ -248,7 +296,7 @@ const ChatInterface = () => {
 
       {/* Messages */}
       <div style={{ flex: 1, overflowY: "auto", padding: "16px 0" }}>
-        {messages.map((msg, i) => <Message key={i} msg={msg} />)}
+        {messages.map((msg, i) => <Message key={i} msg={msg} language={language} />)}
         {loading && <TypingIndicator />}
         <div ref={bottomRef} />
       </div>

@@ -1,5 +1,5 @@
 /**
- * SwasthAI Service Worker
+ * MediMind Service Worker
  * Enables 100% offline triage functionality for rural India
  * Challenge 3: Healthcare Assistant Agent — Agentic AI Hackathon 2026
  * 
@@ -10,8 +10,8 @@
  * - Cached app shell for instant loading
  */
 
-const CACHE_NAME = "swasthai-v1.0.0";
-const OFFLINE_CACHE = "swasthai-offline-v1";
+const CACHE_NAME = "medimind-v1.0.0";
+const OFFLINE_CACHE = "medimind-offline-v1";
 
 // Core app shell — always cache these
 const APP_SHELL = [
@@ -54,12 +54,12 @@ const OFFLINE_TRIAGE_DATA = {
 
 // ── Install Event ──────────────────────────────────────────────────
 self.addEventListener("install", (event) => {
-  console.log("[SwasthAI SW] Installing...");
+  console.log("[MediMind SW] Installing...");
   event.waitUntil(
     Promise.all([
       caches.open(CACHE_NAME).then((cache) => {
         return cache.addAll(APP_SHELL).catch((err) => {
-          console.warn("[SwasthAI SW] Shell cache partial:", err);
+          console.warn("[MediMind SW] Shell cache partial:", err);
         });
       }),
       caches.open(OFFLINE_CACHE).then((cache) => {
@@ -70,7 +70,7 @@ self.addEventListener("install", (event) => {
         return cache.put("/offline-triage-data", triageBlob);
       }),
     ]).then(() => {
-      console.log("[SwasthAI SW] ✅ Installed. Offline triage ready.");
+      console.log("[MediMind SW] ✅ Installed. Offline triage ready.");
       return self.skipWaiting();
     })
   );
@@ -86,7 +86,7 @@ self.addEventListener("activate", (event) => {
           .map((name) => caches.delete(name))
       );
     }).then(() => {
-      console.log("[SwasthAI SW] ✅ Activated. Old caches cleared.");
+      console.log("[MediMind SW] ✅ Activated. Old caches cleared.");
       return self.clients.claim();
     })
   );
@@ -188,13 +188,13 @@ async function syncHealthData() {
           body: JSON.stringify(data),
         });
         await cache.delete(request);
-        console.log("[SwasthAI SW] Synced offline health data:", request.url);
+        console.log("[MediMind SW] Synced offline health data:", request.url);
       } catch {
-        console.log("[SwasthAI SW] Sync failed, will retry:", request.url);
+        console.log("[MediMind SW] Sync failed, will retry:", request.url);
       }
     }
   } catch (err) {
-    console.error("[SwasthAI SW] Sync error:", err);
+    console.error("[MediMind SW] Sync error:", err);
   }
 }
 
@@ -204,11 +204,11 @@ self.addEventListener("push", (event) => {
   
   const data = event.data.json();
   const options = {
-    body: data.message || "SwasthAI Health Alert",
+    body: data.message || "MediMind Health Alert",
     icon: "/icons/icon-192.png",
     badge: "/icons/badge-72.png",
     vibrate: [200, 100, 200, 100, 200],
-    tag: data.tag || "swasthai-alert",
+    tag: data.tag || "medimind-alert",
     requireInteraction: data.emergency || false,
     actions: data.emergency
       ? [
@@ -220,7 +220,7 @@ self.addEventListener("push", (event) => {
   };
 
   event.waitUntil(
-    self.registration.showNotification("SwasthAI", options)
+    self.registration.showNotification("MediMind", options)
   );
 });
 
@@ -235,4 +235,4 @@ self.addEventListener("notificationclick", (event) => {
   }
 });
 
-console.log("[SwasthAI SW] Service Worker loaded. Version:", CACHE_NAME);
+console.log("[MediMind SW] Service Worker loaded. Version:", CACHE_NAME);

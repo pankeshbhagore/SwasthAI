@@ -1,8 +1,8 @@
-# 🤖 GitHub Copilot Usage in SwasthAI
+# 🤖 GitHub Copilot Usage in MediMind
 
 > **Challenge 3: Healthcare Assistant Agent — Agentic AI Hackathon 2026**
 > 
-> *This document details exactly how GitHub Copilot was used to build each part of SwasthAI.*
+> *This document details exactly how GitHub Copilot was used to build each part of MediMind.*
 
 ---
 
@@ -199,4 +199,4 @@ Calculate Haversine distance. Include fallback demo data when API unavailable."
 
 ---
 
-*SwasthAI — Built with ❤️ and GitHub Copilot by Team Altron, IPS Academy, Indore*
+*MediMind — Built with ❤️ and GitHub Copilot by Team Altron, IPS Academy, Indore*

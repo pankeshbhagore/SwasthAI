@@ -81,6 +81,7 @@ class TriageAgent {
       risk: aiResult?.risk || mlResult?.risk_level?.toUpperCase() || ruleResult.risk,
       score: ruleResult.score,
       possible_conditions: Array.from(conditions).slice(0, 5),
+      recommended_specialist: aiResult?.recommended_specialist || (severity === "EMERGENCY" ? "Emergency Medicine Physician" : "General Physician"),
       advice: aiResult?.advice || ruleResult.advice,
       emergency: severity === "EMERGENCY",
       explanation: aiResult?.explanation || "",

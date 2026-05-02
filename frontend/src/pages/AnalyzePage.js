@@ -15,9 +15,11 @@ const AnalyzePage = () => (
       </p>
     </motion.div>
 
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 24, alignItems: "start" }}>
-      <SymptomAnalyzer />
-      <FirstAidGuide />
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 24, alignItems: "start" }}>
+        <SymptomAnalyzer />
+        <FirstAidGuide />
+      </div>
     </div>
 
     <FloatingEmergencyButton />

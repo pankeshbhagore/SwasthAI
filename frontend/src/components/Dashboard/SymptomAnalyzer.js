@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Stethoscope, Plus, X, Mic, MicOff, MapPin, Loader, ChevronDown } from "lucide-react";
+import { Stethoscope, Plus, X, Mic, MicOff, MapPin, Loader, ChevronDown, User, Navigation, Phone, Clock, Star } from "lucide-react";
 import api from "../../utils/api";
 import { useAuth } from "../../context/AuthContext";
 import { useLanguage } from "../../context/LanguageContext";
@@ -18,19 +18,70 @@ const COMMON_SYMPTOMS = [
   "Back pain", "Skin rash", "High BP", "Diabetes issue",
 ];
 
+const HospitalItem = ({ hospital, index }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: index * 0.05 }}
+    style={{
+      padding: "12px 16px",
+      background: "rgba(255,255,255,0.03)",
+      border: "1px solid var(--border)",
+      borderRadius: "var(--radius-md)",
+      marginBottom: 10,
+    }}
+  >
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+      <div>
+        <h5 style={{ fontSize: 14, fontWeight: 700, marginBottom: 2 }}>{hospital.name}</h5>
+        <div style={{ fontSize: 11, color: "var(--text-muted)", display: "flex", alignItems: "center", gap: 4 }}>
+          {hospital.isEmergency && <span style={{ color: "var(--accent-red)", fontWeight: 800 }}>ER</span>}
+          <span>{hospital.address}</span>
+        </div>
+      </div>
+      <div style={{ textAlign: "right" }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: "var(--accent-cyan)" }}>{hospital.distanceKm} km</div>
+        <div style={{ fontSize: 10, color: hospital.isOpen ? "var(--accent-green)" : "var(--accent-red)" }}>
+          {hospital.isOpen ? "Open" : "Closed"}
+        </div>
+      </div>
+    </div>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "var(--accent-amber)" }}>
+        <Star size={11} fill="currentColor" />
+        {hospital.rating || "—"}
+      </div>
+      <div style={{ display: "flex", gap: 8 }}>
+        <a href={`https://www.google.com/maps/dir/?api=1&destination=${hospital.lat},${hospital.lng}`} target="_blank" rel="noreferrer" className="btn btn-ghost" style={{ padding: "4px 10px", fontSize: 11, height: 28 }}>
+          <Navigation size={12} /> {uiTranslations.en.directions}
+        </a>
+        {hospital.phone && (
+          <a href={`tel:${hospital.phone}`} className="btn btn-primary" style={{ padding: "4px 10px", fontSize: 11, height: 28 }}>
+            <Phone size={12} />
+          </a>
+        )}
+      </div>
+    </div>
+  </motion.div>
+);
+
 const SymptomAnalyzer = () => {
   const { user } = useAuth();
   const { language: globalLang } = useLanguage();
   const t = uiTranslations[globalLang] || uiTranslations.en;
+  
   const [symptoms, setSymptoms] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  const [age, setAge] = useState(user?.age || "");
+  const [ageGroup, setAgeGroup] = useState("Adult (20-59)");
+  const [duration, setDuration] = useState("");
+  const [severity, setSeverity] = useState("");
   const [localLanguage, setLocalLanguage] = useState(globalLang);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(true);
 
-  // Sync local language when global changes
+  const { location, loading: locLoading, getLocation } = useGeolocation();
+
   useEffect(() => {
     setLocalLanguage(globalLang);
   }, [globalLang]);
@@ -39,8 +90,6 @@ const SymptomAnalyzer = () => {
     const parsed = normalizeSymptoms(text);
     addSymptoms(parsed);
   });
-
-  const { location, loading: locLoading, getLocation } = useGeolocation();
 
   const addSymptoms = (items) => {
     setSymptoms((prev) => {
@@ -56,22 +105,25 @@ const SymptomAnalyzer = () => {
     setInputValue("");
   };
 
-  const removeSymptom = (sym) => {
-    setSymptoms((prev) => prev.filter((s) => s !== sym));
-  };
+  const removeSymptom = (sym) => setSymptoms((prev) => prev.filter((s) => s !== sym));
 
   const handleAnalyze = async () => {
-    if (symptoms.length === 0) {
-      toast.error("Please add at least one symptom");
+    if (symptoms.length === 0 && !inputValue.trim()) {
+      toast.error("Please describe your symptoms");
       return;
     }
+    
     setLoading(true);
     setResult(null);
 
+    const finalSymptoms = symptoms.length > 0 ? symptoms : normalizeSymptoms(inputValue);
+
     try {
       const res = await api.post("/ai/analyze", {
-        symptoms,
-        age: age || user?.age,
+        symptoms: finalSymptoms,
+        duration,
+        reportedSeverity: severity,
+        age: ageGroup,
         medicalHistory: user?.medicalHistory?.chronicConditions || [],
         location: location || null,
         language: localLanguage,
@@ -93,264 +145,264 @@ const SymptomAnalyzer = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      {/* Symptom Input */}
-      <div className="glass-card" style={{ padding: 24 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
-          <Stethoscope size={20} color="var(--accent-cyan)" />
-          <h3 style={{ fontFamily: "var(--font-display)", fontSize: 16 }}>{t.addSymptoms}</h3>
-        </div>
-
-        {/* Text input */}
-        <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-          <input
-            className="input"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && addInputSymptom()}
-            placeholder={t.typeSymptom}
-          />
-          <button onClick={addInputSymptom} className="btn btn-ghost" style={{ flexShrink: 0, padding: "10px 14px" }}>
-            <Plus size={18} />
-          </button>
-          <button
-            onClick={() => toggleListening()}
-            className={`btn ${isListening ? "btn-danger" : "btn-ghost"}`}
-            style={{ flexShrink: 0, padding: "10px 14px" }}
-            title="Voice input"
-          >
-            {isListening ? <MicOff size={18} /> : <Mic size={18} />}
-          </button>
-        </div>
-
-        {isListening && (
-          <div style={{
-            marginBottom: 12, padding: "8px 12px",
-            background: "rgba(255,61,113,0.08)", border: "1px solid rgba(255,61,113,0.2)",
-            borderRadius: "var(--radius-sm)", fontSize: 12, color: "var(--accent-red)",
-            display: "flex", alignItems: "center", gap: 6,
+      {/* Symptom Checker Card */}
+      <div className="glass-card" style={{ padding: 28 }}>
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <div style={{ 
+            width: 44, height: 44, background: "rgba(0,229,255,0.1)", 
+            borderRadius: "50%", display: "flex", alignItems: "center", 
+            justifyContent: "center", margin: "0 auto 12px",
+            border: "1px solid rgba(0,229,255,0.2)"
           }}>
-            <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--accent-red)", display: "inline-block", animation: "pulse-red 1s infinite" }} />
-            {t.listening}
+            <Stethoscope size={22} color="var(--accent-cyan)" />
           </div>
-        )}
+          <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 700, marginBottom: 4 }}>
+            Symptom Checker
+          </h2>
+          <p style={{ color: "var(--text-muted)", fontSize: 13 }}>
+            AI-powered triage based on your symptoms
+          </p>
+        </div>
 
-        {/* Quick symptoms */}
-        <div style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-            {t.quickSelect}
+        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+          {/* Response Language */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "var(--text-secondary)" }}>
+              <span role="img" aria-label="lang">🌐</span> Response language
+            </div>
+            <select 
+              className="input" 
+              value={localLanguage} 
+              onChange={e => setLocalLanguage(e.target.value)}
+              style={{ width: "auto", padding: "4px 10px", fontSize: 12, height: 32 }}
+            >
+              <option value="en">English</option>
+              <option value="hi">Hindi</option>
+              <option value="mr">Marathi</option>
+              <option value="ta">Tamil</option>
+            </select>
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {COMMON_SYMPTOMS.map((sym) => (
-              <button
-                key={sym}
-                onClick={() => addSymptoms([sym.toLowerCase()])}
-                disabled={symptoms.includes(sym.toLowerCase())}
-                style={{
-                  padding: "4px 10px",
-                  borderRadius: "var(--radius-sm)",
-                  border: `1px solid ${symptoms.includes(sym.toLowerCase()) ? "rgba(0,229,255,0.4)" : "var(--border)"}`,
-                  background: symptoms.includes(sym.toLowerCase()) ? "rgba(0,229,255,0.1)" : "transparent",
-                  color: symptoms.includes(sym.toLowerCase()) ? "var(--accent-cyan)" : "var(--text-muted)",
-                  fontSize: 12, cursor: "pointer", transition: "all var(--transition)",
+
+          {/* Description */}
+          <div>
+            <label style={{ fontSize: 13, fontWeight: 600, marginBottom: 8, display: "block" }}>
+              Describe your symptoms *
+            </label>
+            <div style={{ position: "relative" }}>
+              <textarea
+                className="input"
+                value={inputValue}
+                onChange={e => setInputValue(e.target.value)}
+                placeholder="e.g. fever, dry cough, body ache for 2 days"
+                rows={4}
+                style={{ paddingRight: 40, resize: "none" }}
+              />
+              <button 
+                onClick={toggleListening}
+                style={{ 
+                  position: "absolute", right: 12, bottom: 12, 
+                  background: isListening ? "var(--accent-red)" : "transparent",
+                  border: isListening ? "none" : "1px solid var(--border)",
+                  color: isListening ? "white" : "var(--text-muted)",
+                  padding: 6, borderRadius: 6, cursor: "pointer"
                 }}
               >
-                {sym}
+                {isListening ? <MicOff size={16} /> : <Mic size={16} />}
               </button>
-            ))}
+            </div>
           </div>
+
+          {/* Dropdowns row */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1.2fr", gap: 12 }}>
+            <div>
+              <label style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 6, display: "block" }}>Duration</label>
+              <select className="input" value={duration} onChange={e => setDuration(e.target.value)} style={{ fontSize: 13, height: 40 }}>
+                <option value="">Select</option>
+                <option value="Just started">Just started</option>
+                <option value="1-2 days">1-2 days</option>
+                <option value="3-5 days">3-5 days</option>
+                <option value="Over a week">Over a week</option>
+              </select>
+            </div>
+            <div>
+              <label style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 6, display: "block" }}>Severity</label>
+              <select className="input" value={severity} onChange={e => setSeverity(e.target.value)} style={{ fontSize: 13, height: 40 }}>
+                <option value="">Select</option>
+                <option value="Mild">Mild</option>
+                <option value="Moderate">Moderate</option>
+                <option value="Severe">Severe</option>
+              </select>
+            </div>
+            <div>
+              <label style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 6, display: "block" }}>Age group</label>
+              <select className="input" value={ageGroup} onChange={e => setAgeGroup(e.target.value)} style={{ fontSize: 13, height: 40 }}>
+                <option value="Infant (0-2)">Infant (0-2)</option>
+                <option value="Child (3-12)">Child (3-12)</option>
+                <option value="Teen (13-19)">Teen (13-19)</option>
+                <option value="Adult (20-59)">Adult (20-59)</option>
+                <option value="Senior (60+)">Senior (60+)</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Analyze Button */}
+          <button 
+            className="btn btn-primary" 
+            onClick={handleAnalyze} 
+            disabled={loading}
+            style={{ 
+              width: "100%", padding: 14, fontSize: 15, fontWeight: 600,
+              background: "linear-gradient(90deg, #3b82f6, #06b6d4)",
+              border: "none", marginTop: 8
+            }}
+          >
+            {loading ? <><Loader className="spinner" size={18} /> {t.analyzingAI}</> : "Analyze Symptoms"}
+          </button>
         </div>
-
-        {/* Selected symptoms */}
-        {symptoms.length > 0 && (
-          <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-              {t.selectedSymptoms} ({symptoms.length})
-            </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-              <AnimatePresence>
-                {symptoms.map((sym) => (
-                  <motion.span
-                    key={sym}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    style={{
-                      display: "inline-flex", alignItems: "center", gap: 6,
-                      padding: "5px 10px",
-                      background: "rgba(0,229,255,0.08)", border: "1px solid rgba(0,229,255,0.2)",
-                      borderRadius: "var(--radius-sm)", fontSize: 13, color: "var(--text-primary)",
-                    }}
-                  >
-                    {sym}
-                    <button
-                      onClick={() => removeSymptom(sym)}
-                      style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", padding: 0, display: "flex" }}
-                    >
-                      <X size={12} />
-                    </button>
-                  </motion.span>
-                ))}
-              </AnimatePresence>
-            </div>
-          </div>
-        )}
-
-        {/* Advanced options */}
-        <button
-          onClick={() => setShowAdvanced(!showAdvanced)}
-          style={{
-            background: "none", border: "none", cursor: "pointer",
-            color: "var(--text-muted)", fontSize: 12,
-            display: "flex", alignItems: "center", gap: 6, marginBottom: showAdvanced ? 12 : 0,
-          }}
-        >
-          <ChevronDown size={14} style={{ transform: showAdvanced ? "rotate(180deg)" : "none", transition: "transform var(--transition)" }} />
-          {t.advancedOptions}
-        </button>
-
-        <AnimatePresence>
-          {showAdvanced && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              style={{ overflow: "hidden" }}
-            >
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
-                <div>
-                  <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Age</label>
-                  <input
-                    className="input" type="number" value={age}
-                    onChange={(e) => setAge(e.target.value)}
-                    placeholder="Your age"
-                    style={{ padding: "8px 12px" }}
-                  />
-                </div>
-                <div>
-                  <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Analysis Language</label>
-                  <select
-                    className="input"
-                    value={localLanguage}
-                    onChange={(e) => setLocalLanguage(e.target.value)}
-                    style={{ padding: "8px 12px", cursor: "pointer" }}
-                  >
-                    <option value="en">English</option>
-                    <option value="hi">Hindi (हिन्दी)</option>
-                    <option value="mr">Marathi (मराठी)</option>
-                    <option value="ta">Tamil (தமிழ்)</option>
-                    <option value="te">Telugu (తెలుగు)</option>
-                    <option value="hinglish">Hinglish</option>
-                  </select>
-                </div>
-              </div>
-
-              <button
-                onClick={getLocation}
-                disabled={locLoading}
-                className="btn btn-ghost"
-                style={{ fontSize: 12, padding: "7px 12px" }}
-              >
-                {locLoading ? <div className="spinner" style={{ width: 14, height: 14 }} /> : <MapPin size={14} />}
-                {location ? `Location: ${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}` : "Add Location (for hospital search)"}
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Analyze Button */}
-        <button
-          onClick={handleAnalyze}
-          disabled={symptoms.length === 0 || loading}
-          className="btn btn-primary"
-          style={{ width: "100%", marginTop: 16, padding: "13px", fontSize: 15 }}
-        >
-          {loading ? (
-            <>
-              <div className="spinner" style={{ width: 18, height: 18 }} />
-              {t.analyzingAI}
-            </>
-          ) : (
-            <>
-              <Stethoscope size={18} />
-              {t.analyzeSymptoms}
-            </>
-          )}
-        </button>
       </div>
 
-      {/* Results */}
+      {/* Results Section */}
       <AnimatePresence>
         {result && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            style={{ display: "flex", flexDirection: "column", gap: 16 }}
+            style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 24, alignItems: "start" }}
           >
-            {/* Triage Result */}
-            {result.triage && <SeverityCard result={result.triage} />}
+            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+              {/* Severity Card */}
+              {result.triage && <SeverityCard result={result.triage} />}
 
-            {/* Recommendations */}
-            {result.recommendations && (
-              <div className="glass-card" style={{ padding: 20 }}>
-                <h4 style={{ fontFamily: "var(--font-display)", marginBottom: 16, color: "var(--accent-cyan)" }}>
-                  💊 {t.recommendations}
-                </h4>
-
-                {result.recommendations.immediate_actions?.length > 0 && (
-                  <div style={{ marginBottom: 14 }}>
-                    <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                      {t.immediateActions}
+              {/* Recommended Specialist Card */}
+              {result.triage?.recommended_specialist && (
+                <div className="glass-card" style={{ padding: 24, background: "rgba(167,139,250,0.05)", border: "1px solid rgba(167,139,250,0.2)" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <div style={{ 
+                      width: 40, height: 40, background: "rgba(167,139,250,0.15)", 
+                      borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center" 
+                    }}>
+                      <User size={20} color="var(--accent-purple)" />
                     </div>
-                    <ul style={{ paddingLeft: 18 }}>
-                      {result.recommendations.immediate_actions.map((a, i) => (
-                        <li key={i} style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 4 }}>{a}</li>
-                      ))}
-                    </ul>
+                    <div>
+                      <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 2 }}>{t.recommendedSpecialist}</div>
+                      <div style={{ fontSize: 18, fontWeight: 800, color: "var(--text-primary)" }}>
+                        {result.triage.recommended_specialist}
+                      </div>
+                    </div>
                   </div>
-                )}
+                </div>
+              )}
 
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                  {result.recommendations.foods_to_eat?.length > 0 && (
-                    <div>
-                      <div style={{ fontSize: 12, color: "var(--accent-green)", marginBottom: 6, fontWeight: 600 }}>✅ {t.eat}</div>
-                      <ul style={{ paddingLeft: 16, fontSize: 12, color: "var(--text-secondary)" }}>
-                        {result.recommendations.foods_to_eat.map((f, i) => <li key={i} style={{ marginBottom: 3 }}>{f}</li>)}
-                      </ul>
+              {/* Recommendations */}
+              {result.recommendations && (
+                <div className="glass-card" style={{ padding: 24 }}>
+                  <h4 style={{ fontFamily: "var(--font-display)", marginBottom: 20, color: "var(--accent-cyan)", display: "flex", alignItems: "center", gap: 8 }}>
+                    <span>💊</span> {t.recommendations}
+                  </h4>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                    {result.recommendations.immediate_actions?.length > 0 && (
+                      <div>
+                        <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 700 }}>
+                          {t.immediateActions}
+                        </div>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                          {result.recommendations.immediate_actions.map((a, i) => (
+                            <div key={i} style={{ display: "flex", gap: 10, fontSize: 13, color: "var(--text-secondary)" }}>
+                              <span style={{ color: "var(--accent-cyan)" }}>•</span> {a}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+                      {result.recommendations.foods_to_eat?.length > 0 && (
+                        <div>
+                          <div style={{ fontSize: 11, color: "var(--accent-green)", marginBottom: 10, fontWeight: 700 }}>✅ {t.eat}</div>
+                          <ul style={{ paddingLeft: 16, fontSize: 13, color: "var(--text-secondary)" }}>
+                            {result.recommendations.foods_to_eat.map((f, i) => <li key={i} style={{ marginBottom: 4 }}>{f}</li>)}
+                          </ul>
+                        </div>
+                      )}
+                      {result.recommendations.foods_to_avoid?.length > 0 && (
+                        <div>
+                          <div style={{ fontSize: 11, color: "var(--accent-red)", marginBottom: 10, fontWeight: 700 }}>❌ {t.avoid}</div>
+                          <ul style={{ paddingLeft: 16, fontSize: 13, color: "var(--text-secondary)" }}>
+                            {result.recommendations.foods_to_avoid.map((f, i) => <li key={i} style={{ marginBottom: 4 }}>{f}</li>)}
+                          </ul>
+                        </div>
+                      )}
                     </div>
-                  )}
-                  {result.recommendations.foods_to_avoid?.length > 0 && (
-                    <div>
-                      <div style={{ fontSize: 12, color: "var(--accent-red)", marginBottom: 6, fontWeight: 600 }}>❌ {t.avoid}</div>
-                      <ul style={{ paddingLeft: 16, fontSize: 12, color: "var(--text-secondary)" }}>
-                        {result.recommendations.foods_to_avoid.map((f, i) => <li key={i} style={{ marginBottom: 3 }}>{f}</li>)}
-                      </ul>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Sidebar Results: Map & Hospitals */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+              <div className="glass-card" style={{ padding: 0, overflow: "hidden" }}>
+                <div style={{ padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid var(--border)" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <MapPin size={16} color="var(--accent-cyan)" />
+                    <h4 style={{ fontSize: 14, fontWeight: 700 }}>{t.nearbyHospitals}</h4>
+                  </div>
+                  <button onClick={getLocation} className="btn btn-ghost" style={{ padding: "4px 8px", fontSize: 11, height: 28, background: "rgba(59,130,246,0.1)", color: "var(--accent-blue)" }}>
+                    {t.useLocation}
+                  </button>
+                </div>
+
+                {/* Mini Map */}
+                <div style={{ height: 200, background: "var(--bg-secondary)", position: "relative" }}>
+                  {location ? (
+                    <iframe
+                      title="Hospital Map"
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      src={`https://maps.google.com/maps?q=${location.lat},${location.lng}&z=13&output=embed&theme=dark`}
+                    />
+                  ) : (
+                    <div style={{ height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 20, textAlign: "center" }}>
+                      <MapPin size={32} color="var(--text-muted)" style={{ marginBottom: 12, opacity: 0.3 }} />
+                      <p style={{ fontSize: 12, color: "var(--text-muted)" }}>Enable location to see nearby hospitals on map</p>
                     </div>
                   )}
                 </div>
 
-                {result.recommendations.follow_up_timeline && (
-                  <div style={{
-                    marginTop: 14, padding: "10px 14px",
-                    background: "rgba(0,229,255,0.06)", border: "1px solid rgba(0,229,255,0.15)",
-                    borderRadius: "var(--radius-sm)", fontSize: 13, color: "var(--text-secondary)",
-                  }}>
-                    🕐 <strong>{t.followUp}:</strong> {result.recommendations.follow_up_timeline}
-                  </div>
-                )}
+                {/* Hospital List */}
+                <div style={{ padding: "16px", maxHeight: 400, overflowY: "auto" }}>
+                  {result.hospitals?.hospitals?.length > 0 ? (
+                    <>
+                      <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 12 }}>
+                        {t.foundHospitals}: {result.hospitals.hospitals.length}
+                      </div>
+                      {result.hospitals.hospitals.map((h, i) => (
+                        <HospitalItem key={h.id} hospital={h} index={i} />
+                      ))}
+                    </>
+                  ) : (
+                    <div style={{ textAlign: "center", padding: "20px 0" }}>
+                      <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
+                        {location ? t.noHospitals : "Location required for hospital search"}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
 
-            {/* Translated Advice */}
-            {result.translatedAdvice && language !== "en" && (
-              <div className="glass-card" style={{ padding: 20 }}>
-                <h4 style={{ fontFamily: "var(--font-display)", marginBottom: 12, fontSize: 14 }}>
-                  🌐 {result.translatedAdvice.language} Translation
-                </h4>
-                <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.7 }}>
-                  {result.translatedAdvice.translated_text}
-                </p>
-              </div>
-            )}
+              {/* Translation Card (if any) */}
+              {result.translatedAdvice && localLanguage !== "en" && (
+                <div className="glass-card" style={{ padding: 20 }}>
+                  <div style={{ fontSize: 11, color: "var(--accent-cyan)", marginBottom: 8, fontWeight: 700, textTransform: "uppercase" }}>
+                    🌐 {result.translatedAdvice.language} Translation
+                  </div>
+                  <p style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.6 }}>
+                    {result.translatedAdvice.translated_text}
+                  </p>
+                </div>
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

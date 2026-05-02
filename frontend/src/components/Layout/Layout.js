@@ -3,8 +3,8 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard, MessageSquare, Stethoscope, MapPin,
-  FileText, User, LogOut, Menu, X, AlertCircle, Zap,
-  Activity, Pill, Brain, Apple, Sparkles, Cpu, History,
+  FileText, User, LogOut, Menu, X, AlertCircle, 
+  Zap, Pill, Brain, Apple, Sparkles, Cpu, History,
   Sun, Moon, Languages, Globe
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
@@ -20,13 +20,14 @@ const getNavSections = (t) => [
     items: [
       { to: "/dashboard", icon: LayoutDashboard, label: t.dashboard },
       { to: "/chat", icon: MessageSquare, label: t.aiChat },
+      { to: "/family-doctor", icon: Stethoscope, label: t.familyDoctor },
       { to: "/analyze", icon: Stethoscope, label: t.symptomAnalyzer },
     ],
   },
   {
     label: t.healthTracking,
     items: [
-      { to: "/vitals", icon: Activity, label: t.vitalsTracker },
+      { to: "/vitals", icon: Zap, label: t.vitalsTracker },
       { to: "/medications", icon: Pill, label: t.medications },
       { to: "/nutrition", icon: Apple, label: t.nutrition },
       { to: "/mental-health", icon: Brain, label: t.mentalHealth },
@@ -50,6 +51,10 @@ const getNavSections = (t) => [
   },
 ];
 
+import { io } from "socket.io-client";
+import CallNotification from "../Communication/CallNotification";
+import ChatInterface from "../Communication/ChatInterface";
+
 const Layout = () => {
   const { user, logout } = useAuth();
   const { isDarkMode, toggleTheme } = useTheme();
@@ -58,8 +63,54 @@ const Layout = () => {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  const [incomingCall, setIncomingCall] = useState(null);
+  const [activeCall, setActiveCall] = useState(null);
+  
+  const socketRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (user) {
+      const socket = io(process.env.REACT_APP_API_URL || "http://localhost:5000");
+      socketRef.current = socket;
+      socket.emit("join-room", user._id);
+
+      socket.on("incoming-call", (data) => {
+        setIncomingCall(data);
+      });
+
+      socket.on("call-ended", () => {
+        setActiveCall(null);
+        setIncomingCall(null);
+        toast.error("Call ended");
+      });
+
+      return () => socket.disconnect();
+    }
+  }, [user]);
+
+  const handleAcceptCall = () => {
+    setActiveCall({ user: { _id: incomingCall.from, name: "Provider" }, type: incomingCall.type });
+    setIncomingCall(null);
+    // In real app, we would send signal back
+  };
   const score = user?.healthScore || 75;
-  const navSections = getNavSections(t);
+  const isDoctor = user?.role === "doctor";
+  
+  const navSections = isDoctor ? [
+    {
+      label: t.core,
+      items: [
+        { to: "/dashboard", icon: LayoutDashboard, label: t.dashboard },
+        { to: "/chat", icon: MessageSquare, label: t.aiChat },
+      ],
+    },
+    {
+      label: t.account,
+      items: [
+        { to: "/profile", icon: User, label: t.profile },
+      ],
+    },
+  ] : getNavSections(t);
 
   const handleLogout = () => {
     logout();
@@ -79,12 +130,12 @@ const Layout = () => {
           <Zap size={17} color="#060b14" strokeWidth={2.5} />
         </div>
         <div>
-          <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17 }}>SwasthAI</div>
+          <div style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 17 }}>MediMind</div>
           <div style={{ fontSize: 9, color: "var(--text-muted)", letterSpacing: "0.1em", textTransform: "uppercase" }}>Healthcare Agent</div>
         </div>
       </div>
 
-      {user && (
+      {user && !isDoctor && (
         <div className="glass-card" style={{ padding: "12px 14px", marginBottom: 18 }}>
           <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 5 }}>{t.healthScore}</div>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -122,9 +173,11 @@ const Layout = () => {
       </nav>
 
       <div style={{ marginTop: 8 }}>
-        <button onClick={() => { navigate("/emergency"); mobile && setMobileOpen(false); }} className="btn btn-danger" style={{ width: "100%", marginBottom: 8, justifyContent: "center", padding: "9px", fontSize: 13 }}>
-          <AlertCircle size={15} /> {t.emergencySos}
-        </button>
+        {!isDoctor && (
+          <button onClick={() => { navigate("/emergency"); mobile && setMobileOpen(false); }} className="btn btn-danger" style={{ width: "100%", marginBottom: 8, justifyContent: "center", padding: "9px", fontSize: 13 }}>
+            <AlertCircle size={15} /> {t.emergencySos}
+          </button>
+        )}
         <div style={{ display: "flex", gap: 8 }}>
           <button onClick={handleLogout} className="btn btn-ghost" style={{ flex: 1, justifyContent: "center", padding: "9px", fontSize: 13 }}>
             <LogOut size={15} /> {t.logout}
@@ -192,7 +245,7 @@ const Layout = () => {
       <div className="desktop-sidebar"><Sidebar /></div>
       <div style={{ display: "none", position: "fixed", top: 0, left: 0, right: 0, zIndex: 200, background: "var(--bg-secondary)", borderBottom: "1px solid var(--border)", padding: "12px 16px", alignItems: "center", justifyContent: "space-between" }} className="mobile-topbar">
         <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-display)", fontWeight: 800 }}>
-          <Zap size={20} color="var(--accent-cyan)" />SwasthAI
+          <Zap size={20} color="var(--accent-cyan)" />MediMind
         </div>
         <button onClick={() => setMobileOpen(!mobileOpen)} style={{ background: "none", border: "none", color: "var(--text-primary)", cursor: "pointer" }}>
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
@@ -207,6 +260,24 @@ const Layout = () => {
         )}
       </AnimatePresence>
       <main className="main-content"><Outlet /></main>
+      
+      <AnimatePresence>
+        {incomingCall && (
+          <CallNotification 
+            call={incomingCall} 
+            onAccept={handleAcceptCall} 
+            onReject={() => setIncomingCall(null)} 
+          />
+        )}
+        {activeCall && (
+          <ChatInterface 
+            otherUser={activeCall.user} 
+            type={activeCall.type} 
+            onClose={() => setActiveCall(null)} 
+          />
+        )}
+      </AnimatePresence>
+
       <style>{`@media (max-width: 768px) { .desktop-sidebar { display: none !important; } .mobile-topbar { display: flex !important; } .main-content { margin-left: 0 !important; padding-top: 56px; } }`}</style>
     </div>
   );

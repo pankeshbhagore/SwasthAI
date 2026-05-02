@@ -1,7 +1,7 @@
 {
-  "name": "swasthai",
+  "name": "medimind",
   "version": "1.0.0",
-  "description": "SwasthAI - Intelligent Public Health Copilot",
+  "description": "MediMind - Intelligent Public Health Copilot",
   "scripts": {
     "install:all": "cd backend && npm install && cd ../frontend && npm install",
     "dev:backend": "cd backend && npm run dev",
@@ -10,6 +10,6 @@
     "start:frontend": "cd frontend && npm run build"
   },
   "keywords": ["healthcare", "ai", "india", "hackathon"],
-  "author": "SwasthAI Team",
+  "author": "MediMind Team",
   "license": "MIT"
 }

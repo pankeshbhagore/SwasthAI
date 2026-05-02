@@ -55,6 +55,8 @@ const TagInput = ({ values = [], onChange, placeholder }) => {
 
 const ProfilePage = () => {
   const { user, updateUser } = useAuth();
+  const isDoctor = user?.role === "doctor";
+
   const [form, setForm] = useState({
     name: user?.name || "",
     phone: user?.phone || "",
@@ -64,6 +66,7 @@ const ProfilePage = () => {
     address: user?.address || {},
     emergencyContact: user?.emergencyContact || { name: "", phone: "", relation: "" },
     medicalHistory: user?.medicalHistory || { allergies: [], chronicConditions: [], currentMedications: [] },
+    doctorInfo: user?.doctorInfo || { specialization: "", hospital: "", experience: "" },
     preferredLanguage: user?.preferredLanguage || "en",
   });
   const [saving, setSaving] = useState(false);
@@ -88,10 +91,10 @@ const ProfilePage = () => {
     <div style={{ padding: 32, maxWidth: 800 }}>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} style={{ marginBottom: 28 }}>
         <h1 style={{ fontFamily: "var(--font-display)", fontSize: 26, fontWeight: 800, marginBottom: 6 }}>
-          Health Profile
+          {isDoctor ? "Professional Profile" : "Health Profile"}
         </h1>
         <p style={{ color: "var(--text-muted)", fontSize: 14 }}>
-          Keep your profile updated for more accurate AI analysis
+          {isDoctor ? "Manage your professional details and availability" : "Keep your profile updated for more accurate AI analysis"}
         </p>
       </motion.div>
 
@@ -107,27 +110,33 @@ const ProfilePage = () => {
               <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Phone</label>
               <input className="input" value={form.phone} onChange={set("phone")} placeholder="+91 98765 43210" />
             </div>
-            <div>
-              <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Age</label>
-              <input className="input" type="number" value={form.age} onChange={set("age")} placeholder="Age" />
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              <div>
+                <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Age</label>
+                <input className="input" type="number" value={form.age} onChange={set("age")} placeholder="Age" />
+              </div>
+              <div>
+                <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Gender</label>
+                <select className="input" value={form.gender} onChange={set("gender")}>
+                  <option value="">Select</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                  <option value="prefer_not_to_say">Prefer not to say</option>
+                </select>
+              </div>
             </div>
-            <div>
-              <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Gender</label>
-              <select className="input" value={form.gender} onChange={set("gender")}>
-                <option value="">Select</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-                <option value="prefer_not_to_say">Prefer not to say</option>
-              </select>
-            </div>
-            <div>
-              <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Blood Group</label>
-              <select className="input" value={form.bloodGroup} onChange={set("bloodGroup")}>
-                <option value="">Select</option>
-                {["A+","A-","B+","B-","AB+","AB-","O+","O-"].map(bg => <option key={bg} value={bg}>{bg}</option>)}
-              </select>
-            </div>
+            
+            {!isDoctor && (
+              <div>
+                <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Blood Group</label>
+                <select className="input" value={form.bloodGroup} onChange={set("bloodGroup")}>
+                  <option value="">Select</option>
+                  {["A+","A-","B+","B-","AB+","AB-","O+","O-"].map(bg => <option key={bg} value={bg}>{bg}</option>)}
+                </select>
+              </div>
+            )}
+            
             <div>
               <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Language</label>
               <select className="input" value={form.preferredLanguage} onChange={set("preferredLanguage")}>
@@ -142,37 +151,65 @@ const ProfilePage = () => {
           </div>
         </Section>
 
-        {/* Emergency Contact */}
-        <Section title="Emergency Contact" icon={Phone} color="var(--accent-red)">
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
-            {[["name","Contact Name"],["phone","Phone Number"],["relation","Relation"]].map(([key, label]) => (
-              <div key={key}>
-                <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>{label}</label>
-                <input className="input" value={form.emergencyContact[key] || ""} onChange={setNested("emergencyContact", key)} placeholder={label} />
+        {isDoctor ? (
+          /* Professional Info for Doctors */
+          <Section title="Professional Information" icon={Shield} color="var(--accent-cyan)">
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
+                <div>
+                  <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Specialization</label>
+                  <input className="input" value={form.doctorInfo.specialization} onChange={setNested("doctorInfo", "specialization")} placeholder="e.g. Cardiologist" />
+                </div>
+                <div>
+                  <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Degree / Type</label>
+                  <input className="input" value={form.doctorInfo.degree || ""} onChange={setNested("doctorInfo", "degree")} placeholder="e.g. MD, MBBS" />
+                </div>
+                <div>
+                  <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Experience (Years)</label>
+                  <input className="input" type="number" value={form.doctorInfo.experience} onChange={setNested("doctorInfo", "experience")} placeholder="e.g. 10" />
+                </div>
               </div>
-            ))}
-          </div>
-        </Section>
+              <div>
+                <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Hospital / Clinic Name</label>
+                <input className="input" value={form.doctorInfo.hospital} onChange={setNested("doctorInfo", "hospital")} placeholder="e.g. Apollo Hospital" />
+              </div>
+            </div>
+          </Section>
+        ) : (
+          <>
+            {/* Emergency Contact */}
+            <Section title="Emergency Contact" icon={Phone} color="var(--accent-red)">
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
+                {[["name","Contact Name"],["phone","Phone Number"],["relation","Relation"]].map(([key, label]) => (
+                  <div key={key}>
+                    <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>{label}</label>
+                    <input className="input" value={form.emergencyContact[key] || ""} onChange={setNested("emergencyContact", key)} placeholder={label} />
+                  </div>
+                ))}
+              </div>
+            </Section>
 
-        {/* Medical History */}
-        <Section title="Medical History" icon={Heart} color="var(--accent-green)">
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {[
-              { key: "allergies", label: "Allergies", placeholder: "e.g. Penicillin, Peanuts" },
-              { key: "chronicConditions", label: "Chronic Conditions", placeholder: "e.g. Diabetes, Hypertension" },
-              { key: "currentMedications", label: "Current Medications", placeholder: "e.g. Metformin 500mg" },
-            ].map(({ key, label, placeholder }) => (
-              <div key={key}>
-                <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</label>
-                <TagInput
-                  values={form.medicalHistory[key] || []}
-                  onChange={(v) => setForm((p) => ({ ...p, medicalHistory: { ...p.medicalHistory, [key]: v } }))}
-                  placeholder={placeholder}
-                />
+            {/* Medical History */}
+            <Section title="Medical History" icon={Heart} color="var(--accent-green)">
+              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                {[
+                  { key: "allergies", label: "Allergies", placeholder: "e.g. Penicillin, Peanuts" },
+                  { key: "chronicConditions", label: "Chronic Conditions", placeholder: "e.g. Diabetes, Hypertension" },
+                  { key: "currentMedications", label: "Current Medications", placeholder: "e.g. Metformin 500mg" },
+                ].map(({ key, label, placeholder }) => (
+                  <div key={key}>
+                    <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</label>
+                    <TagInput
+                      values={form.medicalHistory[key] || []}
+                      onChange={(v) => setForm((p) => ({ ...p, medicalHistory: { ...p.medicalHistory, [key]: v } }))}
+                      placeholder={placeholder}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </Section>
+            </Section>
+          </>
+        )}
 
         {/* Save */}
         <button onClick={handleSave} disabled={saving} className="btn btn-primary" style={{ padding: "13px", fontSize: 15 }}>

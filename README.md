@@ -1,6 +1,6 @@
-# SwasthAI – Intelligent Public Health Copilot
+# MediMind – Intelligent Public Health Copilot
 
-SwasthAI is a production-level AI-driven platform designed to revolutionize public health response and individual healthcare management in India. It leverages a multi-agent AI system for real-time triage, symptom analysis, and emergency coordination.
+MediMind is a production-level AI-driven platform designed to revolutionize public health response and individual healthcare management in India. It leverages a multi-agent AI system for real-time triage, symptom analysis, and emergency coordination.
 
 ## 🚀 Key Features
 
@@ -21,7 +21,7 @@ SwasthAI is a production-level AI-driven platform designed to revolutionize publ
 ## 📂 Project Structure
 
 ```text
-swasthai/
+medimind/
 ├── backend/
 │   ├── src/
 │   │   ├── controllers/   # Request handlers

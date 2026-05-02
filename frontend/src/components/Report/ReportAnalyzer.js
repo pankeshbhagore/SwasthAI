@@ -51,7 +51,7 @@ const ReportAnalyzer = () => {
       } else {
         res = await api.post("/reports/analyze-text", { text: reportText });
       }
-      setResult(res.data.analysis);
+      setResult(res.data.data.analysis);
       toast.success("Report analyzed successfully!");
     } catch (error) {
       toast.error(error.message || "Analysis failed. Please try again.");

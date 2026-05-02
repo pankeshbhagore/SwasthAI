@@ -55,7 +55,7 @@ exports.analyzeHealth = async (req, res, next) => {
  */
 exports.chatWithAI = async (req, res, next) => {
   try {
-    const { messages } = req.body;
+    const { messages, language } = req.body;
 
     if (!messages || !Array.isArray(messages)) {
       return res.status(400).json({ success: false, message: "Messages array required" });
@@ -67,9 +67,9 @@ exports.chatWithAI = async (req, res, next) => {
           age: req.user.age,
           city: req.user.address?.city,
           conditions: req.user.medicalHistory?.chronicConditions,
-          language: req.user.preferredLanguage,
+          language: language || req.user.preferredLanguage,
         }
-      : {};
+      : { language };
 
     const result = await aiService.chat(messages, userContext);
     res.json({ success: true, data: result });

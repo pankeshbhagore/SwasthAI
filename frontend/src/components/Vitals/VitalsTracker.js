@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Activity, Plus, TrendingUp, AlertTriangle, Heart, Droplets, Thermometer, Wind } from "lucide-react";
+import { Zap, Plus, TrendingUp, AlertTriangle, Heart, Droplets, Thermometer, Wind } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import api from "../../utils/api";
 import { useAuth } from "../../context/AuthContext";
@@ -11,11 +11,11 @@ import toast from "react-hot-toast";
 const VITALS_FIELDS = [
   { key: "systolic", label: "Systolic BP", unit: "mmHg", icon: Heart, color: "#ff3d71", min: 70, max: 250, normal: "90-120", placeholder: "120" },
   { key: "diastolic", label: "Diastolic BP", unit: "mmHg", icon: Heart, color: "#ff8c00", min: 40, max: 150, normal: "60-80", placeholder: "80" },
-  { key: "heartRate", label: "Heart Rate", unit: "bpm", icon: Activity, color: "#00e5ff", min: 30, max: 220, normal: "60-100", placeholder: "72" },
+  { key: "heartRate", label: "Heart Rate", unit: "bpm", icon: Zap, color: "#00e5ff", min: 30, max: 220, normal: "60-100", placeholder: "72" },
   { key: "bloodSugar", label: "Blood Sugar", unit: "mg/dL", icon: Droplets, color: "#a78bfa", min: 40, max: 600, normal: "70-100 fasting", placeholder: "90" },
   { key: "temperature", label: "Temperature", unit: "°F", icon: Thermometer, color: "#ffb300", min: 95, max: 110, normal: "98.6", placeholder: "98.6" },
   { key: "oxygenSat", label: "SpO2", unit: "%", icon: Wind, color: "#00ff88", min: 70, max: 100, normal: "95-100", placeholder: "98" },
-  { key: "weight", label: "Weight", unit: "kg", icon: Activity, color: "#7dd3fc", min: 1, max: 500, normal: "BMI 18.5-25", placeholder: "65" },
+  { key: "weight", label: "Weight", unit: "kg", icon: Zap, color: "#7dd3fc", min: 1, max: 500, normal: "BMI 18.5-25", placeholder: "65" },
 ];
 
 const AlertBanner = ({ alerts }) => {
@@ -64,6 +64,13 @@ const VitalsTracker = () => {
 
   const handleSave = async () => {
     if (!Object.keys(form).length) { toast.error("Enter at least one vital"); return; }
+    
+    // Quick frontend validation
+    if (form.oxygenSat && Number(form.oxygenSat) > 100) {
+      toast.error("SpO2 cannot exceed 100%");
+      return;
+    }
+
     setSaving(true);
     try {
       const payload = {
@@ -81,7 +88,11 @@ const VitalsTracker = () => {
       toast.success("Vitals saved!");
       setForm({});
       fetchVitals();
-    } catch { toast.error("Failed to save vitals"); } finally { setSaving(false); }
+    } catch (err) {
+      const msg = err.response?.data?.message || "Failed to save vitals";
+      toast.error(msg);
+      console.error("Vitals Error:", err.response?.data);
+    } finally { setSaving(false); }
   };
 
   const chartData = vitals.slice(0, 14).reverse().map((v, i) => ({
@@ -116,7 +127,7 @@ const VitalsTracker = () => {
       {/* Log Form */}
       <div className="glass-card" style={{ padding: 24 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
-          <Activity size={20} color="var(--accent-cyan)" />
+          <Zap size={20} color="var(--accent-cyan)" />
           <h3 style={{ fontFamily: "var(--font-display)", fontSize: 16 }}>{t.logVitals}</h3>
           <span style={{ marginLeft: "auto", fontSize: 11, color: "var(--accent-green)", background: "rgba(0,255,136,0.1)", padding: "2px 8px", borderRadius: "100px", border: "1px solid rgba(0,255,136,0.2)" }}>{t.mlRiskAnalysis}</span>
         </div>
@@ -154,9 +165,9 @@ const VitalsTracker = () => {
               <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15 }}>{t.vitalsTrend}</h3>
             </div>
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-              {VITALS_FIELDS.slice(0, 5).map(f => (
+              {VITALS_FIELDS.map(f => (
                 <button key={f.key} onClick={() => setActiveChart(f.key)}
-                  style={{ padding: "4px 10px", fontSize: 11, borderRadius: "var(--radius-sm)", border: `1px solid ${activeChart === f.key ? f.color : "var(--border)"}`, background: activeChart === f.key ? `${f.color}15` : "transparent", color: activeChart === f.key ? f.color : "var(--text-muted)", cursor: "pointer" }}>
+                  style={{ padding: "4px 10px", fontSize: 10, borderRadius: "var(--radius-sm)", border: `1px solid ${activeChart === f.key ? f.color : "var(--border)"}`, background: activeChart === f.key ? `${f.color}15` : "transparent", color: activeChart === f.key ? f.color : "var(--text-muted)", cursor: "pointer" }}>
                   {getFieldLabel(f.key).split(" ")[0]}
                 </button>
               ))}

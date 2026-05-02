@@ -2,6 +2,8 @@ import React from "react";
 import { motion } from "framer-motion";
 import { AlertCircle, AlertTriangle, CheckCircle, Info } from "lucide-react";
 import { getSeverityColor, getSeverityBadgeClass } from "../../utils/helpers";
+import { useLanguage } from "../../context/LanguageContext";
+import { uiTranslations } from "../../utils/translations";
 
 const icons = {
   EMERGENCY: AlertCircle,
@@ -11,6 +13,9 @@ const icons = {
 };
 
 const SeverityCard = ({ result, compact = false }) => {
+  const { language } = useLanguage();
+  const t = uiTranslations[language] || uiTranslations.en;
+
   if (!result) return null;
 
   const severity = result.severity || "NORMAL";
@@ -42,12 +47,12 @@ const SeverityCard = ({ result, compact = false }) => {
             <Icon size={20} color={color} />
           </div>
           <div>
-            <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 2 }}>Assessment</div>
+            <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 2 }}>{t.assessment}</div>
             <span className={`severity-badge ${badgeClass}`}>{severity}</span>
           </div>
         </div>
         <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: 11, color: "var(--text-muted)" }}>Risk Level</div>
+          <div style={{ fontSize: 11, color: "var(--text-muted)" }}>{t.riskLevel}</div>
           <div style={{ fontSize: 14, fontWeight: 700, color, textTransform: "uppercase" }}>
             {result.risk || "LOW"}
           </div>
@@ -76,7 +81,7 @@ const SeverityCard = ({ result, compact = false }) => {
           {result.possible_conditions?.length > 0 && (
             <div style={{ marginBottom: 14 }}>
               <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                Possible Conditions
+                {t.possibleConditions}
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                 {result.possible_conditions.map((c, i) => (
@@ -97,7 +102,7 @@ const SeverityCard = ({ result, compact = false }) => {
           {result.next_steps?.length > 0 && (
             <div>
               <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                Next Steps
+                {t.nextSteps}
               </div>
               <ol style={{ paddingLeft: 18 }}>
                 {result.next_steps.map((step, i) => (
@@ -127,7 +132,7 @@ const SeverityCard = ({ result, compact = false }) => {
           }}
         >
           <span style={{ fontSize: 13, color: "var(--accent-red)", fontWeight: 600 }}>
-            🚨 Call Emergency Services NOW
+            🚨 {t.callEmergencyNow}
           </span>
           <a
             href="tel:108"

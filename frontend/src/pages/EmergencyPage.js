@@ -140,7 +140,7 @@ const EmergencyPage = () => {
         </div>
         <Link to="/" style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "var(--text-muted)" }}>
           <Zap size={16} color="var(--accent-cyan)" />
-          SwasthAI
+          MediMind
         </Link>
       </div>
 

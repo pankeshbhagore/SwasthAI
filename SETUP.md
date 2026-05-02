@@ -1,4 +1,4 @@
-# 🚀 SwasthAI — Quick Setup Guide
+# 🚀 MediMind — Quick Setup Guide
 
 ## ⚡ Fastest Way to Run (5 minutes)
 
@@ -7,7 +7,7 @@ Works with rule-based triage — no OpenAI needed.
 
 ```bash
 # 1. Clone / extract project
-cd swasthai
+cd medimind
 
 # 2. Install backend
 cd backend
@@ -35,7 +35,7 @@ Open **http://localhost:3000**
 Login:
 - **rahul@demo.com** / demo123
 - **priya@demo.com** / demo123
-- **admin@swasthai.com** / admin123
+- **admin@medimind.com** / admin123
 
 ---
 
@@ -183,4 +183,4 @@ MongoDB Atlas / Local
 
 ---
 
-*Built with ❤️ for Bharat — SwasthAI Hackathon 2024*
+*Built with ❤️ for Bharat — MediMind Hackathon 2024*

@@ -12,10 +12,10 @@ export const LANGUAGES = [
 ];
 
 export const LanguageProvider = ({ children }) => {
-  const [language, setLanguage] = useState(localStorage.getItem("swasthai_lang") || "en");
+  const [language, setLanguage] = useState(localStorage.getItem("medimind_lang") || "en");
 
   useEffect(() => {
-    localStorage.setItem("swasthai_lang", language);
+    localStorage.setItem("medimind_lang", language);
     const langData = LANGUAGES.find(l => l.code === language);
     document.documentElement.dir = langData?.dir || "ltr";
     document.documentElement.lang = language;

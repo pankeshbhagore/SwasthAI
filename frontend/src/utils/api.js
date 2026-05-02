@@ -10,7 +10,7 @@ const api = axios.create({
 // Request interceptor — attach token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("swasthai_token");
+    const token = localStorage.getItem("medimind_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -25,7 +25,7 @@ api.interceptors.response.use(
   (error) => {
     const message = error.response?.data?.message || "Something went wrong";
     if (error.response?.status === 401) {
-      localStorage.removeItem("swasthai_token");
+      localStorage.removeItem("medimind_token");
       window.location.href = "/login";
     } else if (error.response?.status >= 500) {
       toast.error("Server error. Please try again.");

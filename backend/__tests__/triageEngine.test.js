@@ -1,5 +1,5 @@
 /**
- * SwasthAI Triage Engine Tests
+ * MediMind Triage Engine Tests
  * Run: cd backend && npm test
  */
 

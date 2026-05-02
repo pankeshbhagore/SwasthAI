@@ -1,7 +1,7 @@
 {
-  "name": "swasthai-backend",
+  "name": "medimind-backend",
   "version": "1.0.0",
-  "description": "SwasthAI - Intelligent Public Health Copilot Backend",
+  "description": "MediMind - Intelligent Public Health Copilot Backend",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
@@ -11,6 +11,7 @@
     "seed": "node seed.js"
   },
   "dependencies": {
+    "axios": "^1.6.2",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -22,13 +23,14 @@
     "mongoose": "^8.0.3",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
+    "node-cron": "^4.2.1",
     "node-fetch": "^3.3.2",
     "openai": "^4.20.1",
+    "pdf-parse": "1.1.1",
+    "pdfkit": "^0.15.0",
     "socket.io": "^4.6.1",
     "twilio": "^4.19.3",
-    "uuid": "^9.0.1",
-    "axios": "^1.6.2",
-    "pdfkit": "^0.15.0"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "jest": "^29.7.0",

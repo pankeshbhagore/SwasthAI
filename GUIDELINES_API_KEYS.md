@@ -1,6 +1,6 @@
-# SwasthAI – External API Keys Setup Guidelines
+# MediMind – External API Keys Setup Guidelines
 
-To fully unlock the potential of SwasthAI, you need to configure several external API keys. Follow this guide to set them up in your `backend/.env` file.
+To fully unlock the potential of MediMind, you need to configure several external API keys. Follow this guide to set them up in your `backend/.env` file.
 
 ## 1. OpenAI API Key (Required)
 Used for the multi-agent AI system, health analysis, and conversational assistant.
@@ -30,10 +30,15 @@ Used for providing localized environmental health alerts.
   - `WAQI_TOKEN=your_token`
   - `OPENWEATHER_API_KEY=your_key`
 
-## 5. MongoDB (Required)
+## 5. NewsAPI (Optional)
+Used for the Health News dashboard to pull real-time health advisories and medical articles.
+- **Where to get**: [NewsAPI.org](https://newsapi.org/)
+- **Variable**: `NEWS_API_KEY=your_key_here`
+
+## 6. MongoDB (Required)
 Used for storing user data, health history, and vitals.
-- **Local**: `mongodb://localhost:27017/swasthai`
-- **Atlas**: `mongodb+srv://<user>:<password>@cluster.mongodb.net/swasthai`
+- **Local**: `mongodb://localhost:27017/medimind`
+- **Atlas**: `mongodb+srv://<user>:<password>@cluster.mongodb.net/medimind`
 - **Variable**: `MONGO_URI=your_uri`
 
 ---

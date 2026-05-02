@@ -8,7 +8,7 @@ const FEATURES = [
   { icon: Stethoscope, label: "Smart Triage", desc: "Hybrid rule engine + LLM detects emergency vs mild instantly", color: "#00ff88" },
   { icon: MapPin, label: "Hospital Locator", desc: "Find nearest hospitals ranked by distance and emergency capability", color: "#a78bfa" },
   { icon: Globe, label: "Multilingual", desc: "Full support for Hindi, Tamil, Telugu, Marathi & more Indian languages", color: "#ffb300" },
-  { icon: Mic, label: "Voice Input", desc: "Speak your symptoms in your language — SwasthAI understands", color: "#ff3d71" },
+  { icon: Mic, label: "Voice Input", desc: "Speak your symptoms in your language — MediMind understands", color: "#ff3d71" },
   { icon: Shield, label: "Offline Triage", desc: "Rule-based engine works without internet — always available", color: "#00e5ff" },
 ];
 
@@ -26,7 +26,7 @@ const HomePage = () => {
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 20 }}>
           <Zap size={22} color="var(--accent-cyan)" />
-          SwasthAI
+          MediMind
         </div>
         <div style={{ display: "flex", gap: 12 }}>
           <button onClick={() => navigate("/login")} className="btn btn-ghost">Sign In</button>
@@ -75,7 +75,7 @@ const HomePage = () => {
             fontSize: "clamp(15px, 2vw, 18px)", color: "var(--text-secondary)",
             maxWidth: 580, margin: "0 auto 40px", lineHeight: 1.7,
           }}>
-            SwasthAI uses a multi-agent AI system to analyze symptoms, predict risks, detect emergencies, and guide you to the right care — in your language.
+            MediMind uses a multi-agent AI system to analyze symptoms, predict risks, detect emergencies, and guide you to the right care — in your language.
           </p>
 
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
@@ -171,7 +171,7 @@ const HomePage = () => {
           Ready to experience AI healthcare?
         </h2>
         <p style={{ color: "var(--text-muted)", marginBottom: 28 }}>
-          Join thousands getting smarter health guidance with SwasthAI
+          Join thousands getting smarter health guidance with Kaaya
         </p>
         <button onClick={() => navigate("/register")} className="btn btn-primary" style={{ padding: "14px 32px", fontSize: 16 }}>
           Get Started — It's Free <ArrowRight size={18} />
@@ -180,9 +180,9 @@ const HomePage = () => {
 
       {/* Footer */}
       <footer style={{ padding: "24px 48px", borderTop: "1px solid var(--border)", textAlign: "center", color: "var(--text-muted)", fontSize: 12 }}>
-        <p>SwasthAI — Intelligent Public Health Copilot · Built for Hackathon 2024</p>
+        <p>Kaaya — Intelligent Public Health Copilot </p>
         <p style={{ marginTop: 6 }}>
-          ⚠️ SwasthAI provides health information only. Always consult a qualified doctor for medical diagnosis and treatment.
+          ⚠️ Kaaya provides health information only. Always consult a qualified doctor for medical diagnosis and treatment.
         </p>
       </footer>
     </div>

@@ -1,5 +1,5 @@
 """
-SwasthAI ML Service
+MediMind ML Service
 - Symptom Disease Classifier (Random Forest + SVM ensemble)
 - Risk Score Predictor (Gradient Boosting)
 - Symptom Embedding via TF-IDF
@@ -115,7 +115,7 @@ VITALS_TRAINING = [
 ]
 
 
-class SwasthAIMLService:
+class MediMindMLService:
     def __init__(self):
         self.symptom_model = None
         self.vitals_model = None
@@ -126,7 +126,7 @@ class SwasthAIMLService:
         self.is_trained = False
 
     def train(self):
-        print("Training SwasthAI ML Models...")
+        print("Training MediMind ML Models...")
 
         # -- Symptom Classifier ----------------------------------------------
         texts = [d[0] for d in TRAINING_DATA]
@@ -277,7 +277,7 @@ class SwasthAIMLService:
 
 
 # Initialize and train
-ml = SwasthAIMLService()
+ml = MediMindMLService()
 ml.load_models()
 
 
@@ -285,7 +285,7 @@ ml.load_models()
 
 @app.route("/health")
 def health():
-    return jsonify({"status": "ok", "service": "SwasthAI ML Service", "trained": ml.is_trained})
+    return jsonify({"status": "ok", "service": "MediMind ML Service", "trained": ml.is_trained})
 
 
 @app.route("/predict/disease", methods=["POST"])
@@ -341,5 +341,5 @@ def model_info():
 
 if __name__ == "__main__":
     port = int(os.environ.get("ML_PORT", 5001))
-    print(f"SwasthAI ML Service starting on port {port}")
+    print(f"MediMind ML Service starting on port {port}")
     app.run(host="0.0.0.0", port=port, debug=False)

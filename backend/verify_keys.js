@@ -146,7 +146,7 @@ async function verifyMongoDB() {
 }
 
 async function runAllTests() {
-  console.log("SwasthAI API Verification Tool");
+  console.log("MediMind API Verification Tool");
   console.log("===============================");
   
   await verifyMongoDB();

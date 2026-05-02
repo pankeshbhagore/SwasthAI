@@ -33,6 +33,7 @@ class AIService {
         age,
         chronicConditions: medicalHistory,
         city: user?.address?.city,
+        language: language || "en",
       });
 
       // Find nearby hospitals if location provided
@@ -78,7 +79,11 @@ User Context:
 - Age: ${userContext.age || "Unknown"}
 - Location: ${userContext.city || "India"}
 - Known conditions: ${userContext.conditions?.join(", ") || "None"}
-- Language preference: ${userContext.language || "English"}`;
+- Language preference: ${userContext.language || "en"}
+
+CRITICAL RULES FOR THIS RESPONSE:
+1. You MUST respond ENTIRELY in the language code: ${userContext.language || "en"}. If the code is 'hi', speak Hindi. If 'mr', speak Marathi. If 'ta', speak Tamil.
+2. Use CLEAN MARKDOWN formatting. Use double newlines (\n\n) between paragraphs. Use bullet points (-) for lists. Use bold (**text**) for emphasis. DO NOT output a single wall of text.`;
 
     try {
       const response = await openai.chat.completions.create({
@@ -121,6 +126,40 @@ User Context:
       return JSON.parse(response.choices[0].message.content);
     } catch (error) {
       console.error("Report analysis error:", error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Recommend OTC medications based on symptoms
+   */
+  async recommendMedication(symptoms, userContext = {}) {
+    const prompt = `Based on the following symptoms: "${symptoms}", suggest 2-3 over-the-counter (OTC) medications or home remedies. 
+    User Age: ${userContext.age || 'Unknown'}. 
+    Known conditions: ${userContext.conditions?.join(", ") || 'None'}.
+    
+    CRITICAL: You must include a strong disclaimer that this is AI-generated advice and they should consult a doctor.
+    Respond in JSON format:
+    {
+      "recommendations": [
+        { "name": "Medication/Remedy Name", "dosage": "Suggested dosage", "reason": "Why this helps" }
+      ],
+      "disclaimer": "Your strong disclaimer here"
+    }`;
+
+    try {
+      const response = await openai.chat.completions.create({
+        model: process.env.OPENAI_MODEL || "gpt-4o",
+        messages: [
+          { role: "system", content: "You are a helpful medical AI assistant. You only recommend safe, common OTC medications." },
+          { role: "user", content: prompt },
+        ],
+        temperature: 0.3,
+        response_format: { type: "json_object" },
+      });
+      return JSON.parse(response.choices[0].message.content);
+    } catch (error) {
+      console.error("Medication recommendation error:", error.message);
       throw error;
     }
   }

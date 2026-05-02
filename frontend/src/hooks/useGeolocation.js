@@ -24,7 +24,9 @@ const useGeolocation = () => {
         setLoading(false);
       },
       (err) => {
-        setError(err.message || "Unable to retrieve your location.");
+        // Fallback to a default location (e.g. Mumbai) so the feature still works
+        setLocation({ lat: 19.0760, lng: 72.8777, accuracy: 1000 });
+        setError("Browser blocked location. Using default city.");
         setLoading(false);
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }

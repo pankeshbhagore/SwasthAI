@@ -28,6 +28,8 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage, fileFilter, limits: { fileSize: 10 * 1024 * 1024 } });
 
+const extractPdfText = require("pdf-parse");
+
 /**
  * POST /api/reports/analyze
  * Upload and analyze a medical report/prescription
@@ -36,15 +38,19 @@ router.post("/analyze", protect, upload.single("report"), async (req, res, next)
   try {
     let reportText = req.body.text || "";
 
-    // If file uploaded, extract text (simplified - in production use OCR)
+    // If file uploaded, extract text
     if (req.file) {
       const ext = path.extname(req.file.originalname).toLowerCase();
       if (ext === ".txt") {
         reportText = fs.readFileSync(req.file.path, "utf8");
+      } else if (ext === ".pdf") {
+        const dataBuffer = fs.readFileSync(req.file.path);
+        const data = await extractPdfText(dataBuffer);
+        reportText = data.text;
       } else {
-        reportText = `[Uploaded file: ${req.file.originalname}. File type: ${ext}. 
-        In production, OCR would extract text from this file. 
-        For demo, analyzing based on filename context.]`;
+        reportText = `[Uploaded file: ${req.file.originalname}. 
+        Content from ${ext} images requires OCR. 
+        Analyzing based on context.]`;
       }
     }
 

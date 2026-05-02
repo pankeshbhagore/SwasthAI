@@ -19,11 +19,11 @@ if ("serviceWorker" in navigator) {
         const newWorker = registration.installing;
         newWorker?.addEventListener("statechange", () => {
           if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-            console.log("SwasthAI updated — refresh for latest version");
+            console.log("MediMind updated — refresh for latest version");
           }
         });
       });
-      console.log("✅ SwasthAI offline triage active (PWA Service Worker registered)");
+      console.log("✅ MediMind offline triage active (PWA Service Worker registered)");
       // Background sync for offline health data
       if ("sync" in registration) {
         navigator.serviceWorker.ready.then((sw) => {

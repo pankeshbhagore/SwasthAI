@@ -4,7 +4,7 @@ import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar,
 } from "recharts";
-import { Activity, TrendingUp, AlertTriangle, CheckCircle, Calendar } from "lucide-react";
+import { Zap, TrendingUp, AlertTriangle, CheckCircle, Calendar } from "lucide-react";
 import api from "../../utils/api";
 import HealthScoreRing from "../UI/HealthScoreRing";
 import { formatDate, getSeverityColor } from "../../utils/helpers";
@@ -165,7 +165,7 @@ const HealthDashboard = () => {
         {/* Severity Breakdown */}
         <div className="glass-card" style={{ padding: 24 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
-            <Activity size={18} color="var(--accent-amber)" />
+            <Zap size={18} color="var(--accent-amber)" />
             <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15 }}>{t.severityBreakdown}</h3>
           </div>
           {pieData.length > 0 ? (
@@ -192,24 +192,24 @@ const HealthDashboard = () => {
           )}
         </div>
 
-        {/* Top Symptoms */}
+        {/* Predicted Conditions */}
         <div className="glass-card" style={{ padding: 24 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
-            <Activity size={18} color="var(--accent-purple)" />
-            <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15 }}>{t.frequentSymptoms}</h3>
+            <Zap size={18} color="var(--accent-purple)" />
+            <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15 }}>Predicted Conditions</h3>
           </div>
-          {data.topSymptoms?.length > 0 ? (
+          {data.topConditions?.length > 0 ? (
             <ResponsiveContainer width="100%" height={120}>
-              <BarChart data={data.topSymptoms} layout="vertical">
+              <BarChart data={data.topConditions} layout="vertical">
                 <XAxis type="number" tick={{ fontSize: 10, fill: "#7a9bb8" }} axisLine={false} tickLine={false} />
-                <YAxis type="category" dataKey="symptom" tick={{ fontSize: 11, fill: "#7a9bb8" }} axisLine={false} tickLine={false} width={80} />
+                <YAxis type="category" dataKey="condition" tick={{ fontSize: 11, fill: "#7a9bb8" }} axisLine={false} tickLine={false} width={80} />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar dataKey="count" name="Times" fill="var(--accent-purple)" radius={[0, 4, 4, 0]} barSize={14} />
               </BarChart>
             </ResponsiveContainer>
           ) : (
             <div style={{ textAlign: "center", color: "var(--text-muted)", fontSize: 13, padding: 20 }}>
-              No symptoms tracked yet.
+              No conditions predicted yet.
             </div>
           )}
         </div>

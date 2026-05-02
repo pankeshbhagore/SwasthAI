@@ -96,7 +96,7 @@ const LoginPage = () => {
             }}>
               <Zap size={22} color="#060b14" strokeWidth={2.5} />
             </div>
-            <span style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 800 }}>SwasthAI</span>
+            <span style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 800 }}>MediMind</span>
           </Link>
           <p style={{ color: "var(--text-muted)", fontSize: 13, marginTop: 8 }}>{t.signIntoCopilot}</p>
         </div>

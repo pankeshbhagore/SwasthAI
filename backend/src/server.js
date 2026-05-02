@@ -20,6 +20,9 @@ const reportRoutes = require("./routes/reportRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const advancedRoutes = require("./routes/advancedRoutes");
 const chatbotRoutes = require("./routes/chatbotRoutes");
+const wellnessRoutes = require("./routes/wellnessRoutes");
+const doctorRoutes = require("./routes/doctorRoutes");
+const chatRoutes = require("./routes/chatRoutes");
 
 const app = express();
 const server = http.createServer(app);
@@ -76,7 +79,7 @@ app.use("/uploads", express.static("uploads"));
 app.get("/health", (req, res) => {
   res.json({
     status: "OK",
-    service: "SwasthAI API Gateway",
+    service: "MediMind API Gateway",
     timestamp: new Date().toISOString(),
     version: "1.0.0",
   });
@@ -92,6 +95,9 @@ app.use("/api/reports", reportRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/advanced", advancedRoutes);
 app.use("/api/chatbot", chatbotRoutes);
+app.use("/api/wellness", wellnessRoutes);
+app.use("/api/doctors", doctorRoutes);
+app.use("/api/chat", chatRoutes);
 
 // Socket.IO — Real-time features
 io.on("connection", (socket) => {
@@ -112,6 +118,22 @@ io.on("connection", (socket) => {
     io.to("admin").emit("new-emergency", data);
   });
 
+  // Call Signaling
+  socket.on("call-user", ({ to, from, signalData, type }) => {
+    console.log(`📞 Call initiated from ${from} to ${to} (${type})`);
+    io.to(to).emit("incoming-call", { from, signalData, type });
+  });
+
+  socket.on("answer-call", ({ to, signal }) => {
+    console.log(`✅ Call answered for ${to}`);
+    io.to(to).emit("call-accepted", signal);
+  });
+
+  socket.on("end-call", ({ to }) => {
+    console.log(`❌ Call ended for ${to}`);
+    io.to(to).emit("call-ended");
+  });
+
   socket.on("disconnect", () => {
     console.log(`🔌 Client disconnected: ${socket.id}`);
   });
@@ -128,11 +150,14 @@ app.use("*", (req, res) => {
   res.status(404).json({ success: false, message: "Route not found" });
 });
 
+const setupCronJobs = require("./utils/cron");
+
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log(`🚀 SwasthAI Server running on port ${PORT}`);
+  console.log(`🚀 MediMind Server running on port ${PORT}`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV}`);
   console.log(`📡 Socket.IO enabled`);
+  setupCronJobs();
 });
 
 module.exports = { app, io };

@@ -4,33 +4,33 @@ services:
   # MongoDB
   mongo:
     image: mongo:7
-    container_name: swasthai-mongo
+    container_name: medimind-mongo
     restart: unless-stopped
     volumes:
       - mongo_data:/data/db
     environment:
-      MONGO_INITDB_DATABASE: swasthai
+      MONGO_INITDB_DATABASE: medimind
     ports:
       - "27017:27017"
     networks:
-      - swasthai-net
+      - medimind-net
 
   # Python ML Service
   ml-service:
     build: ./backend/services/ml-service
-    container_name: swasthai-ml
+    container_name: medimind-ml
     restart: unless-stopped
     ports:
       - "5001:5001"
     environment:
       ML_PORT: 5001
     networks:
-      - swasthai-net
+      - medimind-net
 
   # Backend API
   backend:
     build: ./backend
-    container_name: swasthai-backend
+    container_name: medimind-backend
     restart: unless-stopped
     depends_on:
       - mongo
@@ -38,7 +38,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 5000
-      MONGODB_URI: mongodb://mongo:27017/swasthai
+      MONGODB_URI: mongodb://mongo:27017/medimind
       JWT_SECRET: ${JWT_SECRET:-supersecretjwtkey_changeme}
       JWT_EXPIRE: 7d
       OPENAI_API_KEY: ${OPENAI_API_KEY}
@@ -55,22 +55,22 @@ services:
     volumes:
       - uploads:/app/uploads
     networks:
-      - swasthai-net
+      - medimind-net
 
   # Frontend
   frontend:
     build: ./frontend
-    container_name: swasthai-frontend
+    container_name: medimind-frontend
     restart: unless-stopped
     depends_on:
       - backend
     ports:
       - "3000:80"
     networks:
-      - swasthai-net
+      - medimind-net
 
 networks:
-  swasthai-net:
+  medimind-net:
     driver: bridge
 
 volumes:

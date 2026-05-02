@@ -8,7 +8,7 @@ const { generateToken, calculateHealthScore, sendResponse } = require("../utils/
  */
 exports.registerUser = async (req, res, next) => {
   try {
-    const { name, email, password, phone, age, gender } = req.body;
+    const { name, email, password, phone, age, gender, role, specialization, degree } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, message: "Name, email, and password are required" });
@@ -19,7 +19,16 @@ exports.registerUser = async (req, res, next) => {
       return res.status(400).json({ success: false, message: "User already exists with this email" });
     }
 
-    const user = await User.create({ name, email, password, phone, age, gender });
+    const user = await User.create({
+      name,
+      email,
+      password,
+      phone,
+      age,
+      gender,
+      role: role || "user",
+      doctorInfo: role === "doctor" ? { specialization, degree } : undefined,
+    });
     const token = generateToken(user._id);
 
     return sendResponse(res, 201, true, "Account created successfully", {
@@ -91,7 +100,7 @@ exports.loginUser = async (req, res, next) => {
  */
 exports.getUserProfile = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user._id).populate("familyDoctor", "name email doctorInfo profilePicture");
     return sendResponse(res, 200, true, "Profile retrieved", { user });
   } catch (error) {
     next(error);
@@ -108,18 +117,32 @@ exports.updateUserProfile = async (req, res, next) => {
     const allowedFields = [
       "name", "phone", "age", "gender", "bloodGroup",
       "address", "emergencyContact", "medicalHistory",
-      "preferredLanguage", "location",
+      "preferredLanguage", "location", "doctorInfo"
     ];
 
     const updates = {};
+    const $unset = {};
+    
     allowedFields.forEach((field) => {
-      if (req.body[field] !== undefined) updates[field] = req.body[field];
+      if (req.body[field] !== undefined) {
+        // Handle empty strings for enums and numbers to prevent Mongoose validation errors
+        if (req.body[field] === "" && (field === "gender" || field === "bloodGroup" || field === "age")) {
+          $unset[field] = 1;
+        } else {
+          updates[field] = req.body[field];
+        }
+      }
     });
 
-    const user = await User.findByIdAndUpdate(req.user._id, updates, {
+    const updateQuery = { $set: updates };
+    if (Object.keys($unset).length > 0) {
+      updateQuery.$unset = $unset;
+    }
+
+    const user = await User.findByIdAndUpdate(req.user._id, updateQuery, {
       new: true,
       runValidators: true,
-    });
+    }).populate("familyDoctor", "name email doctorInfo profilePicture");
 
     return sendResponse(res, 200, true, "Profile updated", { user });
   } catch (error) {
@@ -167,13 +190,20 @@ exports.getUserDashboard = async (req, res, next) => {
     const severityCounts = { MILD: 0, MODERATE: 0, EMERGENCY: 0, NORMAL: 0 };
     const last30 = [];
     const symptomMap = {};
+    const conditionMap = {};
 
-    history.forEach((h) => {
+    history.forEach((h, index) => {
       severityCounts[h.severity] = (severityCounts[h.severity] || 0) + 1;
       const date = new Date(h.createdAt).toISOString().split("T")[0];
-      last30.push({ date, severity: h.severity, score: h.score || 0 });
+      const historicalScore = calculateHealthScore(history.slice(0, index + 1));
+      last30.push({ date, severity: h.severity, score: historicalScore });
+      
       (h.symptoms || []).forEach((s) => {
         symptomMap[s] = (symptomMap[s] || 0) + 1;
+      });
+
+      (h.conditions || []).forEach((c) => {
+        conditionMap[c] = (conditionMap[c] || 0) + 1;
       });
     });
 
@@ -182,11 +212,17 @@ exports.getUserDashboard = async (req, res, next) => {
       .slice(0, 5)
       .map(([symptom, count]) => ({ symptom, count }));
 
+    const topConditions = Object.entries(conditionMap)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([condition, count]) => ({ condition, count }));
+
     return sendResponse(res, 200, true, "Dashboard data retrieved", {
       healthScore: calculateHealthScore(history),
       totalConsultations: history.length,
       severityCounts,
       topSymptoms,
+      topConditions,
       recentActivity: history.slice(-7).reverse(),
       trends: last30.slice(-30),
     });

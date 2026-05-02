@@ -1,6 +1,6 @@
 {
-  "name": "SwasthAI — Intelligent Healthcare Assistant",
-  "short_name": "SwasthAI",
+  "name": "MediMind — Intelligent Healthcare Assistant",
+  "short_name": "MediMind",
   "description": "AI-powered multilingual healthcare assistant for India. Symptom triage, hospital finder, emergency SOS — works offline.",
   "start_url": "/",
   "display": "standalone",
@@ -70,7 +70,7 @@
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "SwasthAI Home Screen"
+      "label": "MediMind Home Screen"
     }
   ],
   "related_applications": [],

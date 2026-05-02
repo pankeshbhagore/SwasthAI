@@ -82,16 +82,16 @@ router.post("/quick-triage", optionalAuth, async (req, res, next) => {
  */
 router.get("/greeting/:language", (req, res) => {
   const greetings = {
-    en: "Hello! I'm SwasthAI. Describe your symptoms and I'll help you.",
-    hi: "नमस्ते! मैं SwasthAI हूं। अपने लक्षण बताएं, मैं आपकी मदद करूंगा।",
-    ta: "வணக்கம்! நான் SwasthAI. உங்கள் அறிகுறிகளை விவரிக்கவும்.",
-    te: "నమస్కారం! నేను SwasthAI. మీ లక్షణాలు చెప్పండి.",
-    mr: "नमस्कार! मी SwasthAI आहे. आपली लक्षणे सांगा.",
-    bn: "নমস্কার! আমি SwasthAI। আপনার লক্ষণগুলি বলুন।",
-    gu: "નમસ્તે! હું SwasthAI છું. તમારા લક્ષણો જણાવો.",
-    kn: "ನಮಸ್ಕಾರ! ನಾನು SwasthAI. ನಿಮ್ಮ ಲಕ್ಷಣಗಳನ್ನು ವಿವರಿಸಿ.",
-    ml: "നമസ്കാരം! ഞാൻ SwasthAI ആണ്. നിങ്ങളുടെ ലക്ഷണങ്ങൾ പറയൂ.",
-    pa: "ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਂ SwasthAI ਹਾਂ। ਆਪਣੇ ਲੱਛਣ ਦੱਸੋ।",
+    en: "Hello! I'm MediMind. Describe your symptoms and I'll help you.",
+    hi: "नमस्ते! मैं MediMind हूं। अपने लक्षण बताएं, मैं आपकी मदद करूंगा।",
+    ta: "வணக்கம்! நான் MediMind. உங்கள் அறிகுறிகளை விவரிக்கவும்.",
+    te: "నమస్కారం! నేను MediMind. మీ లక్షణాలు చెప్పండి.",
+    mr: "नमस्कार! मी MediMind आहे. आपली लक्षणे सांगा.",
+    bn: "নমস্কার! আমি MediMind। আপনার লক্ষণগুলি বলুন।",
+    gu: "નમસ્તે! હું MediMind છું. તમારા લક્ષણો જણાવો.",
+    kn: "ನಮಸ್ಕಾರ! ನಾನು MediMind. ನಿಮ್ಮ ಲಕ್ಷಣಗಳನ್ನು ವಿವರಿಸಿ.",
+    ml: "നമസ്കാരം! ഞാൻ MediMind ആണ്. നിങ്ങളുടെ ലക്ഷണങ്ങൾ പറയൂ.",
+    pa: "ਸਤਿ ਸ੍ਰੀ ਅকাল! ਮੈਂ MediMind ਹਾਂ। ਆਪਣੇ ਲੱਛਣ ਦੱਸੋ。",
   };
   const lang = req.params.language;
   res.json({

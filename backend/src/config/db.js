@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(
-      process.env.MONGODB_URI || process.env.MONGO_URI || "mongodb://localhost:27017/swasthai"
+      process.env.MONGODB_URI || process.env.MONGO_URI || "mongodb://localhost:27017/medimind"
     );
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {

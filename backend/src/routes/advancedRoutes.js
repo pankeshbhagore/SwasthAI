@@ -129,6 +129,48 @@ router.get("/medications", protect, async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
+/** POST /api/advanced/medications/recommend */
+router.post("/medications/recommend", protect, async (req, res, next) => {
+  try {
+    const { symptoms } = req.body;
+    if (!symptoms) return res.status(400).json({ success: false, message: "Symptoms required for recommendation" });
+    
+    const userContext = {
+      age: req.user.age,
+      conditions: req.user.medicalHistory?.chronicConditions
+    };
+    
+    // Import AIService dynamically to avoid circular dependencies if any
+    const aiService = require("../services/ai-service");
+    const recommendations = await aiService.recommendMedication(symptoms, userContext);
+    
+    res.json({ success: true, data: recommendations });
+  } catch (e) { next(e); }
+});
+
+/** POST /api/advanced/medications/test-alert */
+router.post("/medications/test-alert", protect, async (req, res, next) => {
+  try {
+    const alertService = require("../services/notification-service/alertService");
+    const user = await User.findById(req.user._id);
+    
+    if (!user || !user.phone) {
+      return res.status(400).json({ success: false, message: "User phone number not found." });
+    }
+
+    const testMedName = req.body.medName || "Test Medication";
+    const testDosage = req.body.dosage || "1 pill";
+
+    const result = await alertService.sendReminderSMS(user.phone, user.name || "User", testMedName, testDosage);
+    
+    if (result.success) {
+      res.json({ success: true, message: result.demo ? "Demo mode: SMS logged in console (Twilio not configured)" : "SMS alert sent successfully via Twilio!" });
+    } else {
+      res.status(500).json({ success: false, message: result.error || "Failed to send SMS" });
+    }
+  } catch (e) { next(e); }
+});
+
 /** PUT /api/advanced/medications/:id */
 router.put("/medications/:id", protect, async (req, res, next) => {
   try {

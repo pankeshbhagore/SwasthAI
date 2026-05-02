@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Zap } from "lucide-react";
 
-const LoadingScreen = ({ message = "Loading SwasthAI..." }) => (
+const LoadingScreen = ({ message = "Loading MediMind..." }) => (
   <div style={{
     position: "fixed", inset: 0, zIndex: 9999,
     background: "var(--bg-primary)",
@@ -24,7 +24,7 @@ const LoadingScreen = ({ message = "Loading SwasthAI..." }) => (
 
     <div style={{ textAlign: "center" }}>
       <div style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 800, marginBottom: 8 }}>
-        SwasthAI
+        MediMind
       </div>
       <div style={{ fontSize: 13, color: "var(--text-muted)" }}>{message}</div>
     </div>

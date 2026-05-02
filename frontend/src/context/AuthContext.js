@@ -6,7 +6,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState(localStorage.getItem("swasthai_token") || null);
+  const [token, setToken] = useState(localStorage.getItem("medimind_token") || null);
 
   // Load user on mount or token change
   useEffect(() => {
@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
 
   const loadUser = async () => {
     try {
-      const currentToken = token || localStorage.getItem("swasthai_token");
+      const currentToken = token || localStorage.getItem("medimind_token");
       if (!currentToken) {
         setLoading(false);
         return;
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     const res = await api.post("/users/login", { email, password });
     const { token: newToken, user: newUser } = res.data;
-    localStorage.setItem("swasthai_token", newToken);
+    localStorage.setItem("medimind_token", newToken);
     api.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
     setToken(newToken);
     setUser(newUser);
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (data) => {
     const res = await api.post("/users/register", data);
     const { token: newToken, user: newUser } = res.data;
-    localStorage.setItem("swasthai_token", newToken);
+    localStorage.setItem("medimind_token", newToken);
     api.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
     setToken(newToken);
     setUser(newUser);
@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem("swasthai_token");
+    localStorage.removeItem("medimind_token");
     delete api.defaults.headers.common["Authorization"];
     setToken(null);
     setUser(null);

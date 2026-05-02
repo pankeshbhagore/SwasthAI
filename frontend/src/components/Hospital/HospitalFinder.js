@@ -154,8 +154,8 @@ const HospitalFinder = () => {
         </button>
 
         {locError && (
-          <div style={{ marginTop: 10, fontSize: 12, color: "var(--accent-red)", display: "flex", alignItems: "center", gap: 5 }}>
-            <AlertCircle size={12} /> {locError}
+          <div style={{ marginTop: 10, fontSize: 12, color: "var(--accent-amber)", display: "flex", alignItems: "center", gap: 5 }}>
+            <AlertCircle size={12} /> Location access denied. Using default city center.
           </div>
         )}
 
@@ -165,6 +165,22 @@ const HospitalFinder = () => {
           </div>
         )}
       </div>
+
+      {/* Interactive Map Context */}
+      {location && (
+        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="glass-card" style={{ padding: 0, overflow: "hidden" }}>
+          <iframe
+            title="Hospital Map Context"
+            width="100%"
+            height="300"
+            style={{ border: 0, display: "block" }}
+            loading="lazy"
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
+            src={`https://maps.google.com/maps?q=${location.lat},${location.lng}&z=14&output=embed&theme=dark`}
+          ></iframe>
+        </motion.div>
+      )}
 
       {/* Emergency Quick Dial */}
       <div style={{

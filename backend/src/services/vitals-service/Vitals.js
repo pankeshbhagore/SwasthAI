@@ -21,7 +21,7 @@ const vitalsSchema = new mongoose.Schema(
     notes: String,
     mlRisk: {
       risk_level: String,
-      alerts: [{ type: String, message: String }],
+      alerts: [{ type: { type: String }, message: String }],
     },
     source: { type: String, default: "manual" }, // manual, device, wearable
   },

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Brain, Zap, Activity, ChevronRight, Info } from "lucide-react";
+import { Brain, Zap, ChevronRight, Info } from "lucide-react";
 import api from "../utils/api";
 import { getSeverityColor, getSeverityBadgeClass } from "../utils/helpers";
 import toast from "react-hot-toast";
@@ -205,7 +205,7 @@ const MLDemoPage = () => {
 
             {!result && (
               <div style={{ padding: 32, textAlign: "center", color: "var(--text-muted)", fontSize: 13 }}>
-                <Activity size={32} color="rgba(167,139,250,0.3)" style={{ marginBottom: 12 }} />
+                <Zap size={32} color="rgba(167,139,250,0.3)" style={{ marginBottom: 12 }} />
                 <div>Select a demo scenario or add symptoms,<br />then click Predict.</div>
               </div>
             )}

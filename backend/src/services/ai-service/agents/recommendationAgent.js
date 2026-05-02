@@ -38,7 +38,29 @@ class RecommendationAgent {
   }
 
   _buildPrompt(triageResult, userProfile) {
-    return `Based on this health assessment, provide personalized recommendations:
+    const language = userProfile?.language || "en";
+    const languages = {
+      hi: "Hindi (Devanagari script)",
+      ta: "Tamil",
+      te: "Telugu",
+      mr: "Marathi (Devanagari script)",
+      bn: "Bengali",
+      gu: "Gujarati",
+      kn: "Kannada",
+      ml: "Malayalam",
+      pa: "Punjabi",
+      ur: "Urdu",
+      hinglish: "Hinglish (mix of Hindi and English)"
+    };
+
+    const langName = languages[language] || "English";
+    const languageInstruction = language === "en" 
+      ? "Respond in clear English." 
+      : `Respond ENTIRELY in ${langName}. All textual fields in the JSON must be in ${langName}.`;
+
+    return `${languageInstruction}
+
+Based on this health assessment, provide personalized recommendations:
 
 Assessment:
 - Severity: ${triageResult.severity}

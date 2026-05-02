@@ -33,7 +33,7 @@ class AlertService {
       return { success: true, demo: true, message: "Demo mode - SMS not sent" };
     }
 
-    const message = `🚨 SWASTHAI EMERGENCY ALERT
+    const message = `🚨 MEDIMIND EMERGENCY ALERT
 Patient: ${patientName}
 Symptoms: ${symptoms.join(", ")}
 Location: ${location?.address || `${location?.lat},${location?.lng}`}
@@ -54,6 +54,41 @@ Please call 108 immediately.`;
   }
 
   /**
+   * Send medication reminder SMS
+   */
+  async sendReminderSMS(toNumber, patientName, medName, dosage) {
+    if (!this.client) {
+      console.log("📱 [DEMO] Reminder SMS:", { toNumber, patientName, medName, dosage });
+      return { success: true, demo: true, message: "Demo mode - SMS not sent" };
+    }
+
+    // Twilio blocks sending messages from a number to the exact same number
+    if (toNumber === this.fromNumber || toNumber === this.fromNumber.replace("+91", "")) {
+      return { 
+        success: false, 
+        error: "Cannot send SMS: Your profile phone number is exactly the same as the Twilio sender number in the .env file. Please change your profile phone number." 
+      };
+    }
+
+    const message = `👋 MEDIMIND REMINDER
+Hi ${patientName}, it's time to take your medication:
+💊 ${medName} (${dosage})
+Stay healthy!`;
+
+    try {
+      const result = await this.client.messages.create({
+        body: message,
+        from: this.fromNumber,
+        to: toNumber,
+      });
+      return { success: true, sid: result.sid };
+    } catch (error) {
+      console.error("SMS Reminder Error:", error.message);
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
    * Send emergency voice call
    */
   async sendEmergencyCall(toNumber, patientName) {
@@ -64,9 +99,8 @@ Please call 108 immediately.`;
 
     const twiml = `<Response>
   <Say voice="Polly.Aditi" language="hi-IN">
-    यह SwasthAI से एक आपातकालीन अलर्ट है। ${patientName} को तत्काल चिकित्सा सहायता की आवश्यकता है। 
-    कृपया तुरंत 108 पर कॉल करें।
-    This is an emergency alert from SwasthAI. ${patientName} needs immediate medical help. Please call 108 now.
+    यह MediMind से एक आपातकालीन अलर्ट है। ${patientName} को तत्काल चिकित्सा सहायता की आवश्यकता है। 
+    This is an emergency alert from MediMind. ${patientName} needs immediate medical help. Please call 108 now.
   </Say>
 </Response>`;
 

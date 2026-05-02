@@ -78,6 +78,18 @@ const userSchema = new mongoose.Schema(
     isActive: { type: Boolean, default: true },
     lastLogin: Date,
     profilePicture: String,
+    // Doctor Specific
+    doctorInfo: {
+      specialization: String,
+      experience: Number,
+      hospital: String,
+      degree: String,
+      isVerified: { type: Boolean, default: false },
+      availability: String,
+    },
+    // Connections
+    familyDoctor: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    patients: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );

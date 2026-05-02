@@ -26,6 +26,7 @@ class HospitalAgent {
       });
 
       if (response.data.status !== "OK") {
+        console.warn("Google Maps API Status:", response.data.status, response.data.error_message || "");
         return this._getFallbackHospitals(lat, lng);
       }
 

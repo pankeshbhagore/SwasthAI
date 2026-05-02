@@ -31,7 +31,7 @@ const RegisterPage = () => {
     setLoading(true);
     try {
       await register(form);
-      toast.success("Welcome to SwasthAI! 🎉");
+      toast.success("Welcome to MediMind! 🎉");
       navigate("/dashboard");
     } catch (error) {
       toast.error(error.message || "Registration failed");
@@ -86,7 +86,7 @@ const RegisterPage = () => {
             }}>
               <Zap size={22} color="#060b14" strokeWidth={2.5} />
             </div>
-            <span style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 800 }}>SwasthAI</span>
+            <span style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 800 }}>MediMind</span>
           </Link>
           <p style={{ color: "var(--text-muted)", fontSize: 13, marginTop: 8 }}>{t.joinCopilot}</p>
         </div>
@@ -131,16 +131,38 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            <div>
-              <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Gender</label>
-              <select className="input" value={form.gender} onChange={set("gender")}>
-                <option value="">Select gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-                <option value="prefer_not_to_say">Prefer not to say</option>
-              </select>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div>
+                <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Role *</label>
+                <select className="input" value={form.role || "user"} onChange={set("role")} required>
+                  <option value="user">Patient</option>
+                  <option value="doctor">Doctor</option>
+                </select>
+              </div>
+              <div>
+                <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Gender</label>
+                <select className="input" value={form.gender} onChange={set("gender")}>
+                  <option value="">Select gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                  <option value="prefer_not_to_say">Prefer not to say</option>
+                </select>
+              </div>
             </div>
+
+            {form.role === "doctor" && (
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <div>
+                  <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Specialization *</label>
+                  <input className="input" type="text" value={form.specialization || ""} onChange={set("specialization")} placeholder="e.g. Cardiologist" required={form.role === "doctor"} />
+                </div>
+                <div>
+                  <label style={{ fontSize: 12, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Degree / Type *</label>
+                  <input className="input" type="text" value={form.degree || ""} onChange={set("degree")} placeholder="e.g. MD, MBBS" required={form.role === "doctor"} />
+                </div>
+              </motion.div>
+            )}
 
             <button type="submit" className="btn btn-primary" disabled={loading} style={{ padding: "13px", fontSize: 15, marginTop: 4 }}>
               {loading ? <div className="spinner" style={{ width: 18, height: 18 }} /> : <>{t.signUp} <ArrowRight size={16} /></>}

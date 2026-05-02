@@ -213,7 +213,7 @@ const NutritionAnalyzer = () => {
                 Daily target: <strong style={{ color: "var(--accent-amber)" }}>{dietPlan.daily_calories_target} kcal</strong>
                 {dietPlan.macros_target && ` · P: ${dietPlan.macros_target.protein} · C: ${dietPlan.macros_target.carbs} · F: ${dietPlan.macros_target.fat}`}
               </div>
-              {dietPlan.week?.slice(0, 3).map((day, i) => (
+              {dietPlan.week?.map((day, i) => (
                 <div key={i} style={{ marginBottom: 12, padding: "12px 14px", background: "rgba(255,179,0,0.05)", border: "1px solid rgba(255,179,0,0.15)", borderRadius: "var(--radius-md)" }}>
                   <div style={{ fontWeight: 700, color: "var(--accent-amber)", marginBottom: 8 }}>{day.day}</div>
                   {[["🌅 Breakfast", day.breakfast], ["☀️ Lunch", day.lunch], ["🌙 Dinner", day.dinner]].map(([label, item]) => item && (
@@ -224,7 +224,6 @@ const NutritionAnalyzer = () => {
                   ))}
                 </div>
               ))}
-              {dietPlan.week?.length > 3 && <div style={{ fontSize: 12, color: "var(--text-muted)", textAlign: "center" }}>+ {dietPlan.week.length - 3} more days in your plan</div>}
             </motion.div>
           )}
         </div>

@@ -1,9 +1,9 @@
 /**
- * SwasthAI Health Prompt Templates
+ * MediMind Health Prompt Templates
  * Advanced prompts for multi-agent AI system
  */
 
-const SYSTEM_PROMPT = `You are SwasthAI, an advanced AI healthcare assistant designed for Indian public health.
+const SYSTEM_PROMPT = `You are MediMind, an advanced AI healthcare assistant designed for Indian public health.
 
 Your role:
 - Analyze patient symptoms with medical precision
@@ -30,11 +30,24 @@ const buildHealthAnalysisPrompt = (symptoms, age, history, language = "en") => {
     ? history.map((h) => `${h.symptoms?.join(", ")} (${h.severity})`).join("; ")
     : "No significant history";
 
-  const languageInstruction = language === "hi" 
-    ? "Respond in Hindi (Devanagari script)." 
-    : language === "hinglish"
-    ? "Respond in Hinglish (mix of Hindi and English)."
-    : "Respond in clear English.";
+  const languages = {
+    hi: "Hindi (Devanagari script)",
+    ta: "Tamil",
+    te: "Telugu",
+    mr: "Marathi (Devanagari script)",
+    bn: "Bengali",
+    gu: "Gujarati",
+    kn: "Kannada",
+    ml: "Malayalam",
+    pa: "Punjabi",
+    ur: "Urdu",
+    hinglish: "Hinglish (mix of Hindi and English)"
+  };
+
+  const langName = languages[language] || "English";
+  const languageInstruction = language === "en" 
+    ? "Respond in clear English." 
+    : `Respond ENTIRELY in ${langName}. All textual fields in the JSON must be in ${langName}.`;
 
   return `${languageInstruction}
 
@@ -51,13 +64,15 @@ Tasks:
 3. Estimate risk level (low/medium/high)
 4. List 2-3 possible conditions (not diagnoses)
 5. Provide clear, actionable advice
-6. Flag if emergency services needed
+6. Recommend the type of medical specialist to consult (e.g., Cardiologist, General Physician)
+7. Flag if emergency services needed
 
 Respond ONLY in this exact JSON format:
 {
   "severity": "MILD|MODERATE|EMERGENCY",
   "risk": "low|medium|high",
   "possible_conditions": ["condition1", "condition2"],
+  "recommended_specialist": "Type of doctor (e.g. Cardiologist)",
   "advice": "Clear actionable advice here",
   "emergency": true|false,
   "explanation": "Brief explanation of your assessment",
