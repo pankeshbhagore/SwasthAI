@@ -28,10 +28,10 @@ const TypingIndicator = () => (
   <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "12px 16px" }}>
     <div style={{
       width: 28, height: 28, borderRadius: "50%",
-      background: "rgba(0,229,255,0.1)", border: "1px solid rgba(0,229,255,0.2)",
+      background: "rgba(6, 57, 112, 0.1)", border: "1px solid rgba(6, 57, 112, 0.2)",
       display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0
     }}>
-      <Bot size={14} color="var(--accent-cyan)" />
+      <Bot size={14} color="#063970" />
     </div>
     <div style={{
       background: "var(--bg-card)", border: "1px solid var(--border)",
@@ -99,11 +99,11 @@ const Message = ({ msg, language }) => {
       {/* Avatar */}
       <div style={{
         width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
-        background: isUser ? "rgba(0,255,136,0.1)" : "rgba(0,229,255,0.1)",
-        border: `1px solid ${isUser ? "rgba(0,255,136,0.2)" : "rgba(0,229,255,0.2)"}`,
+        background: isUser ? "rgba(0,255,136,0.1)" : "rgba(6, 57, 112, 0.1)",
+        border: `1px solid ${isUser ? "rgba(0,255,136,0.2)" : "rgba(6, 57, 112, 0.2)"}`,
         display: "flex", alignItems: "center", justifyContent: "center",
       }}>
-        {isUser ? <User size={14} color="var(--accent-green)" /> : <Bot size={14} color="var(--accent-cyan)" />}
+        {isUser ? <User size={14} color="var(--accent-green)" /> : <Bot size={14} color="#063970" />}
       </div>
 
       <div style={{ maxWidth: "75%", display: "flex", flexDirection: "column", gap: 6, position: "relative" }}>
@@ -241,10 +241,10 @@ const ChatInterface = () => {
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{
             width: 36, height: 36, borderRadius: "50%",
-            background: "rgba(0,229,255,0.1)", border: "1px solid rgba(0,229,255,0.2)",
+            background: "rgba(6, 57, 112, 0.1)", border: "1px solid rgba(6, 57, 112, 0.2)",
             display: "flex", alignItems: "center", justifyContent: "center",
           }}>
-            <Bot size={18} color="var(--accent-cyan)" />
+            <Bot size={18} color="#063970" />
           </div>
           <div>
             <div style={{ fontWeight: 900, fontSize: 18 }}>MediMind Assistant</div>
@@ -310,14 +310,14 @@ const ChatInterface = () => {
               key={i}
               onClick={() => sendMessage(s)}
               style={{
-                background: "rgba(0,229,255,0.08)", border: "2px solid rgba(0,229,255,0.2)",
+                background: "rgba(6, 57, 112, 0.05)", border: "2px solid rgba(6, 57, 112, 0.15)",
                 borderRadius: "var(--radius-md)", padding: "10px 16px",
-                fontSize: 14, color: "var(--text-secondary)", cursor: "pointer",
+                fontSize: 14, color: "#063970", cursor: "pointer",
                 fontWeight: 800,
                 transition: "all var(--transition)",
               }}
-              onMouseEnter={e => { e.target.style.borderColor = "rgba(0,229,255,0.4)"; e.target.style.color = "var(--accent-cyan)"; }}
-              onMouseLeave={e => { e.target.style.borderColor = "rgba(0,229,255,0.15)"; e.target.style.color = "var(--text-secondary)"; }}
+              onMouseEnter={e => { e.target.style.borderColor = "#063970"; e.target.style.background = "rgba(6, 57, 112, 0.1)"; }}
+              onMouseLeave={e => { e.target.style.borderColor = "rgba(6, 57, 112, 0.15)"; e.target.style.background = "rgba(6, 57, 112, 0.05)"; }}
             >
               {s}
             </button>
@@ -356,11 +356,11 @@ const ChatInterface = () => {
             rows={1}
             style={{
               width: "100%",
-              background: "rgba(15,30,48,0.6)",
-              border: `1px solid ${isListening ? "var(--accent-red)" : "var(--border)"}`,
+              background: "#063970",
+              border: `2px solid ${isListening ? "var(--accent-red)" : "rgba(255,255,255,0.1)"}`,
               borderRadius: "var(--radius-md)",
               padding: "14px 18px",
-              color: "var(--text-primary)",
+              color: "white",
               fontFamily: "var(--font-body)",
               fontSize: 16,
               fontWeight: 800,
@@ -368,7 +368,7 @@ const ChatInterface = () => {
               resize: "none",
               maxHeight: 150,
               lineHeight: 1.5,
-              transition: "border-color var(--transition)",
+              transition: "all var(--transition)",
             }}
           />
           {isListening && (

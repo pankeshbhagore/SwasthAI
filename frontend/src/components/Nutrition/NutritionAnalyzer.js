@@ -93,7 +93,7 @@ const NutritionAnalyzer = () => {
       {/* Tabs */}
       <div style={{ display: "flex", gap: 0, background: "rgba(255,255,255,0.03)", borderRadius: "var(--radius-sm)", padding: 4 }}>
         {[{ key: "analyze", label: "🥗 Meal Analyzer", icon: Apple }, { key: "bmi", label: "⚖️ BMI Calculator", icon: Calculator }, { key: "plan", label: "📅 Diet Plan", icon: BookOpen }].map(({ key, label }) => (
-          <button key={key} onClick={() => setActiveTab(key)} style={{ flex: 1, padding: "9px 8px", borderRadius: "var(--radius-sm)", border: "none", cursor: "pointer", fontSize: 13, fontWeight: activeTab === key ? 700 : 400, background: activeTab === key ? "var(--bg-card)" : "transparent", color: activeTab === key ? "var(--accent-cyan)" : "var(--text-muted)", transition: "all var(--transition)" }}>
+          <button key={key} onClick={() => setActiveTab(key)} style={{ flex: 1, padding: "9px 8px", borderRadius: "var(--radius-sm)", border: "none", cursor: "pointer", fontSize: 13, fontWeight: activeTab === key ? 700 : 400, background: activeTab === key ? "var(--bg-card)" : "transparent", color: activeTab === key ? "#063970" : "var(--text-muted)", transition: "all var(--transition)" }}>
             {label}
           </button>
         ))}
@@ -135,7 +135,7 @@ const NutritionAnalyzer = () => {
 
                 {result.macros && (
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginBottom: 14 }}>
-                    {[["Protein", result.macros.protein_g, "#00ff88"], ["Carbs", result.macros.carbs_g, "#ffb300"], ["Fat", result.macros.fat_g, "#ff8c00"], ["Fiber", result.macros.fiber_g, "#00e5ff"]].map(([label, val, color]) => (
+                    {[["Protein", result.macros.protein_g, "#00ff88"], ["Carbs", result.macros.carbs_g, "#ffb300"], ["Fat", result.macros.fat_g, "#ff8c00"], ["Fiber", result.macros.fiber_g, "#063970"]].map(([label, val, color]) => (
                       <div key={label} style={{ textAlign: "center", padding: "10px 8px", background: `${color}10`, border: `1px solid ${color}20`, borderRadius: "var(--radius-sm)" }}>
                         <div style={{ fontWeight: 800, color, fontSize: 16 }}>{val}g</div>
                         <div style={{ fontSize: 11, color: "var(--text-muted)" }}>{label}</div>
@@ -162,7 +162,7 @@ const NutritionAnalyzer = () => {
       {activeTab === "bmi" && (
         <div className="glass-card" style={{ padding: 24 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-            <Calculator size={18} color="var(--accent-cyan)" />
+            <Calculator size={18} color="#063970" />
             <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15 }}>BMI & Body Metrics Calculator</h3>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 14 }}>

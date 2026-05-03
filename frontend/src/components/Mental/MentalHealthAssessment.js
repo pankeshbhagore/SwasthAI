@@ -77,7 +77,7 @@ const MentalHealthAssessment = () => {
     return (
       <div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
-          <Brain size={18} color={section === "phq9" ? "#a78bfa" : "#00e5ff"} />
+          <Brain size={18} color="#063970" />
           <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15 }}>
             {section === "phq9" ? "Depression Screening (PHQ-9)" : "Anxiety Screening (GAD-7)"}
           </h3>
@@ -88,7 +88,7 @@ const MentalHealthAssessment = () => {
 
         {/* Progress */}
         <div style={{ height: 4, background: "rgba(255,255,255,0.06)", borderRadius: 2, marginBottom: 24, overflow: "hidden" }}>
-          <div style={{ height: "100%", width: `${(answers.filter(a => a !== null).length / total) * 100}%`, background: section === "phq9" ? "#a78bfa" : "#00e5ff", transition: "width 0.3s" }} />
+          <div style={{ height: "100%", width: `${(answers.filter(a => a !== null).length / total) * 100}%`, background: "#063970", transition: "width 0.3s" }} />
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -107,10 +107,10 @@ const MentalHealthAssessment = () => {
                   <button key={opt.value} onClick={() => setAnswer(answers, setAnswers, i, opt.value)}
                     style={{
                       padding: "7px 14px", fontSize: 12, borderRadius: "var(--radius-sm)", cursor: "pointer",
-                      border: `1px solid ${answers[i] === opt.value ? (section === "phq9" ? "#a78bfa" : "#00e5ff") : "var(--border)"}`,
-                      background: answers[i] === opt.value ? (section === "phq9" ? "rgba(167,139,250,0.15)" : "rgba(0,229,255,0.1)") : "transparent",
-                      color: answers[i] === opt.value ? (section === "phq9" ? "#a78bfa" : "var(--accent-cyan)") : "var(--text-secondary)",
-                      transition: "all var(--transition)", fontWeight: answers[i] === opt.value ? 700 : 400,
+                      border: `1px solid ${answers[i] === opt.value ? "#063970" : "var(--border)"}`,
+                      background: answers[i] === opt.value ? "rgba(6, 57, 112, 0.15)" : "transparent",
+                      color: answers[i] === opt.value ? "#063970" : "var(--text-secondary)",
+                      transition: "all var(--transition)", fontWeight: answers[i] === opt.value ? 800 : 400,
                     }}>
                     {opt.label}
                   </button>
@@ -129,13 +129,13 @@ const MentalHealthAssessment = () => {
       {step === "intro" && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-            <Brain size={22} color="#a78bfa" />
+            <Brain size={22} color="#063970" />
             <h2 style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 800 }}>Mental Health Assessment</h2>
           </div>
           <p style={{ fontSize: 14, color: "var(--text-secondary)", lineHeight: 1.7, marginBottom: 16 }}>
             This confidential assessment uses PHQ-9 (depression) and GAD-7 (anxiety) — clinically validated tools used by doctors worldwide.
           </p>
-          <div style={{ padding: "12px 16px", background: "rgba(167,139,250,0.08)", border: "1px solid rgba(167,139,250,0.2)", borderRadius: "var(--radius-md)", marginBottom: 20, fontSize: 13, color: "var(--text-secondary)" }}>
+          <div style={{ padding: "12px 16px", background: "rgba(6, 57, 112, 0.08)", border: "1px solid rgba(6, 57, 112, 0.2)", borderRadius: "var(--radius-md)", marginBottom: 20, fontSize: 13, color: "var(--text-secondary)" }}>
             ⏱️ Takes about 3-5 minutes · Completely private · Results analyzed by AI
           </div>
           <div style={{ marginBottom: 20, padding: "12px 14px", background: "rgba(255,61,113,0.06)", border: "1px solid rgba(255,61,113,0.15)", borderRadius: "var(--radius-sm)", fontSize: 13 }}>

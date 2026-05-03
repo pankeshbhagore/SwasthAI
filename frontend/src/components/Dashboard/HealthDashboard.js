@@ -16,20 +16,20 @@ const StatCard = ({ label, value, icon: Icon, color, subtitle }) => (
     initial={{ opacity: 0, y: 16 }}
     animate={{ opacity: 1, y: 0 }}
     className="glass-card"
-    style={{ padding: 20 }}
+    style={{ padding: 20, border: "1px solid #063970" }}
   >
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
       <div>
-        <div style={{ fontSize: 14, color: "var(--text-muted)", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 800 }}>{label}</div>
-        <div style={{ fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 800, color }}>{value}</div>
-        {subtitle && <div style={{ fontSize: 13, color: "var(--text-muted)", marginTop: 6, fontWeight: 700 }}>{subtitle}</div>}
+        <div style={{ fontSize: 14, color: "#063970", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 800 }}>{label}</div>
+        <div style={{ fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 900, color: "#063970" }}>{value}</div>
+        {subtitle && <div style={{ fontSize: 13, color: "var(--text-secondary)", marginTop: 6, fontWeight: 700 }}>{subtitle}</div>}
       </div>
       <div style={{
         width: 40, height: 40, borderRadius: "var(--radius-md)",
-        background: `${color}15`, border: `1px solid ${color}25`,
+        background: `rgba(6, 57, 112, 0.1)`, border: `1px solid rgba(6, 57, 112, 0.2)`,
         display: "flex", alignItems: "center", justifyContent: "center",
       }}>
-        <Icon size={20} color={color} />
+        <Icon size={20} color="#063970" />
       </div>
     </div>
   </motion.div>
@@ -39,7 +39,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
-      background: "var(--bg-card)", border: "1px solid var(--border)",
+      background: "var(--bg-card)", border: "1px solid #063970",
       borderRadius: "var(--radius-sm)", padding: "8px 12px", fontSize: 12,
     }}>
       <div style={{ color: "var(--text-muted)", marginBottom: 4 }}>{label}</div>
@@ -133,27 +133,27 @@ const HealthDashboard = () => {
       {/* Health Score Trend */}
       <div className="glass-card" style={{ padding: 24 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
-          <TrendingUp size={22} color="var(--accent-cyan)" />
+          <TrendingUp size={22} color="#063970" />
           <h3 style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 900 }}>{t.healthScoreTrend}</h3>
         </div>
         <ResponsiveContainer width="100%" height={180}>
           <AreaChart data={data.trends}>
             <defs>
               <linearGradient id="scoreGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#00e5ff" stopOpacity={0.15} />
-                <stop offset="95%" stopColor="#00e5ff" stopOpacity={0} />
+                <stop offset="5%" stopColor="#063970" stopOpacity={0.15} />
+                <stop offset="95%" stopColor="#063970" stopOpacity={0} />
               </linearGradient>
             </defs>
             <XAxis
               dataKey="date"
               tickFormatter={(d) => new Date(d).toLocaleDateString("en-IN", { month: "short", day: "numeric" })}
-              tick={{ fontSize: 14, fill: "#7a9bb8", fontWeight: 700 }} axisLine={false} tickLine={false}
+              tick={{ fontSize: 14, fill: "#063970", fontWeight: 700 }} axisLine={false} tickLine={false}
             />
             <YAxis domain={[0, 100]} tick={{ fontSize: 14, fill: "#7a9bb8", fontWeight: 700 }} axisLine={false} tickLine={false} />
             <Tooltip content={<CustomTooltip />} />
             <Area
               type="monotone" dataKey="score" name={t.healthScore}
-              stroke="#00e5ff" strokeWidth={2}
+              stroke="#063970" strokeWidth={3}
               fill="url(#scoreGrad)"
             />
           </AreaChart>
@@ -195,16 +195,16 @@ const HealthDashboard = () => {
         {/* Predicted Conditions */}
         <div className="glass-card" style={{ padding: 24 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
-            <Zap size={18} color="var(--accent-purple)" />
+            <Zap size={18} color="#063970" />
             <h3 style={{ fontFamily: "var(--font-display)", fontSize: 15 }}>Predicted Conditions</h3>
           </div>
           {data.topConditions?.length > 0 ? (
             <ResponsiveContainer width="100%" height={120}>
               <BarChart data={data.topConditions} layout="vertical">
-                <XAxis type="number" tick={{ fontSize: 14, fill: "#7a9bb8", fontWeight: 700 }} axisLine={false} tickLine={false} />
-                <YAxis type="category" dataKey="condition" tick={{ fontSize: 15, fill: "#7a9bb8", fontWeight: 800 }} axisLine={false} tickLine={false} width={100} />
+                <XAxis type="number" tick={{ fontSize: 14, fill: "#063970", fontWeight: 700 }} axisLine={false} tickLine={false} />
+                <YAxis type="category" dataKey="condition" tick={{ fontSize: 15, fill: "#063970", fontWeight: 800 }} axisLine={false} tickLine={false} width={100} />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="count" name="Times" fill="var(--accent-purple)" radius={[0, 4, 4, 0]} barSize={20} />
+                <Bar dataKey="count" name="Times" fill="#063970" radius={[0, 4, 4, 0]} barSize={20} />
               </BarChart>
             </ResponsiveContainer>
           ) : (

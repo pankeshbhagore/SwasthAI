@@ -101,10 +101,10 @@ const ReportAnalyzer = () => {
           <div
             {...getRootProps()}
             style={{
-              border: `2px dashed ${isDragActive ? "var(--accent-cyan)" : "var(--border)"}`,
+              border: `2px dashed ${isDragActive ? "#063970" : "var(--border)"}`,
               borderRadius: "var(--radius-md)", padding: 40, textAlign: "center",
               cursor: "pointer", transition: "all var(--transition)",
-              background: isDragActive ? "rgba(0,229,255,0.05)" : "transparent",
+              background: isDragActive ? "rgba(6, 57, 112, 0.05)" : "transparent",
             }}
           >
             <input {...getInputProps()} />
@@ -238,7 +238,7 @@ const ReportAnalyzer = () => {
                   </div>
                   <ol style={{ paddingLeft: 18 }}>
                     {result.questions_to_ask_doctor.map((q, i) => (
-                      <li key={i} style={{ fontSize: 13, color: "var(--accent-cyan)", marginBottom: 5 }}>{q}</li>
+                      <li key={i} style={{ fontSize: 13, color: "#063970", marginBottom: 5 }}>{q}</li>
                     ))}
                   </ol>
                 </div>

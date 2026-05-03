@@ -126,8 +126,8 @@ const Layout = () => {
       position: mobile ? "relative" : "fixed", top: 0, left: 0, zIndex: 100, overflowY: "auto",
     }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20, padding: "0 6px" }}>
-        <div style={{ width: 34, height: 34, borderRadius: "50%", background: "linear-gradient(135deg, #00e5ff, #00ff88)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 14px rgba(0,229,255,0.4)", flexShrink: 0 }}>
-          <Zap size={17} color="#060b14" strokeWidth={2.5} />
+        <div style={{ width: 34, height: 34, borderRadius: "50%", background: "linear-gradient(135deg, #063970, #1e40af)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 14px rgba(6, 57, 112, 0.4)", flexShrink: 0 }}>
+          <Zap size={17} color="white" strokeWidth={2.5} />
         </div>
         <div>
           <div style={{ fontFamily: "var(--font-display)", fontWeight: 900, fontSize: 22 }}>MediMind</div>
@@ -159,9 +159,9 @@ const Layout = () => {
                 style={({ isActive }) => ({
                   display: "flex", alignItems: "center", gap: 10,
                   padding: "10px 14px", borderRadius: "var(--radius-md)", marginBottom: 4,
-                  color: isActive ? "var(--accent-cyan)" : "var(--text-secondary)",
-                  background: isActive ? "rgba(0,229,255,0.08)" : "transparent",
-                  border: isActive ? "2px solid rgba(0,229,255,0.2)" : "2px solid transparent",
+                  color: isActive ? "#063970" : "var(--text-secondary)",
+                  background: isActive ? "rgba(6, 57, 112, 0.08)" : "transparent",
+                  border: isActive ? "2px solid rgba(6, 57, 112, 0.2)" : "2px solid transparent",
                   fontSize: 16, fontWeight: isActive ? 900 : 700,
                   transition: "all var(--transition)", textDecoration: "none",
                 })}>
@@ -278,7 +278,13 @@ const Layout = () => {
         )}
       </AnimatePresence>
 
-      <style>{`@media (max-width: 768px) { .desktop-sidebar { display: none !important; } .mobile-topbar { display: flex !important; } .main-content { margin-left: 0 !important; padding-top: 56px; } }`}</style>
+      <style>{`
+        @media (max-width: 768px) { 
+          .desktop-sidebar { display: none !important; } 
+          .mobile-topbar { display: flex !important; height: 60px; } 
+          .main-content { margin-left: 0 !important; padding-top: 70px !important; } 
+        }
+      `}</style>
     </div>
   );
 };

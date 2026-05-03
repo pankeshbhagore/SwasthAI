@@ -65,7 +65,7 @@ const FamilyDoctor = () => {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
       {/* Search Header */}
-      <div className="glass-card" style={{ padding: 32, textAlign: "center", background: "linear-gradient(135deg, rgba(0,229,255,0.05) 0%, rgba(0,255,136,0.05) 100%)" }}>
+      <div className="glass-card" style={{ padding: 32, textAlign: "center", background: "linear-gradient(135deg, rgba(6, 57, 112, 0.05) 0%, rgba(30, 64, 175, 0.05) 100%)" }}>
         <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, marginBottom: 12 }}>Your Family Doctor</h2>
         <p style={{ color: "var(--text-muted)", fontSize: 14, maxWidth: 500, margin: "0 auto 24px" }}>
           Connect with a trusted medical professional for personalized care, prescriptions, and 24/7 support.
@@ -107,7 +107,7 @@ const FamilyDoctor = () => {
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
-            <button onClick={() => setActiveComm({ user: myDoctor, type: "chat" })} className="btn" style={{ background: "rgba(0,229,255,0.1)", color: "var(--accent-cyan)", height: 45 }}>
+            <button onClick={() => setActiveComm({ user: myDoctor, type: "chat" })} className="btn" style={{ background: "rgba(6, 57, 112, 0.1)", color: "#063970", height: 45 }}>
               <MessageCircle size={18} /> Instant Chat
             </button>
             <button onClick={() => setActiveComm({ user: myDoctor, type: "call" })} className="btn" style={{ background: "rgba(167,139,250,0.1)", color: "var(--accent-purple)", height: 45 }}>

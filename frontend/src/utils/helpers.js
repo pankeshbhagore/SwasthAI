@@ -1,10 +1,9 @@
-// Severity helpers
 export const getSeverityColor = (severity) => {
   const map = {
-    EMERGENCY: "#ff3d71",
-    MODERATE: "#ffb300",
-    MILD: "#00ff88",
-    NORMAL: "#00e5ff",
+    EMERGENCY: "#063970", // Deep Navy
+    MODERATE: "#1e40af",  // Royal Blue
+    MILD: "#3b82f6",      // Medium Blue
+    NORMAL: "#93c5fd",    // Light Blue
   };
   return map[severity?.toUpperCase()] || map.NORMAL;
 };

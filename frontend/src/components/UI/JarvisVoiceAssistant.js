@@ -151,7 +151,7 @@ const JarvisVoiceAssistant = () => {
   if (!user) return null;
 
   return (
-    <div style={{ position: "fixed", bottom: 100, left: 24, zIndex: 1000, display: "flex", flexDirection: "column", gap: 10 }}>
+    <div className="jarvis-container" style={{ position: "fixed", top: 16, right: 16, zIndex: 1000, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
       <AnimatePresence>
         {(isSpeaking || isListening || jarvisThinking) && (
           <motion.div
@@ -159,44 +159,44 @@ const JarvisVoiceAssistant = () => {
             animate={{ opacity: 1, scale: 1, x: 0 }}
             exit={{ opacity: 0, scale: 0.8, x: -20 }}
             style={{
-              background: isListening ? "var(--accent-red)" : "var(--accent-cyan)",
-              color: "#000",
-              padding: "10px 16px",
-              borderRadius: "20px 20px 20px 0",
-              fontSize: 14,
+              background: isListening ? "var(--accent-red)" : "#063970",
+              color: "white",
+              padding: "6px 12px",
+              borderRadius: "15px 0 15px 15px",
+              fontSize: 12,
               fontWeight: 900,
               boxShadow: isListening ? "0 10px 25px rgba(255,61,113,0.4)" : "0 10px 25px rgba(0,229,255,0.4)",
               marginBottom: 10,
-              maxWidth: 220,
-              border: "2px solid white"
+              maxWidth: 180,
+              border: "1px solid white"
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              {isListening ? <Mic size={16} className="pulse-emergency" /> : <Radio size={16} className="pulse-emergency" />}
-              {isListening ? "LISTENING..." : jarvisThinking ? "THINKING..." : "JARVIS SPEAKING..."}
+              {isListening ? <Mic size={14} className="pulse-emergency" /> : <Radio size={14} className="pulse-emergency" />}
+              {isListening ? "LISTENING..." : jarvisThinking ? "THINKING..." : "SPEAKING..."}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <div style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => toggleListening(language === "hi" ? "hi-IN" : "en-IN")}
             style={{
-              width: 50, height: 50, borderRadius: "50%",
+              width: 36, height: 36, borderRadius: "50%",
               background: isListening ? "var(--accent-red)" : "var(--bg-card)",
-              border: "2px solid white",
+              border: "1px solid white",
               cursor: "pointer",
               display: "flex", alignItems: "center", justifyContent: "center",
-              color: isListening ? "white" : "var(--accent-cyan)",
-              boxShadow: isListening ? "0 0 20px rgba(255,61,113,0.4)" : "0 4px 12px rgba(0,0,0,0.2)"
+              color: isListening ? "white" : "#063970",
+              boxShadow: isListening ? "0 0 15px rgba(255,61,113,0.4)" : "0 4px 10px rgba(0,0,0,0.15)"
             }}
             title="Ask Jarvis a Question"
           >
-            {isListening ? <MicOff size={22} /> : <Mic size={22} />}
+            {isListening ? <MicOff size={16} /> : <Mic size={16} />}
           </motion.button>
 
           <motion.button
@@ -210,41 +210,49 @@ const JarvisVoiceAssistant = () => {
               }
             }}
             style={{
-              width: 50, height: 50, borderRadius: "50%",
+              width: 36, height: 36, borderRadius: "50%",
               background: "var(--bg-card)",
-              border: "2px solid white",
+              border: "1px solid white",
               cursor: "pointer",
               display: "flex", alignItems: "center", justifyContent: "center",
-              color: muted ? "var(--accent-red)" : "var(--accent-cyan)",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.2)"
+              color: muted ? "var(--accent-red)" : "#063970",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.15)"
             }}
             title={muted ? "Unmute Jarvis" : "Mute Jarvis"}
           >
-            {muted ? <VolumeX size={22} /> : <Volume2 size={22} />}
+            {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
           </motion.button>
         </div>
 
         <motion.button
           whileHover={{ scale: 1.1, rotate: 5 }}
           whileTap={{ scale: 0.9 }}
-          animate={jarvisThinking ? { boxShadow: ["0 0 20px #00e5ff", "0 0 40px #6366f1", "0 0 20px #00e5ff"] } : {}}
+          animate={jarvisThinking ? { boxShadow: ["0 0 20px #063970", "0 0 40px #1e40af", "0 0 20px #063970"] } : {}}
           transition={jarvisThinking ? { repeat: Infinity, duration: 1.5 } : {}}
           onClick={summarizePage}
           style={{
-            width: 70, height: 70, borderRadius: "50%",
-            background: "linear-gradient(135deg, #00e5ff, #6366f1)",
-            border: "4px solid white",
+            width: 50, height: 50, borderRadius: "50%",
+            background: "linear-gradient(135deg, #063970, #1e40af)",
+            border: "3px solid white",
             cursor: "pointer",
             display: "flex", alignItems: "center", justifyContent: "center",
-            boxShadow: "0 8px 32px rgba(0,229,255,0.4)",
+            boxShadow: "0 6px 24px rgba(6, 57, 112, 0.3)",
             position: "relative"
           }}
           title="Jarvis Page Summary"
         >
-          <div style={{ position: "absolute", inset: -5, borderRadius: "50%", border: "3px dashed var(--accent-cyan)", animation: "spin 10s linear infinite" }} />
-          {jarvisThinking ? <div className="spinner" style={{ width: 30, height: 30, borderColor: "white", borderTopColor: "transparent" }} /> : <Sparkles size={32} color="white" fill="white" />}
+          <div style={{ position: "absolute", inset: -4, borderRadius: "50%", border: "2px dashed #063970", animation: "spin 10s linear infinite" }} />
+          {jarvisThinking ? <div className="spinner" style={{ width: 20, height: 20, borderColor: "white", borderTopColor: "transparent" }} /> : <Sparkles size={24} color="white" fill="white" />}
         </motion.button>
       </div>
+      <style>{`
+        @media (max-width: 768px) {
+          .jarvis-container {
+            top: 80px !important;
+            right: 16px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };

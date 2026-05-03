@@ -131,9 +131,9 @@ const HospitalFinder = () => {
               style={{
                 padding: "10px 20px",
                 borderRadius: "var(--radius-md)",
-                border: `2px solid ${severity === s ? "rgba(0,229,255,0.4)" : "var(--border)"}`,
-                background: severity === s ? "rgba(0,229,255,0.1)" : "transparent",
-                color: severity === s ? "var(--accent-cyan)" : "var(--text-secondary)",
+                border: `2px solid ${severity === s ? "rgba(6, 57, 112, 0.4)" : "var(--border)"}`,
+                background: severity === s ? "rgba(6, 57, 112, 0.1)" : "transparent",
+                color: severity === s ? "#063970" : "var(--text-secondary)",
                 fontSize: 14, fontWeight: 900,
                 cursor: "pointer", transition: "all var(--transition)",
               }}

@@ -75,10 +75,10 @@ const Journaling = ({ onBack }) => {
           >
             <div className="glass-card" style={{ padding: 32, textAlign: "center" }}>
               <div style={{ 
-                width: 50, height: 50, borderRadius: "50%", background: "rgba(0,229,255,0.1)",
+                width: 50, height: 50, borderRadius: "50%", background: "rgba(6, 57, 112, 0.1)",
                 display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px"
               }}>
-                <Sparkles size={24} color="var(--accent-cyan)" />
+                <Sparkles size={24} color="#063970" />
               </div>
               <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>Serene's Reflection</h3>
               <p style={{ fontSize: 16, color: "var(--text-secondary)", lineHeight: 1.6, fontStyle: "italic", marginBottom: 32 }}>

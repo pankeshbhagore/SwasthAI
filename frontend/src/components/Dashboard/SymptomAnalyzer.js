@@ -149,12 +149,12 @@ const SymptomAnalyzer = () => {
       <div className="glass-card" style={{ padding: 28 }}>
         <div style={{ textAlign: "center", marginBottom: 24 }}>
           <div style={{ 
-            width: 44, height: 44, background: "rgba(0,229,255,0.1)", 
+            width: 44, height: 44, background: "rgba(6, 57, 112, 0.1)", 
             borderRadius: "50%", display: "flex", alignItems: "center", 
             justifyContent: "center", margin: "0 auto 12px",
-            border: "1px solid rgba(0,229,255,0.2)"
+            border: "1px solid rgba(6, 57, 112, 0.2)"
           }}>
-            <Stethoscope size={22} color="var(--accent-cyan)" />
+            <Stethoscope size={22} color="#063970" />
           </div>
           <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 700, marginBottom: 4 }}>
             Symptom Checker
@@ -174,7 +174,7 @@ const SymptomAnalyzer = () => {
               className="input" 
               value={localLanguage} 
               onChange={e => setLocalLanguage(e.target.value)}
-              style={{ width: "auto", padding: "4px 10px", fontSize: 12, height: 32 }}
+              style={{ width: "auto", padding: "6px 10px", fontSize: 13, height: "auto", minHeight: 36, paddingRight: 32 }}
             >
               <option value="en">English</option>
               <option value="hi">Hindi</option>
@@ -216,7 +216,7 @@ const SymptomAnalyzer = () => {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1.2fr", gap: 12 }}>
             <div>
               <label style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 6, display: "block" }}>Duration</label>
-              <select className="input" value={duration} onChange={e => setDuration(e.target.value)} style={{ fontSize: 13, height: 40 }}>
+              <select className="input" value={duration} onChange={e => setDuration(e.target.value)} style={{ fontSize: 14, height: "auto", padding: "10px 12px", paddingRight: 32, minHeight: 44 }}>
                 <option value="">Select</option>
                 <option value="Just started">Just started</option>
                 <option value="1-2 days">1-2 days</option>
@@ -226,7 +226,7 @@ const SymptomAnalyzer = () => {
             </div>
             <div>
               <label style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 6, display: "block" }}>Severity</label>
-              <select className="input" value={severity} onChange={e => setSeverity(e.target.value)} style={{ fontSize: 13, height: 40 }}>
+              <select className="input" value={severity} onChange={e => setSeverity(e.target.value)} style={{ fontSize: 14, height: "auto", padding: "10px 12px", paddingRight: 32, minHeight: 44 }}>
                 <option value="">Select</option>
                 <option value="Mild">Mild</option>
                 <option value="Moderate">Moderate</option>
@@ -235,7 +235,7 @@ const SymptomAnalyzer = () => {
             </div>
             <div>
               <label style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 6, display: "block" }}>Age group</label>
-              <select className="input" value={ageGroup} onChange={e => setAgeGroup(e.target.value)} style={{ fontSize: 13, height: 40 }}>
+              <select className="input" value={ageGroup} onChange={e => setAgeGroup(e.target.value)} style={{ fontSize: 14, height: "auto", padding: "10px 12px", paddingRight: 32, minHeight: 44 }}>
                 <option value="Infant (0-2)">Infant (0-2)</option>
                 <option value="Child (3-12)">Child (3-12)</option>
                 <option value="Teen (13-19)">Teen (13-19)</option>
@@ -252,7 +252,7 @@ const SymptomAnalyzer = () => {
             disabled={loading}
             style={{ 
               width: "100%", padding: 14, fontSize: 15, fontWeight: 600,
-              background: "linear-gradient(90deg, #3b82f6, #06b6d4)",
+              background: "#063970",
               border: "none", marginTop: 8
             }}
           >

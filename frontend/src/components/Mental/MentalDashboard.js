@@ -7,15 +7,15 @@ import api from "../../utils/api";
 import toast from "react-hot-toast";
 
 const StatCard = ({ icon: Icon, label, value, subValue, color }) => (
-  <div className="glass-card" style={{ padding: "24px 28px", flex: 1, background: "rgba(255,255,255,0.02)" }}>
+  <div className="glass-card" style={{ padding: "24px 28px", flex: 1, border: "1px solid #063970" }}>
     <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-      <div style={{ padding: 10, background: `${color}15`, borderRadius: 12 }}>
-        <Icon size={20} color={color} />
+      <div style={{ padding: 10, background: `rgba(6, 57, 112, 0.1)`, borderRadius: 12 }}>
+        <Icon size={20} color="#063970" />
       </div>
-      <span style={{ fontSize: 11, color: "var(--text-secondary)", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em" }}>{label}</span>
+      <span style={{ fontSize: 11, color: "#063970", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.15em" }}>{label}</span>
     </div>
-    <div style={{ fontSize: 32, fontWeight: 800, color: "var(--text-primary)", marginBottom: 4 }}>{value}</div>
-    <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 700 }}>{subValue}</div>
+    <div style={{ fontSize: 32, fontWeight: 900, color: "#063970", marginBottom: 4 }}>{value}</div>
+    <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 800 }}>{subValue}</div>
   </div>
 );
 
@@ -26,8 +26,8 @@ const ActionCard = ({ icon: Icon, title, description, color, onClick, primary = 
     className="glass-card"
     style={{
       padding: 32, cursor: "pointer", position: "relative", overflow: "hidden",
-      background: primary ? `linear-gradient(135deg, ${color}15, ${color}05)` : "rgba(255,255,255,0.02)",
-      border: primary ? `1px solid ${color}40` : "1px solid rgba(255,255,255,0.08)"
+      background: primary ? `linear-gradient(135deg, rgba(6, 57, 112, 0.1), rgba(6, 57, 112, 0.02))` : "rgba(255,255,255,0.02)",
+      border: `1px solid #063970`
     }}
   >
     {/* Decorative light effect */}

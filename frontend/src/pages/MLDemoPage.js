@@ -16,14 +16,14 @@ const DEMO_SYMPTOMS = [
 const ModelInfoCard = ({ info }) => (
   <div className="glass-card" style={{ padding: 20, marginBottom: 20 }}>
     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-      <Info size={16} color="var(--accent-cyan)" />
+      <Info size={16} color="#063970" />
       <h4 style={{ fontFamily: "var(--font-display)", fontSize: 14 }}>ML Model Information</h4>
     </div>
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: 10 }}>
       {[
-        ["Diseases", info?.diseases || "40+", "#a78bfa"],
-        ["Training Samples", info?.training_samples || "40+", "#00e5ff"],
-        ["Algorithms", "RF + GB + TF-IDF", "#00ff88"],
+        ["Diseases", info?.diseases || "40+", "#063970"],
+        ["Training Samples", info?.training_samples || "40+", "#063970"],
+        ["Algorithms", "RF + GB + TF-IDF", "#063970"],
         ["Status", info?.trained ? "Trained ✓" : "Rule-based", "#ffb300"],
       ].map(([label, value, color]) => (
         <div key={label} style={{ textAlign: "center", padding: "10px 8px", background: `${color}08`, border: `1px solid ${color}15`, borderRadius: "var(--radius-sm)" }}>
@@ -70,8 +70,8 @@ const MLDemoPage = () => {
     <div style={{ padding: 32, maxWidth: 900 }}>
       <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} style={{ marginBottom: 28 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
-          <div style={{ width: 44, height: 44, borderRadius: "var(--radius-md)", background: "rgba(167,139,250,0.15)", border: "1px solid rgba(167,139,250,0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Brain size={22} color="#a78bfa" />
+          <div style={{ width: 44, height: 44, borderRadius: "var(--radius-md)", background: "rgba(6, 57, 112, 0.15)", border: "1px solid rgba(6, 57, 112, 0.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Brain size={22} color="#063970" />
           </div>
           <div>
             <h1 style={{ fontFamily: "var(--font-display)", fontSize: 26, fontWeight: 800 }}>ML Disease Predictor</h1>
@@ -84,7 +84,7 @@ const MLDemoPage = () => {
         {/* Architecture badge */}
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 12 }}>
           {["Random Forest", "TF-IDF Vectorizer", "Gradient Boosting", "scikit-learn", "Python Flask"].map(tech => (
-            <span key={tech} style={{ padding: "3px 10px", borderRadius: "100px", background: "rgba(167,139,250,0.1)", border: "1px solid rgba(167,139,250,0.2)", fontSize: 11, color: "#a78bfa", fontWeight: 600 }}>
+            <span key={tech} style={{ padding: "3px 10px", borderRadius: "100px", background: "rgba(6, 57, 112, 0.1)", border: "1px solid rgba(6, 57, 112, 0.2)", fontSize: 11, color: "#063970", fontWeight: 800 }}>
               {tech}
             </span>
           ))}
@@ -110,7 +110,7 @@ const MLDemoPage = () => {
                     borderRadius: "var(--radius-sm)", cursor: "pointer", textAlign: "left",
                   }}>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: symptoms.join() === preset.symptoms.join() ? "#a78bfa" : "var(--text-primary)" }}>{preset.label}</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: symptoms.join() === preset.symptoms.join() ? "#063970" : "var(--text-primary)" }}>{preset.label}</div>
                     <div style={{ fontSize: 11, color: "var(--text-muted)" }}>{preset.symptoms.join(", ")}</div>
                   </div>
                   <ChevronRight size={14} color="var(--text-muted)" />
@@ -183,20 +183,20 @@ const MLDemoPage = () => {
                             <span className={`severity-badge ${getSeverityBadgeClass(pred.severity)}`} style={{ fontSize: 10, padding: "2px 7px" }}>{pred.severity}</span>
                           </div>
                           <div style={{ textAlign: "right" }}>
-                            <div style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 900, color: i === 0 ? "#a78bfa" : "var(--text-muted)" }}>{pred.confidence}%</div>
+                             <div style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 900, color: i === 0 ? "#063970" : "var(--text-muted)" }}>{pred.confidence}%</div>
                             <div style={{ fontSize: 9, color: "var(--text-muted)" }}>confidence</div>
                           </div>
                         </div>
                         {/* Confidence bar */}
                         <div style={{ height: 4, background: "rgba(255,255,255,0.05)", borderRadius: 2, overflow: "hidden" }}>
                           <motion.div initial={{ width: 0 }} animate={{ width: `${pred.confidence}%` }} transition={{ duration: 0.8, delay: i * 0.1 }}
-                            style={{ height: "100%", borderRadius: 2, background: i === 0 ? "#a78bfa" : "rgba(167,139,250,0.4)" }} />
+                             style={{ height: "100%", borderRadius: 2, background: i === 0 ? "#063970" : "rgba(6, 57, 112, 0.4)" }} />
                         </div>
                       </motion.div>
                     ))}
                   </div>
 
-                  <div style={{ marginTop: 16, padding: "10px 12px", background: "rgba(0,229,255,0.05)", border: "1px solid rgba(0,229,255,0.12)", borderRadius: "var(--radius-sm)", fontSize: 11, color: "var(--text-muted)" }}>
+                   <div style={{ marginTop: 16, padding: "10px 12px", background: "rgba(6, 57, 112, 0.05)", border: "1px solid rgba(6, 57, 112, 0.12)", borderRadius: "var(--radius-sm)", fontSize: 11, color: "var(--text-muted)" }}>
                     ⚠️ ML predictions are probabilistic, not diagnostic. Always consult a qualified doctor.
                   </div>
                 </div>

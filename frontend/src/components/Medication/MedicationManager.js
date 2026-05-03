@@ -33,7 +33,7 @@ const MedCard = ({ med, onTake, onDelete }) => {
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
             <Pill size={15} color="var(--accent-cyan)" />
             <h4 style={{ fontSize: 15, fontWeight: 700 }}>{med.name}</h4>
-            <span style={{ fontSize: 11, background: "rgba(0,229,255,0.1)", border: "1px solid rgba(0,229,255,0.2)", borderRadius: "var(--radius-sm)", padding: "2px 7px", color: "var(--accent-cyan)" }}>{med.dosage}</span>
+            <span style={{ fontSize: 11, background: "rgba(6, 57, 112, 0.1)", border: "1px solid rgba(6, 57, 112, 0.2)", borderRadius: "var(--radius-sm)", padding: "2px 7px", color: "#063970" }}>{med.dosage}</span>
           </div>
           <div style={{ fontSize: 12, color: "var(--text-muted)", marginBottom: 4 }}>
             {FREQUENCIES.find(f => f.value === med.frequency)?.label || med.frequency}
@@ -260,7 +260,7 @@ const MedicationManager = () => {
                         
                         <button 
                           onClick={() => handleSpeak(`${rec.name}. Dosage: ${rec.dosage}. Reason: ${rec.reason}`)}
-                          style={{ position: "absolute", right: 10, top: 10, background: "rgba(0,229,255,0.1)", border: "none", borderRadius: "50%", width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--accent-cyan)", cursor: "pointer" }}
+                          style={{ position: "absolute", right: 10, top: 10, background: "rgba(6, 57, 112, 0.1)", border: "none", borderRadius: "50%", width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", color: "#063970", cursor: "pointer" }}
                           title="Read aloud"
                         >
                           <Volume2 size={14} />
