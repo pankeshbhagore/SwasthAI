@@ -2,7 +2,9 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 let baseURL = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
-if (baseURL && !baseURL.endsWith("/api")) {
+// Clean up trailing slashes and ensure /api suffix
+baseURL = baseURL.replace(/\/+$/, ""); // Remove all trailing slashes
+if (!baseURL.endsWith("/api")) {
   baseURL = `${baseURL}/api`;
 }
 

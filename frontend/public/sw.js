@@ -10,7 +10,7 @@
  * - Cached app shell for instant loading
  */
 
-const CACHE_NAME = "medimind-v1.0.0";
+const CACHE_NAME = "medimind-v1.1.0";
 const OFFLINE_CACHE = "medimind-offline-v1";
 
 // Core app shell — always cache these

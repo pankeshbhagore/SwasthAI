@@ -98,12 +98,20 @@ app.get("/health", (req, res) => {
 });
 
 // ── Smart Routing Middleware ──
-// Automatically handle requests missing the /api prefix for common routes
+// Automatically handle requests with typos like /api1, /api/ (trailing slash), or missing /api prefix
 app.use((req, res, next) => {
   const commonRoutes = ["/users", "/ai", "/maps", "/alerts", "/triage", "/reports", "/admin", "/advanced", "/chatbot", "/wellness", "/doctors", "/chat"];
+  
+  // 1. Handle missing /api prefix
   if (commonRoutes.some(route => req.url.startsWith(route)) && !req.url.startsWith("/api/")) {
     req.url = `/api${req.url}`;
   }
+  
+  // 2. Handle typos like /api1, /api2, etc. (common typo on Render dashboard)
+  if (req.url.startsWith("/api") && !req.url.startsWith("/api/")) {
+    req.url = req.url.replace(/^\/api[^\/]*/, "/api");
+  }
+
   next();
 });
 

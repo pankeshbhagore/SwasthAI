@@ -10,6 +10,7 @@ exports.registerUser = async (req, res, next) => {
   try {
     const { name, email, password, phone, age, gender, role, specialization, degree } = req.body;
 
+    // Basic validation
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, message: "Name, email, and password are required" });
     }
@@ -19,17 +20,22 @@ exports.registerUser = async (req, res, next) => {
       return res.status(400).json({ success: false, message: "User already exists with this email" });
     }
 
-    const user = await User.create({
+    // Sanitize numeric and optional fields
+    const userData = {
       name,
       email,
       password,
-      phone,
-      age,
-      gender,
+      phone: phone || undefined,
+      age: age === "" ? undefined : Number(age),
+      gender: gender || undefined,
       role: role || "user",
-      doctorInfo: role === "doctor" ? { specialization, degree } : undefined,
-    });
-    const token = generateToken(user._id);
+    };
+
+    if (role === "doctor") {
+      userData.doctorInfo = { specialization, degree };
+    }
+
+    const user = await User.create(userData);
 
     return sendResponse(res, 201, true, "Account created successfully", {
       token,
