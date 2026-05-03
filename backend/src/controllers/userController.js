@@ -36,6 +36,7 @@ exports.registerUser = async (req, res, next) => {
     }
 
     const user = await User.create(userData);
+    const token = generateToken(user._id);
 
     return sendResponse(res, 201, true, "Account created successfully", {
       token,
