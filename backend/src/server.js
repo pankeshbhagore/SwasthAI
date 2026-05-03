@@ -33,6 +33,7 @@ const allowedOrigins = [
   "http://localhost:3001",
   "http://127.0.0.1:3000",
   "http://127.0.0.1:3001",
+  "https://swasthai-gd1s.onrender.com",
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
@@ -47,11 +48,19 @@ const io = new Server(server, {
 connectDB();
 
 // Security middleware
-app.use(helmet());
+// 1. Move CORS to the very top after body parsing (or even before)
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin) || origin.includes("onrender.com")) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   })
 );
 
@@ -66,6 +75,9 @@ app.use("/api/", limiter);
 // Body parsing
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+// Security middleware (Helmet must come AFTER CORS sometimes or be configured carefully)
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 
 // Logging
 if (process.env.NODE_ENV === "development") {

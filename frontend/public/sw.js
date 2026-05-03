@@ -98,7 +98,10 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
 
   // ── API calls: network first, fail gracefully ──
-  if (url.pathname.startsWith("/api/")) {
+  const isApiCall = url.pathname.startsWith("/api/") || 
+                    url.hostname.includes("onrender.com") && !url.pathname.includes(".");
+
+  if (isApiCall) {
     event.respondWith(
       fetch(request)
         .then((response) => {
@@ -159,6 +162,8 @@ self.addEventListener("fetch", (event) => {
         if (request.mode === "navigate") {
           return caches.match("/index.html");
         }
+        // Final safety fallback to avoid "Failed to convert value to 'Response'" error
+        return new Response("Offline", { status: 503, statusText: "Service Unavailable" });
       });
     })
   );
