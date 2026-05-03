@@ -12,6 +12,7 @@ import JarvisVoiceAssistant from "./components/UI/JarvisVoiceAssistant";
 import CallNotification from "./components/Communication/CallNotification";
 import ChatInterface from "./components/Communication/ChatInterface";
 import { io } from "socket.io-client";
+import { socketURL } from "./utils/api";
 
 // Pages
 import HomePage from "./pages/HomePage";
@@ -58,7 +59,7 @@ function AppRoutes() {
 
   React.useEffect(() => {
     if (user) {
-      const socket = io(process.env.REACT_APP_API_URL || "http://localhost:5000");
+      const socket = io(socketURL);
       socketRef.current = socket;
       socket.emit("join-room", user._id);
       

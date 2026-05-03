@@ -8,6 +8,9 @@ if (!baseURL.endsWith("/api")) {
   baseURL = `${baseURL}/api`;
 }
 
+// For Socket.io, we need the root URL (without /api)
+export const socketURL = baseURL.replace(/\/api$/, "");
+
 const api = axios.create({
   baseURL,
   timeout: 30000,

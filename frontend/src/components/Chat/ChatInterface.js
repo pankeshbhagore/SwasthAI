@@ -234,7 +234,7 @@ const ChatInterface = () => {
       <div style={{
         padding: "16px 20px",
         borderBottom: "1px solid var(--border)",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
+        display: "grid", gridTemplateColumns: "1fr auto 1fr", alignItems: "center",
         background: "var(--bg-secondary)",
         flexShrink: 0,
       }}>
@@ -255,12 +255,12 @@ const ChatInterface = () => {
           </div>
         </div>
 
-        {/* Language Selector */}
+        {/* Language Selector (Centered) */}
         <div style={{ position: "relative" }}>
           <button
             onClick={() => setShowLangMenu(!showLangMenu)}
             className="btn btn-ghost"
-            style={{ padding: "6px 12px", fontSize: 12 }}
+            style={{ padding: "6px 12px", fontSize: 12, border: "1px solid var(--border)" }}
           >
             <Globe size={14} />
             {LANGUAGES.find(l => l.code === language)?.label || "EN"}
@@ -270,7 +270,7 @@ const ChatInterface = () => {
               <motion.div
                 initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
                 style={{
-                  position: "absolute", top: "calc(100% + 6px)", right: 0,
+                  position: "absolute", top: "calc(100% + 6px)", left: "50%", transform: "translateX(-50%)",
                   background: "var(--bg-card)", border: "1px solid var(--border)",
                   borderRadius: "var(--radius-md)", overflow: "hidden", zIndex: 50, minWidth: 140,
                 }}
@@ -293,6 +293,8 @@ const ChatInterface = () => {
             )}
           </AnimatePresence>
         </div>
+
+        <div /> {/* Spacer for grid */}
       </div>
 
       {/* Messages */}

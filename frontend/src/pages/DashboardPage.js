@@ -4,7 +4,6 @@ import HealthDashboard from "../components/Dashboard/HealthDashboard";
 import DoctorDashboard from "../components/Dashboard/DoctorDashboard";
 import RiskPredictionCard from "../components/Dashboard/RiskPredictionCard";
 import HealthHistoryTable from "../components/Dashboard/HealthHistoryTable";
-import AQIBanner from "../components/UI/AQIBanner";
 import FloatingEmergencyButton from "../components/Emergency/FloatingEmergencyButton";
 import { useAuth } from "../context/AuthContext";
 
@@ -27,7 +26,6 @@ const DashboardPage = () => {
         <DoctorDashboard />
       ) : (
         <>
-          <AQIBanner />
           <HealthDashboard />
           <div style={{ marginTop: 24 }}>
             <RiskPredictionCard />

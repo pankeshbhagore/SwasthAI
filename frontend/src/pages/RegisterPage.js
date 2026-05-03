@@ -43,7 +43,7 @@ const RegisterPage = () => {
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: 24, position: "relative" }}>
       {/* Top Controls */}
-      <div style={{ position: "fixed", top: 20, right: 20, display: "flex", gap: 10, zIndex: 1000 }}>
+      <div style={{ position: "fixed", top: 20, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 10, zIndex: 1000 }}>
         <div style={{ position: "relative" }}>
           <button 
             onClick={() => setLangOpen(!langOpen)}
@@ -57,7 +57,7 @@ const RegisterPage = () => {
               <motion.div 
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
                 style={{ 
-                  position: "absolute", top: "100%", right: 0, marginTop: 8,
+                  position: "absolute", top: "100%", left: "50%", transform: "translateX(-50%)", marginTop: 8,
                   background: "var(--bg-secondary)", border: "1px solid var(--border)",
                   borderRadius: "var(--radius-md)", boxShadow: "0 10px 25px rgba(0,0,0,0.3)",
                   minWidth: 140, overflow: "hidden"

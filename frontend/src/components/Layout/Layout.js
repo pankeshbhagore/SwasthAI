@@ -13,6 +13,7 @@ import { useLanguage } from "../../context/LanguageContext";
 import { uiTranslations } from "../../utils/translations";
 import { getHealthScoreColor, getHealthScoreLabel } from "../../utils/helpers";
 import toast from "react-hot-toast";
+import { socketURL } from "../../utils/api";
 
 const getNavSections = (t) => [
   {
@@ -70,7 +71,7 @@ const Layout = () => {
 
   React.useEffect(() => {
     if (user) {
-      const socket = io(process.env.REACT_APP_API_URL || "http://localhost:5000");
+      const socket = io(socketURL);
       socketRef.current = socket;
       socket.emit("join-room", user._id);
 
