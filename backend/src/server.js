@@ -97,6 +97,16 @@ app.get("/health", (req, res) => {
   });
 });
 
+// ── Smart Routing Middleware ──
+// Automatically handle requests missing the /api prefix for common routes
+app.use((req, res, next) => {
+  const commonRoutes = ["/users", "/ai", "/maps", "/alerts", "/triage", "/reports", "/admin", "/advanced", "/chatbot", "/wellness", "/doctors", "/chat"];
+  if (commonRoutes.some(route => req.url.startsWith(route)) && !req.url.startsWith("/api/")) {
+    req.url = `/api${req.url}`;
+  }
+  next();
+});
+
 // API Routes
 app.use("/api/ai", aiRoutes);
 app.use("/api/users", userRoutes);
